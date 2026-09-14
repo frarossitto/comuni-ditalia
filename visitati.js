@@ -1,1 +1,1 @@
-const COMUNI_VISITATI = [];
+window.COMUNI_VISITATI = [];
