@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="it">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="theme-color" content="#f6f0e3">
+
+  <title>Comuni d’Italia 🇮🇹 — Un viaggio lungo tutta l’Italia</title>
+
+  <meta
+    name="description"
+    content="Il viaggio di Francesco alla scoperta di tutti i comuni d’Italia."
+  >
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<header class="site-header">
+
+  <a class="brand" href="index.html">
+    Comuni d’Italia 🇮🇹
+  </a>
+
+  <nav class="nav">
+
+    <a href="index.html">Home</a>
+
+    <a href="mappa.html">Mappa</a>
+
+    <a href="viaggio.html">Il viaggio</a>
+
+    <a href="chi-sono.html">Chi sono</a>
+
+    <a href="traguardi.html">Traguardi</a>
+
+    <a href="social.html" class="nav-ig">Social</a>
+
+    <a href="contatti.html">Contatti</a>
+
+  </nav>
+
+</header>
+
+
+<main>
+
+<section class="hero-grid">
+
+  <div class="hero">
+
+    <div class="eyebrow">
+      UN VIAGGIO LUNGO TUTTA L’ITALIA
+    </div>
+
+    <h1>
+      Tutti i comuni d’Italia.
+    </h1>
+
+    <p>
+      Una strada alla volta, un comune alla volta.
+      Questo è il mio viaggio alla scoperta dei comuni italiani:
+      dai luoghi più conosciuti ai piccoli centri che spesso
+      restano fuori dalle rotte.
+    </p>
+
+    <div class="hero-actions">
+
+      <a class="btn primary" href="mappa.html">
+        Esplora la mappa →
+      </a>
+
+      <a class="btn" href="chi-sono.html">
+        Conosci la storia
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <aside class="hero-card">
+
+    <div class="mini">
+      Avanzamento del viaggio
+    </div>
+
+    <div>
+
+      <strong id="hero-pct">
+        0,00%
+      </strong>
+
+      <p>
+        del viaggio completato
+      </p>
+
+    </div>
+
+    <div>
+
+      <div class="progress">
+        <i id="hero-fill"></i>
+      </div>
+
+      <div class="progress-label">
+
+        <span id="hero-count">
+          0 comuni
+        </span>
+
+        <span id="hero-total">
+          — totali
+        </span>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+</section>
+
+
+<section class="stats">
+
+  <div class="stat">
+
+    <strong id="count">
+      0
+    </strong>
+
+    <span>
+      comuni visitati
+    </span>
+
+  </div>
+
+
+  <div class="stat">
+
+    <strong id="total">
+      —
+    </strong>
+
+    <span>
+      comuni totali
+    </span>
+
+  </div>
+
+
+  <div class="stat">
+
+    <strong id="pct">
+      0,00%
+    </strong>
+
+    <span>
+      del viaggio completato
+    </span>
+
+  </div>
+
+</section>
+
+
+<section class="section">
+
+  <div class="section-head">
+
+    <div>
+
+      <div class="smallcaps">
+        LA MAPPA
+      </div>
+
+      <h2>
+        L’Italia, comune dopo comune.
+      </h2>
+
+    </div>
+
+    <a class="btn" href="mappa.html">
+      Apri la mappa completa →
+    </a>
+
+  </div>
+
+
+  <div class="panel">
+
+    <div class="map-preview" id="home-map">
+
+      <div class="map-loading">
+        Caricamento della mappa…
+      </div>
+
+    </div>
+
+
+    <div class="legend">
+
+      <span>
+        <i class="dot" style="background:var(--green)"></i>
+        Visitato
+      </span>
+
+      <span>
+        <i class="dot" style="background:var(--gray)"></i>
+        Da visitare
+      </span>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="section">
+
+  <div class="section-head">
+
+    <div>
+
+      <div class="smallcaps">
+        IL VIAGGIO
+      </div>
+
+      <h2>
+        Un progetto personale,
+        un’Italia da scoprire.
+      </h2>
+
+    </div>
+
+  </div>
+
+
+  <div class="card-grid">
+
+
+    <article class="card">
+
+      <div class="number">
+        01
+      </div>
+
+      <h3>
+        Conoscere
+      </h3>
+
+      <p>
+        Andare oltre le destinazioni più famose
+        e scoprire anche i piccoli comuni,
+        le loro storie, i paesaggi e le persone.
+      </p>
+
+    </article>
+
+
+    <article class="card">
+
+      <div class="number">
+        02
+      </div>
+
+      <h3>
+        Attraversare
+      </h3>
+
+      <p>
+        Una strada alla volta, percorrendo
+        l’Italia senza limitarsi alle mete
+        più ovvie.
+      </p>
+
+    </article>
+
+
+    <article class="card">
+
+      <div class="number">
+        03
+      </div>
+
+      <h3>
+        Raccontare
+      </h3>
+
+      <p>
+        Trasformare il percorso in un diario
+        digitale da condividere anche
+        sui social.
+      </p>
+
+    </article>
+
+  </div>
+
+</section>
+
+
+<section class="section">
+
+  <div class="section-head">
+
+    <div>
+
+      <div class="smallcaps">
+        REGIONI
+      </div>
+
+      <h2>
+        Il viaggio regione per regione.
+      </h2>
+
+    </div>
+
+    <a class="btn" href="viaggio.html">
+      Vedi il percorso →
+    </a>
+
+  </div>
+
+  <div class="grid-4" id="home-regions"></div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+  <span>
+    Comuni d’Italia 🇮🇹 · un progetto di Francesco
+  </span>
+
+  <span>
+
+    <a
+      href="https://www.instagram.com/frarossitto/"
+      target="_blank"
+    >
+      Instagram
+    </a>
+
+    ·
+
+    <a href="mailto:rossitto.francesco001@gmail.com">
+      Email
+    </a>
+
+  </span>
+
+</footer>
+
+</div>
+
+
+<script src="visitati.js"></script>
+<script src="comuni.js"></script>
+
+
+<script>
+
+const TOPO_URL =
+"https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_municipalities.topo.json";
+
+
+const visited =
+new Set(
+  (window.VISITED_ISTAT || [])
+  .map(x => String(x).padStart(6,"0"))
+);
+
+
+const fmt =
+n => n.toLocaleString("it-IT");
+
+
+const pct =
+n =>
+n.toLocaleString(
+  "it-IT",
+  {
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+  }
+) + "%";
+
+
+function code(f){
+
+  return String(
+    f.properties.com_istat_code ||
+    f.properties.pro_com ||
+    f.properties.id ||
+    ""
+  ).padStart(6,"0");
+
+}
+
+
+function escapeHtml(s){
+
+  return String(s).replace(
+    /[&<>"']/g,
+    m => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    }[m])
+  );
+
+}
+
+
+async function loadHome(){
+
+  const topo =
+    await d3.json(TOPO_URL);
+
+  const obj =
+    topo.objects[
+      Object.keys(topo.objects)[0]
+    ];
+
+  const features =
+    topojson.feature(
+      topo,
+      obj
+    ).features;
+
+
+  const total =
+    features.length;
+
+  const progress =
+    total
+    ? visited.size / total * 100
+    : 0;
+
+
+  document.querySelector("#count")
+    .textContent = fmt(visited.size);
+
+  document.querySelector("#total")
+    .textContent = fmt(total);
+
+  document.querySelector("#pct")
+    .textContent = pct(progress);
+
+
+  document.querySelector("#hero-pct")
+    .textContent = pct(progress);
+
+  document.querySelector("#hero-count")
+    .textContent = fmt(visited.size) + " comuni";
+
+  document.querySelector("#hero-total")
+    .textContent = fmt(total) + " totali";
+
+
+  document.querySelector("#hero-fill")
+    .style.width =
+    Math.min(progress,100) + "%";
+
+
+  const map =
+    document.querySelector("#home-map");
+
+  map.innerHTML = "";
+
+
+  const width =
+    map.clientWidth;
+
+  const height =
+    map.clientHeight;
+
+
+  const svg =
+    d3.select(map)
+    .append("svg")
+    .attr(
+      "viewBox",
+      `0 0 ${width} ${height}`
+    );
+
+
+  const projection =
+    d3.geoMercator()
+    .fitSize(
+      [width,height],
+      {
+        type:"FeatureCollection",
+        features
+      }
+    );
+
+
+  const path =
+    d3.geoPath(projection);
+
+
+  svg
+  .append("g")
+  .selectAll("path")
+  .data(features)
+  .join("path")
+  .attr(
+    "class",
+    f =>
+      visited.has(code(f))
+      ? "muni visited"
+      : "muni todo"
+  )
+  .attr("d",path)
+  .on(
+    "click",
+    (event,f) =>
+      location.href =
+      "comune.html?codice=" +
+      encodeURIComponent(code(f))
+  );
+
+
+  const regions =
+    [
+      ...new Set(
+        features
+        .map(f => f.properties.reg_name)
+        .filter(Boolean)
+      )
+    ]
+    .sort(
+      (a,b) =>
+        a.localeCompare(b,"it")
+    );
+
+
+  const counts = {};
+
+
+  regions.forEach(
+    region => {
+
+      counts[region] = {
+        done:0,
+        total:0
+      };
+
+    }
+  );
+
+
+  features.forEach(
+    f => {
+
+      const region =
+        f.properties.reg_name;
+
+      if(counts[region]){
+
+        counts[region].total++;
+
+        if(
+          visited.has(code(f))
+        ){
+
+          counts[region].done++;
+
+        }
+
+      }
+
+    }
+  );
+
+
+  document.querySelector("#home-regions")
+  .innerHTML =
+
+  regions.map(
+    region => {
+
+      const data =
+        counts[region];
+
+      const progress =
+        data.total
+        ? data.done / data.total * 100
+        : 0;
+
+
+      return `
+
+        <div class="region">
+
+          <b>
+            ${escapeHtml(region)}
+          </b>
+
+          <span>
+            ${data.done}/${data.total}
+            ·
+            ${progress.toLocaleString(
+              "it-IT",
+              {
+                maximumFractionDigits:1
+              }
+            )}%
+          </span>
+
+          <div class="region-progress">
+
+            <i
+              style="width:${Math.min(progress,100)}%"
+            ></i>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }
+  ).join("");
+
+}
+
+
+loadHome().catch(
+  error => {
+
+    console.error(error);
+
+    document.querySelector("#home-map")
+      .innerHTML =
+
+      `
+      <div class="map-loading">
+        La mappa non è riuscita a caricarsi.
+        Riprova con una connessione internet attiva.
+      </div>
+      `;
+
+  }
+);
+
+</script>
+
+</body>
+</html>
