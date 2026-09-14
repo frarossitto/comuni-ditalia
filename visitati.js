@@ -1,0 +1,1 @@
+const COMUNI_VISITATI = [];
