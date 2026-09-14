@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Comuni d’Italia 🇮🇹</title>
 
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  >
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -25,7 +31,7 @@
 
     header {
       background: white;
-      padding: 18px 15px;
+      padding: 20px 15px 18px;
       text-align: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       position: relative;
@@ -33,24 +39,48 @@
     }
 
     h1 {
-      margin: 0 0 8px;
+      margin: 0 0 6px;
       font-size: 28px;
     }
 
+    .description {
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+
     #progress {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .progress-container {
+      width: 100%;
+      max-width: 500px;
+      height: 14px;
+      background: #e0e0e0;
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 0 auto 10px;
+    }
+
+    #progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #35a853;
+      border-radius: 20px;
+      transition: width 0.5s ease;
     }
 
     #counter {
-      margin-top: 5px;
       color: #666;
       font-size: 14px;
     }
 
     #map {
       width: 100%;
-      height: calc(100vh - 125px);
+      height: calc(100vh - 205px);
       min-height: 500px;
     }
 
@@ -77,184 +107,421 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
+      gap: 12px;
       background: white;
       z-index: 2000;
       font-size: 18px;
+      text-align: center;
+      padding: 20px;
     }
+
+    .loading-spinner {
+      width: 35px;
+      height: 35px;
+      border: 4px solid #ddd;
+      border-top-color: #35a853;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
   </style>
+
 </head>
 
 <body>
 
+  <!-- SCHERMATA DI CARICAMENTO -->
+
   <div class="loading" id="loading">
-    Caricamento della mappa... 🇮🇹
+
+    <div class="loading-spinner"></div>
+
+    <div>
+      Caricamento della mappa... 🇮🇹
+    </div>
+
   </div>
 
+
+  <!-- TESTATA -->
+
   <header>
-    <h1>Comuni d’Italia 🇮🇹</h1>
-    <div id="progress">0%</div>
-    <div id="counter">0 comuni visitati</div>
+
+    <h1>
+      Comuni d’Italia 🇮🇹
+    </h1>
+
+    <div class="description">
+      Un viaggio alla scoperta di tutti i comuni d’Italia
+    </div>
+
+    <div id="progress">
+      0.00% completato
+    </div>
+
+    <div class="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+
+    <div id="counter">
+      0 comuni visitati su 7896
+    </div>
+
   </header>
+
+
+  <!-- MAPPA -->
 
   <div id="map"></div>
 
+
+  <!-- LEAFLET -->
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+  <!-- TOPOJSON -->
 
   <script src="https://unpkg.com/topojson-client@3"></script>
 
+
+  <!-- COMUNI VISITATI -->
+
   <script src="visitati.js"></script>
 
+
   <script>
+
     const TOTAL_COMUNI = 7896;
 
+
+    /* =========================
+       COMUNI VISITATI
+       ========================= */
+
     const comuniVisitati =
-      window.COMUNI_VISITATI ||
-      window.VISITATI ||
-      window.visitati ||
-      [];
+      Array.isArray(window.COMUNI_VISITATI)
+        ? window.COMUNI_VISITATI
+        : [];
+
 
     function normalizza(testo) {
+
       return String(testo || "")
         .toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .trim();
+
     }
+
 
     const visitatiSet = new Set(
       comuniVisitati.map(normalizza)
     );
 
+
+    /* =========================
+       MAPPA
+       ========================= */
+
     const map = L.map("map", {
       zoomControl: true
-    }).setView([42.5, 12.5], 6);
+    }).setView(
+      [42.5, 12.5],
+      6
+    );
+
 
     L.tileLayer(
       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       {
-        attribution: '&copy; OpenStreetMap contributors'
+        attribution:
+          "&copy; OpenStreetMap contributors"
       }
     ).addTo(map);
 
+
+    /* =========================
+       STILE COMUNI
+       ========================= */
+
     function stileComune(feature) {
+
       const nome =
         feature.properties?.name ||
         feature.properties?.NAME ||
         feature.properties?.comune ||
         "";
 
-      const visitato = visitatiSet.has(normalizza(nome));
+      const visitato =
+        visitatiSet.has(
+          normalizza(nome)
+        );
+
 
       return {
+
         color: "#666",
+
         weight: 0.4,
-        fillColor: visitato ? "#35a853" : "#d0d0d0",
-        fillOpacity: visitato ? 0.85 : 0.7
+
+        fillColor:
+          visitato
+            ? "#35a853"
+            : "#d0d0d0",
+
+        fillOpacity:
+          visitato
+            ? 0.85
+            : 0.7
+
       };
+
     }
 
+
+    /* =========================
+       INTERAZIONE COMUNI
+       ========================= */
+
     function suComune(feature, layer) {
+
       const nome =
         feature.properties?.name ||
         feature.properties?.NAME ||
         feature.properties?.comune ||
         "Comune";
 
-      layer.bindTooltip(nome, {
-        sticky: true
-      });
+
+      layer.bindTooltip(
+        nome,
+        {
+          sticky: true
+        }
+      );
+
 
       layer.on({
+
         mouseover: function(e) {
+
           e.target.setStyle({
+
             weight: 1.5,
+
             color: "#222",
+
             fillOpacity: 0.95
+
           });
+
         },
 
+
         mouseout: function(e) {
-          e.target.setStyle(stileComune(feature));
+
+          e.target.setStyle(
+            stileComune(feature)
+          );
+
         }
+
       });
+
     }
+
+
+    /* =========================
+       CARICAMENTO DATI MAPPA
+       ========================= */
 
     fetch(
       "https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_municipalities.topo.json"
     )
+
       .then(response => {
+
         if (!response.ok) {
-          throw new Error("Errore nel caricamento dei dati");
+
+          throw new Error(
+            "Errore nel caricamento dei dati"
+          );
+
         }
+
         return response.json();
+
       })
+
 
       .then(topology => {
 
-        const objectName = Object.keys(topology.objects).find(
-          key => topology.objects[key].type === "GeometryCollection"
-        );
+
+        const objectName =
+          Object.keys(
+            topology.objects
+          ).find(
+            key =>
+              topology.objects[key].type ===
+              "GeometryCollection"
+          );
+
 
         if (!objectName) {
-          throw new Error("Dati dei comuni non trovati");
+
+          throw new Error(
+            "Dati dei comuni non trovati"
+          );
+
         }
 
-        const geojson = topojson.feature(
-          topology,
-          topology.objects[objectName]
-        );
 
-        L.geoJSON(geojson, {
-          style: stileComune,
-          onEachFeature: suComune
-        }).addTo(map);
+        const geojson =
+          topojson.feature(
+            topology,
+            topology.objects[objectName]
+          );
 
-        aggiornaStatistiche(geojson.features.length);
 
-        document.getElementById("loading").style.display = "none";
+        L.geoJSON(
+          geojson,
+          {
+
+            style: stileComune,
+
+            onEachFeature: suComune
+
+          }
+
+        ).addTo(map);
+
+
+        aggiornaStatistiche();
+
+
+        document.getElementById(
+          "loading"
+        ).style.display = "none";
+
+
       })
 
+
       .catch(error => {
+
         console.error(error);
 
-        document.getElementById("loading").innerHTML =
-          "❌ Errore nel caricamento della mappa.<br><br>Riprova tra poco.";
+
+        document.getElementById(
+          "loading"
+        ).innerHTML =
+
+          "❌<br><br>" +
+
+          "Errore nel caricamento della mappa." +
+
+          "<br><br>" +
+
+          "Riprova tra poco.";
+
       });
 
-    function aggiornaStatistiche(totaleMappa) {
 
-      const visitati = comuniVisitati.length;
+    /* =========================
+       STATISTICHE
+       ========================= */
+
+    function aggiornaStatistiche() {
+
+
+      const visitati =
+        comuniVisitati.length;
+
 
       const percentuale =
         (visitati / TOTAL_COMUNI) * 100;
 
-      document.getElementById("progress").textContent =
-        percentuale.toFixed(2) + "% completato";
 
-      document.getElementById("counter").textContent =
-        visitati + " comuni visitati su " + TOTAL_COMUNI;
+      document.getElementById(
+        "progress"
+      ).textContent =
+
+        percentuale.toFixed(2) +
+        "% completato";
+
+
+      document.getElementById(
+        "progress-bar"
+      ).style.width =
+
+        Math.min(
+          percentuale,
+          100
+        ) + "%";
+
+
+      document.getElementById(
+        "counter"
+      ).textContent =
+
+        visitati +
+        " comuni visitati su " +
+        TOTAL_COMUNI;
+
     }
 
+
+    /* =========================
+       LEGENDA
+       ========================= */
+
     const legend = L.control({
+
       position: "bottomright"
+
     });
+
 
     legend.onAdd = function() {
 
-      const div = L.DomUtil.create(
-        "div",
-        "legend"
-      );
+
+      const div =
+        L.DomUtil.create(
+          "div",
+          "legend"
+        );
+
 
       div.innerHTML =
-        '<div><span style="background:#35a853"></span> Visitato</div>' +
-        '<div><span style="background:#d0d0d0"></span> Da visitare</div>';
+
+        '<div>' +
+        '<span style="background:#35a853"></span>' +
+        'Visitato' +
+        '</div>' +
+
+        '<div>' +
+        '<span style="background:#d0d0d0"></span>' +
+        'Da visitare' +
+        '</div>';
+
 
       return div;
+
     };
 
+
     legend.addTo(map);
+
   </script>
 
 </body>
+
 </html>
