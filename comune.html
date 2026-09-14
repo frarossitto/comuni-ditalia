@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <title>Comune — Comuni d'Italia 🇮🇹</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+<header class="site-header">
+
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+
+    <a href="index.html" class="logo">
+      Comuni d'Italia 🇮🇹
+    </a>
+
+    <button class="menu-button">
+      ⋯
+    </button>
+
+  </div>
+
+</header>
+
+
+<div class="menu-overlay"></div>
+
+<aside class="side-menu">
+
+  <div class="menu-top">
+
+    <h2 class="menu-title">
+      Esplora
+    </h2>
+
+    <button class="menu-close">
+      ×
+    </button>
+
+  </div>
+
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">
+      Il viaggio
+    </div>
+
+    <a class="menu-link" href="index.html">
+      Home <span>→</span>
+    </a>
+
+    <a class="menu-link" href="mappa.html">
+      Mappa dei comuni <span>→</span>
+    </a>
+
+    <a class="menu-link" href="viaggio.html">
+      Il viaggio <span>→</span>
+    </a>
+
+  </div>
+
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">
+      Il progetto
+    </div>
+
+    <a class="menu-link" href="chi-sono.html">
+      Chi sono <span>→</span>
+    </a>
+
+    <a class="menu-link" href="traguardi.html">
+      Traguardi <span>→</span>
+    </a>
+
+  </div>
+
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">
+      Seguimi
+    </div>
+
+    <a
+      class="menu-link"
+      href="https://www.instagram.com/frarossitto/"
+      target="_blank">
+      Instagram <span>↗</span>
+    </a>
+
+    <a
+      class="menu-link"
+      href="https://www.tiktok.com/"
+      target="_blank">
+      TikTok <span>↗</span>
+    </a>
+
+  </div>
+
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">
+      Contatti
+    </div>
+
+    <a class="menu-link" href="contatti.html">
+      Contatti <span>→</span>
+    </a>
+
+  </div>
+
+</aside>
+
+
+<main>
+
+<section class="page-header">
+
+  <div class="container">
+
+    <div class="eyebrow">
+      Scheda comune
+    </div>
+
+    <h1 id="comune-name">
+      Comune
+    </h1>
+
+    <p
+      id="comune-location"
+      class="section-text">
+    </p>
+
+  </div>
+
+</section>
+
+
+<section class="section" style="padding-top:20px;">
+
+  <div class="container">
+
+    <div class="card">
+
+      <div id="status"></div>
+
+      <h3>
+        Informazioni
+      </h3>
+
+      <p>
+        <strong>Provincia:</strong>
+        <span id="provincia">—</span>
+      </p>
+
+      <p>
+        <strong>Regione:</strong>
+        <span id="regione">—</span>
+      </p>
+
+      <p>
+        <strong>Codice ISTAT:</strong>
+        <span id="codice">—</span>
+      </p>
+
+      <p>
+        <strong>Data visita:</strong>
+        <span id="data">—</span>
+      </p>
+
+      <div id="descrizione"></div>
+
+      <div class="button-row">
+
+        <a href="mappa.html" class="btn btn-dark">
+          ← Torna alla mappa
+        </a>
+
+        <a href="index.html" class="btn">
+          Home
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer class="site-footer">
+
+  <div class="container footer-inner">
+
+    <div>
+      Comuni d'Italia 🇮🇹
+    </div>
+
+    <a href="mappa.html">
+      ← Mappa
+    </a>
+
+  </div>
+
+</footer>
+
+
+<script src="visitati.js"></script>
+<script src="comuni.js"></script>
+<script src="app.js"></script>
+
+
+<script>
+
+const params =
+  new URLSearchParams(window.location.search);
+
+const code =
+  String(params.get("codice") || "").padStart(6, "0");
+
+const data =
+  window.COMUNI_DATA?.[code] || {};
+
+const visited =
+  new Set(
+    (window.VISITED_ISTAT || [])
+      .map(String)
+      .map(code => code.padStart(6, "0"))
+  );
+
+
+document.getElementById("codice").textContent =
+  code || "—";
+
+
+document.getElementById("comune-name").textContent =
+  data.nome || "Comune";
+
+
+document.getElementById("provincia").textContent =
+  data.provincia || "—";
+
+
+document.getElementById("regione").textContent =
+  data.regione || "—";
+
+
+document.getElementById("data").textContent =
+  data.data || "Non ancora visitato";
+
+
+document.getElementById("comune-location").textContent =
+  [
+    data.provincia,
+    data.regione
+  ]
+  .filter(Boolean)
+  .join(" · ");
+
+
+if (visited.has(code)) {
+
+  document.getElementById("status").innerHTML =
+    '<div class="eyebrow" style="color:#315b43;">● COMUNE VISITATO</div>';
+
+} else {
+
+  document.getElementById("status").innerHTML =
+    '<div class="eyebrow">○ DA VISITARE</div>';
+
+}
+
+
+if (data.descrizione) {
+
+  document.getElementById("descrizione").innerHTML = `
+    <h3>Il viaggio</h3>
+    <p>${data.descrizione}</p>
+  `;
+
+}
+
+</script>
+
+</body>
+</html>
