@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Comune — Comuni d’Italia 🇮🇹</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header class="site-header">
+
+  <a href="index.html" class="brand">
+    Comuni d’Italia 🇮🇹
+  </a>
+
+  <button class="menu-button" id="menuButton">
+    ⋯
+  </button>
+
+</header>
+
+
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<aside class="side-menu" id="sideMenu">
+
+  <div class="side-menu-top">
+
+    <div>
+      <small>COMUNI D’ITALIA</small>
+      <h2>Esplora il progetto</h2>
+    </div>
+
+    <button class="menu-close" id="menuClose">×</button>
+
+  </div>
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">IL VIAGGIO</div>
+
+    <a href="mappa.html" class="menu-link">
+      <span>🗺️</span>
+      <div>
+        <strong>Mappa</strong>
+        <small>Esplora i comuni</small>
+      </div>
+    </a>
+
+    <a href="viaggio.html" class="menu-link">
+      <span>🚗</span>
+      <div>
+        <strong>Il viaggio</strong>
+        <small>Diario e tappe</small>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">IL PROGETTO</div>
+
+    <a href="chi-sono.html" class="menu-link">
+      <span>👤</span>
+      <div>
+        <strong>Chi sono</strong>
+        <small>La mia storia</small>
+      </div>
+    </a>
+
+    <a href="traguardi.html" class="menu-link">
+      <span>🏁</span>
+      <div>
+        <strong>Traguardi</strong>
+        <small>I risultati</small>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">SEGUIMI</div>
+
+    <a
+      href="https://www.instagram.com/frarossitto/"
+      target="_blank"
+      class="menu-link"
+    >
+      <span>📸</span>
+      <div>
+        <strong>Instagram</strong>
+        <small>Foto e aggiornamenti</small>
+      </div>
+    </a>
+
+    <a
+      href="https://www.tiktok.com/"
+      target="_blank"
+      class="menu-link"
+    >
+      <span>🎬</span>
+      <div>
+        <strong>TikTok</strong>
+        <small>Video del viaggio</small>
+      </div>
+    </a>
+
+  </div>
+
+</aside>
+
+
+<main>
+
+<section class="page-hero">
+
+  <small>UNA NUOVA TAPPA</small>
+
+  <h1 id="comuneName">
+    Comune
+  </h1>
+
+  <p id="comuneSubtitle">
+    Scopri i dettagli di questa tappa.
+  </p>
+
+</section>
+
+
+<section class="section">
+
+  <div class="detail-grid">
+
+    <div class="detail-card">
+
+      <small>INFORMAZIONI</small>
+
+      <div class="detail-row">
+        <span>Provincia</span>
+        <strong id="comuneProvincia">—</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Regione</span>
+        <strong id="comuneRegione">—</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Codice ISTAT</span>
+        <strong id="comuneIstat">—</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Stato</span>
+        <strong id="comuneStatus">—</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Data visita</span>
+        <strong id="comuneData">—</strong>
+      </div>
+
+    </div>
+
+
+    <div class="detail-card detail-story">
+
+      <small>IL RICORDO</small>
+
+      <h2>Questa tappa del viaggio.</h2>
+
+      <p id="comuneDescription">
+        Non ho ancora aggiunto una descrizione per questo comune.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <div class="back-link-container">
+
+    <a href="mappa.html" class="button button-dark">
+      ← Torna alla mappa
+    </a>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer class="site-footer">
+
+  <div>
+    <strong>Comuni d’Italia 🇮🇹</strong>
+  </div>
+
+</footer>
+
+
+<script src="visitati.js"></script>
+<script src="comuni.js"></script>
+<script src="app.js"></script>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const codice =
+    String(params.get("codice") || "")
+      .padStart(6, "0");
+
+
+  const visited =
+    new Set(
+      (window.VISITED_ISTAT || [])
+        .map(String)
+        .map(code => code.padStart(6, "0"))
+    );
+
+
+  const customData =
+    window.COMUNI_DATA?.[codice];
+
+
+  try {
+
+    const response = await fetch(
+      "https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_municipalities.topo.json"
+    );
+
+    const topology = await response.json();
+
+    const objectName =
+      Object.keys(topology.objects)[0];
+
+    const features =
+      topojson.feature(
+        topology,
+        topology.objects[objectName]
+      ).features;
+
+
+    const feature =
+      features.find(d => {
+
+        const props = d.properties || {};
+
+        const code =
+          String(
+            props.com_istat_code ??
+            props.pro_com ??
+            d.id ??
+            props.id ??
+            ""
+          ).padStart(6, "0");
+
+        return code === codice;
+
+      });
+
+
+    if (!feature) {
+
+      document.getElementById("comuneName").textContent =
+        "Comune non trovato";
+
+      return;
+
+    }
+
+
+    const props = feature.properties || {};
+
+
+    const name =
+      customData?.nome ??
+      props.name ??
+      props.comune ??
+      props.com_name ??
+      "Comune";
+
+
+    const provincia =
+      customData?.provincia ??
+      props.prov_name ??
+      props.provincia ??
+      "—";
+
+
+    const regione =
+      customData?.regione ??
+      props.reg_name ??
+      props.regione ??
+      "—";
+
+
+    document.getElementById("comuneName").textContent =
+      name;
+
+    document.getElementById("comuneSubtitle").textContent =
+      `${provincia} · ${regione}`;
+
+
+    document.getElementById("comuneProvincia").textContent =
+      provincia;
+
+    document.getElementById("comuneRegione").textContent =
+      regione;
+
+    document.getElementById("comuneIstat").textContent =
+      codice;
+
+
+    const isVisited =
+      visited.has(codice);
+
+
+    document.getElementById("comuneStatus").textContent =
+      isVisited
+        ? "✓ Visitato"
+        : "Da visitare";
+
+
+    document.getElementById("comuneData").textContent =
+      customData?.data || "—";
+
+
+    document.getElementById("comuneDescription").textContent =
+      customData?.descrizione ||
+      (
+        isVisited
+          ? "Questa tappa fa parte del viaggio attraverso tutti i comuni d’Italia."
+          : "Questo comune è ancora nella lista delle prossime destinazioni."
+      );
+
+
+    document.title =
+      `${name} — Comuni d’Italia 🇮🇹`;
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
