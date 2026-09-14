@@ -1,527 +1,966 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f0e3">
 
+  <title>Comuni d'Italia 🇮🇹 — un viaggio attraverso tutti i comuni</title>
   <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
+    name="description"
+    content="Il viaggio di @frarossitto attraverso tutti i comuni d'Italia."
   >
 
-  <title>Comuni d’Italia 🇮🇹</title>
-
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  >
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap');
+
+    :root {
+      --paper: #f6f0e3;
+      --ink: #22231f;
+      --muted: #6e7069;
+      --green: #2f6f4e;
+      --green2: #3e815e;
+      --line: #ddd5c5;
+      --white: #fffdf8;
+      --gray: #d9d8d2;
+    }
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      color: #222;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
     }
 
-    header {
-      background: white;
-      padding: 20px 15px 18px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      position: relative;
-      z-index: 1000;
-    }
-
-    h1 {
-      margin: 0 0 6px;
-      font-size: 28px;
-    }
-
-    .description {
-      font-size: 15px;
-      color: #666;
-      margin-bottom: 16px;
-    }
-
-    #progress {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-    .progress-container {
-      width: 100%;
-      max-width: 500px;
-      height: 14px;
-      background: #e0e0e0;
-      border-radius: 20px;
-      overflow: hidden;
-      margin: 0 auto 10px;
-    }
-
-    #progress-bar {
-      width: 0%;
-      height: 100%;
-      background: #35a853;
-      border-radius: 20px;
-      transition: width 0.5s ease;
-    }
-
-    #counter {
-      color: #666;
-      font-size: 14px;
-    }
-
-    #map {
-      width: 100%;
-      height: calc(100vh - 205px);
-      min-height: 500px;
-    }
-
-    .legend {
-      background: white;
-      padding: 10px 12px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      line-height: 22px;
-    }
-
-    .legend span {
-      display: inline-block;
-      width: 15px;
-      height: 15px;
-      margin-right: 6px;
-      vertical-align: middle;
-      border: 1px solid #999;
-    }
-
-    .loading {
+    body::before {
+      content: "";
       position: fixed;
       inset: 0;
+      pointer-events: none;
+      opacity: .13;
+      background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: auto;
+      padding: 28px 18px 50px;
+    }
+
+    /* HEADER */
+
+    .top {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 12px;
-      background: white;
-      z-index: 2000;
+      gap: 20px;
+    }
+
+    .brand {
+      font-family: "Playfair Display", serif;
+      font-size: 24px;
+    }
+
+    .ig {
+      color: var(--green);
+      text-decoration: none;
+      font-weight: 700;
+      transition: opacity .2s ease;
+    }
+
+    .ig:hover {
+      opacity: .7;
+    }
+
+    /* HERO */
+
+    .hero {
+      padding: 62px 0 34px;
+      max-width: 850px;
+    }
+
+    .eyebrow {
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--green);
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .hero h1 {
+      font: 700 clamp(45px, 8vw, 92px) / .95 "Playfair Display", serif;
+      margin: 12px 0 18px;
+    }
+
+    .hero p {
       font-size: 18px;
-      text-align: center;
-      padding: 20px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 680px;
     }
 
-    .loading-spinner {
-      width: 35px;
-      height: 35px;
-      border: 4px solid #ddd;
-      border-top-color: #35a853;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+    /* STATISTICHE */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 20px 0;
     }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
+    .stat {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+    }
+
+    .stat strong {
+      display: block;
+      font: 700 clamp(28px, 4vw, 44px) "Playfair Display", serif;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .progress {
+      height: 13px;
+      background: #dedbd1;
+      border-radius: 99px;
+      overflow: hidden;
+      margin: 14px 0 30px;
+    }
+
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: var(--green);
+      border-radius: 99px;
+      transition: width .5s ease;
+    }
+
+    /* PANNELLO */
+
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 16px;
+    }
+
+    .tools {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .tools input,
+    .tools select,
+    .tools button {
+      font: inherit;
+      border: 1px solid var(--line);
+      background: #fffdf8;
+      padding: 11px 13px;
+      border-radius: 12px;
+      color: var(--ink);
+    }
+
+    .tools input {
+      flex: 1;
+      min-width: 210px;
+    }
+
+    .tools button {
+      cursor: pointer;
+      transition: background .2s ease, color .2s ease;
+    }
+
+    .tools button:hover {
+      background: var(--green);
+      color: white;
+      border-color: var(--green);
+    }
+
+    /* MAPPA */
+
+    .mapbox {
+      height: min(72vh, 720px);
+      min-height: 430px;
+      background: #ece8de;
+      border-radius: 17px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .mapbox svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .muni {
+      stroke: #fffdf8;
+      stroke-width: .32;
+      vector-effect: non-scaling-stroke;
+      cursor: pointer;
+      transition: opacity .15s ease;
+    }
+
+    .visited {
+      fill: var(--green);
+    }
+
+    .todo {
+      fill: var(--gray);
+    }
+
+    .muni:hover {
+      stroke: #1f2b24;
+      stroke-width: 1.3;
+    }
+
+    /* LEGENDA */
+
+    .legend {
+      display: flex;
+      gap: 20px;
+      padding: 13px 3px 2px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      vertical-align: -2px;
+      margin-right: 5px;
+    }
+
+    /* INFO COMUNE */
+
+    .info {
+      margin-top: 18px;
+      background: #eee8da;
+      border-radius: 18px;
+      padding: 17px;
+    }
+
+    .info b {
+      font-family: "Playfair Display", serif;
+      font-size: 21px;
+    }
+
+    .info small {
+      display: block;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .info a {
+      display: inline-block;
+      margin-top: 10px;
+      color: var(--green);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* REGIONI */
+
+    .regions {
+      margin-top: 28px;
+    }
+
+    .regions h2 {
+      font: 700 31px "Playfair Display", serif;
+      margin: 0 0 14px;
+    }
+
+    .regiongrid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+    }
+
+    .region {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 13px;
+      transition: transform .2s ease;
+    }
+
+    .region:hover {
+      transform: translateY(-2px);
+    }
+
+    .region b {
+      display: block;
+    }
+
+    .region span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* FOOTER */
+
+    footer {
+      margin-top: 35px;
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 760px) {
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .regiongrid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero {
+        padding-top: 45px;
+      }
+
+      .mapbox {
+        min-height: 400px;
+      }
+
+      .top {
+        align-items: flex-start;
+      }
+
+      .brand {
+        font-size: 20px;
+      }
+
+      .hero h1 {
+        font-size: clamp(48px, 15vw, 72px);
+      }
+
+      .hero p {
+        font-size: 16px;
       }
     }
 
-  </style>
+    @media (max-width: 480px) {
 
+      .wrap {
+        padding: 20px 13px 35px;
+      }
+
+      .regiongrid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .tools input,
+      .tools select,
+      .tools button {
+        width: 100%;
+      }
+
+      .mapbox {
+        min-height: 360px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-  <!-- SCHERMATA DI CARICAMENTO -->
+  <div class="wrap">
 
-  <div class="loading" id="loading">
+    <!-- HEADER -->
+    <header class="top">
+      <div class="brand">
+        Comuni d’Italia 🇮🇹
+      </div>
 
-    <div class="loading-spinner"></div>
+      <a
+        class="ig"
+        href="https://www.instagram.com/frarossitto/"
+        target="_blank"
+        rel="noopener"
+      >
+        @frarossitto ↗
+      </a>
+    </header>
 
-    <div>
-      Caricamento della mappa... 🇮🇹
+
+    <!-- HERO -->
+    <section class="hero">
+
+      <div class="eyebrow">
+        Un viaggio lungo tutta l'Italia
+      </div>
+
+      <h1>
+        Tutti i comuni d’Italia.
+      </h1>
+
+      <p>
+        Una strada alla volta, un comune alla volta.
+        Qui tengo traccia del viaggio di
+        <b>@frarossitto</b>
+        alla scoperta dei comuni italiani.
+      </p>
+
+    </section>
+
+
+    <!-- STATISTICHE -->
+    <section class="stats">
+
+      <div class="stat">
+        <strong id="count">0</strong>
+        <span>comuni visitati</span>
+      </div>
+
+      <div class="stat">
+        <strong id="total">—</strong>
+        <span>comuni totali</span>
+      </div>
+
+      <div class="stat">
+        <strong id="pct">0,00%</strong>
+        <span>del viaggio completato</span>
+      </div>
+
+    </section>
+
+
+    <!-- PROGRESS BAR -->
+    <div class="progress">
+      <i id="fill"></i>
     </div>
+
+
+    <!-- MAPPA -->
+    <section class="panel">
+
+      <div class="tools">
+
+        <input
+          id="search"
+          type="search"
+          placeholder="Cerca un comune…"
+          aria-label="Cerca un comune"
+        >
+
+        <select id="region">
+          <option value="">
+            Tutte le regioni
+          </option>
+        </select>
+
+        <button id="reset">
+          Azzera filtri
+        </button>
+
+      </div>
+
+
+      <div
+        class="mapbox"
+        id="map"
+      ></div>
+
+
+      <!-- LEGENDA -->
+      <div class="legend">
+
+        <span>
+          <i
+            class="dot"
+            style="background:var(--green)"
+          ></i>
+          Visitato
+        </span>
+
+        <span>
+          <i
+            class="dot"
+            style="background:var(--gray)"
+          ></i>
+          Da visitare
+        </span>
+
+      </div>
+
+
+      <!-- INFO -->
+      <div
+        class="info"
+        id="info"
+      >
+        <b>Seleziona un comune</b>
+
+        <small>
+          Fai clic sulla mappa per vedere i dettagli.
+        </small>
+      </div>
+
+    </section>
+
+
+    <!-- REGIONI -->
+    <section class="regions">
+
+      <h2>
+        Il viaggio regione per regione
+      </h2>
+
+      <div
+        class="regiongrid"
+        id="regions"
+      ></div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+      <span>
+        Comuni d’Italia 🇮🇹 · un progetto di @frarossitto
+      </span>
+
+      <a
+        class="ig"
+        href="https://www.instagram.com/frarossitto/"
+        target="_blank"
+        rel="noopener"
+      >
+        Instagram ↗
+      </a>
+
+    </footer>
 
   </div>
 
 
-  <!-- TESTATA -->
-
-  <header>
-
-    <h1>
-      Comuni d’Italia 🇮🇹
-    </h1>
-
-    <div class="description">
-      Un viaggio alla scoperta di tutti i comuni d’Italia
-    </div>
-
-    <div id="progress">
-      0.00% completato
-    </div>
-
-    <div class="progress-container">
-      <div id="progress-bar"></div>
-    </div>
-
-    <div id="counter">
-      0 comuni visitati su 7896
-    </div>
-
-  </header>
-
-
-  <!-- MAPPA -->
-
-  <div id="map"></div>
-
-
-  <!-- LEAFLET -->
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-
-  <!-- TOPOJSON -->
-
-  <script src="https://unpkg.com/topojson-client@3"></script>
-
-
-  <!-- COMUNI VISITATI -->
-
-  <script src="visitati.js"></script>
-
+  <!-- LISTA COMUNI VISITATI -->
+  <script src="./visitati.js"></script>
 
   <script>
 
-    const TOTAL_COMUNI = 7896;
+    const TOPO_URL =
+      "https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_municipalities.topo.json";
 
 
-    /* =========================
-       COMUNI VISITATI
-       ========================= */
+    /* --------------------------------
+       DATI
+    -------------------------------- */
 
-    const comuniVisitati =
-      Array.isArray(window.COMUNI_VISITATI)
-        ? window.COMUNI_VISITATI
-        : [];
+    const visited = new Set(
+      (window.VISITED_ISTAT || [])
+        .map(x => String(x).padStart(6, "0"))
+    );
 
 
-    function normalizza(testo) {
+    /* --------------------------------
+       FUNZIONI UTILI
+    -------------------------------- */
 
-      return String(testo || "")
-        .toLowerCase()
+    const norm = s =>
+      (s || "")
+        .toLocaleLowerCase("it-IT")
         .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .trim();
+        .replace(/[\u0300-\u036f]/g, "");
+
+
+    const fmt = n =>
+      n.toLocaleString("it-IT");
+
+
+    function code(feature) {
+
+      return String(
+        feature.properties.com_istat_code ||
+        feature.properties.pro_com ||
+        feature.properties.id ||
+        ""
+      ).padStart(6, "0");
 
     }
 
 
-    const visitatiSet = new Set(
-      comuniVisitati.map(normalizza)
-    );
+    /* --------------------------------
+       INIZIALIZZAZIONE
+    -------------------------------- */
+
+    async function init() {
+
+      const topo = await d3.json(TOPO_URL);
+
+      const obj =
+        topo.objects[Object.keys(topo.objects)[0]];
+
+      const features =
+        topojson.feature(topo, obj).features;
 
 
-    /* =========================
-       MAPPA
-       ========================= */
+      /* --------------------------------
+         STATISTICHE
+      -------------------------------- */
 
-    const map = L.map("map", {
-      zoomControl: true
-    }).setView(
-      [42.5, 12.5],
-      6
-    );
+      const total = features.length;
 
+      document.querySelector("#total").textContent =
+        fmt(total);
 
-    L.tileLayer(
-      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      {
-        attribution:
-          "&copy; OpenStreetMap contributors"
-      }
-    ).addTo(map);
+      document.querySelector("#count").textContent =
+        fmt(visited.size);
 
 
-    /* =========================
-       STILE COMUNI
-       ========================= */
-
-    function stileComune(feature) {
-
-      const nome =
-        feature.properties?.name ||
-        feature.properties?.NAME ||
-        feature.properties?.comune ||
-        "";
-
-      const visitato =
-        visitatiSet.has(
-          normalizza(nome)
-        );
+      const percentage =
+        total ? (visited.size / total) * 100 : 0;
 
 
-      return {
-
-        color: "#666",
-
-        weight: 0.4,
-
-        fillColor:
-          visitato
-            ? "#35a853"
-            : "#d0d0d0",
-
-        fillOpacity:
-          visitato
-            ? 0.85
-            : 0.7
-
-      };
-
-    }
-
-
-    /* =========================
-       INTERAZIONE COMUNI
-       ========================= */
-
-    function suComune(feature, layer) {
-
-      const nome =
-        feature.properties?.name ||
-        feature.properties?.NAME ||
-        feature.properties?.comune ||
-        "Comune";
-
-
-      layer.bindTooltip(
-        nome,
-        {
-          sticky: true
-        }
-      );
-
-
-      layer.on({
-
-        mouseover: function(e) {
-
-          e.target.setStyle({
-
-            weight: 1.5,
-
-            color: "#222",
-
-            fillOpacity: 0.95
-
-          });
-
-        },
-
-
-        mouseout: function(e) {
-
-          e.target.setStyle(
-            stileComune(feature)
-          );
-
-        }
-
-      });
-
-    }
-
-
-    /* =========================
-       CARICAMENTO DATI MAPPA
-       ========================= */
-
-    fetch(
-      "https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_municipalities.topo.json"
-    )
-
-      .then(response => {
-
-        if (!response.ok) {
-
-          throw new Error(
-            "Errore nel caricamento dei dati"
-          );
-
-        }
-
-        return response.json();
-
-      })
-
-
-      .then(topology => {
-
-
-        const objectName =
-          Object.keys(
-            topology.objects
-          ).find(
-            key =>
-              topology.objects[key].type ===
-              "GeometryCollection"
-          );
-
-
-        if (!objectName) {
-
-          throw new Error(
-            "Dati dei comuni non trovati"
-          );
-
-        }
-
-
-        const geojson =
-          topojson.feature(
-            topology,
-            topology.objects[objectName]
-          );
-
-
-        L.geoJSON(
-          geojson,
+      document.querySelector("#pct").textContent =
+        percentage.toLocaleString(
+          "it-IT",
           {
-
-            style: stileComune,
-
-            onEachFeature: suComune
-
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
           }
-
-        ).addTo(map);
-
-
-        aggiornaStatistiche();
-
-
-        document.getElementById(
-          "loading"
-        ).style.display = "none";
-
-
-      })
-
-
-      .catch(error => {
-
-        console.error(error);
-
-
-        document.getElementById(
-          "loading"
-        ).innerHTML =
-
-          "❌<br><br>" +
-
-          "Errore nel caricamento della mappa." +
-
-          "<br><br>" +
-
-          "Riprova tra poco.";
-
-      });
-
-
-    /* =========================
-       STATISTICHE
-       ========================= */
-
-    function aggiornaStatistiche() {
-
-
-      const visitati =
-        comuniVisitati.length;
-
-
-      const percentuale =
-        (visitati / TOTAL_COMUNI) * 100;
-
-
-      document.getElementById(
-        "progress"
-      ).textContent =
-
-        percentuale.toFixed(2) +
-        "% completato";
-
-
-      document.getElementById(
-        "progress-bar"
-      ).style.width =
-
-        Math.min(
-          percentuale,
-          100
         ) + "%";
 
 
-      document.getElementById(
-        "counter"
-      ).textContent =
+      document.querySelector("#fill").style.width =
+        Math.min(percentage, 100) + "%";
 
-        visitati +
-        " comuni visitati su " +
-        TOTAL_COMUNI;
+
+      /* --------------------------------
+         REGIONI
+      -------------------------------- */
+
+      const regions = [
+        ...new Set(
+          features
+            .map(f => f.properties.reg_name)
+            .filter(Boolean)
+        )
+      ].sort(
+        (a, b) => a.localeCompare(b, "it")
+      );
+
+
+      const select =
+        document.querySelector("#region");
+
+
+      regions.forEach(region => {
+
+        const option =
+          document.createElement("option");
+
+        option.value = region;
+        option.textContent = region;
+
+        select.appendChild(option);
+
+      });
+
+
+      /* --------------------------------
+         MAPPA
+      -------------------------------- */
+
+      const map =
+        document.querySelector("#map");
+
+      const width =
+        map.clientWidth;
+
+      const height =
+        map.clientHeight;
+
+
+      const svg =
+        d3.select(map)
+          .append("svg")
+          .attr(
+            "viewBox",
+            `0 0 ${width} ${height}`
+          );
+
+
+      const projection =
+        d3.geoMercator()
+          .fitSize(
+            [width, height],
+            {
+              type: "FeatureCollection",
+              features
+            }
+          );
+
+
+      const path =
+        d3.geoPath(projection);
+
+
+      const paths =
+        svg
+          .append("g")
+          .selectAll("path")
+          .data(features)
+          .join("path")
+          .attr(
+            "class",
+            feature =>
+              visited.has(code(feature))
+                ? "muni visited"
+                : "muni todo"
+          )
+          .attr("d", path);
+
+
+      /* --------------------------------
+         CLICK COMUNE
+      -------------------------------- */
+
+      paths.on("click", (event, feature) => {
+
+        const municipalityCode =
+          code(feature);
+
+        const isVisited =
+          visited.has(municipalityCode);
+
+        const name =
+          feature.properties.name ||
+          "Comune";
+
+        const province =
+          feature.properties.prov_name ||
+          "";
+
+        const region =
+          feature.properties.reg_name ||
+          "";
+
+
+        const info =
+          document.querySelector("#info");
+
+
+        info.innerHTML = `
+          <b>${name}</b>
+
+          <small>
+            ${province}
+            ${province && region ? " · " : ""}
+            ${region}
+            · ISTAT ${municipalityCode}
+          </small>
+
+          ${
+            isVisited
+              ? `
+                <a
+                  href="https://www.instagram.com/frarossitto/"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Vai su Instagram @frarossitto ↗
+                </a>
+              `
+              : ""
+          }
+        `;
+
+      });
+
+
+      /* --------------------------------
+         DATI REGIONI
+      -------------------------------- */
+
+      const counts = {};
+
+      regions.forEach(region => {
+
+        counts[region] = {
+          done: 0,
+          total: 0
+        };
+
+      });
+
+
+      features.forEach(feature => {
+
+        const region =
+          feature.properties.reg_name;
+
+        if (!counts[region]) return;
+
+        counts[region].total++;
+
+        if (visited.has(code(feature))) {
+          counts[region].done++;
+        }
+
+      });
+
+
+      /* --------------------------------
+         CARDS REGIONI
+      -------------------------------- */
+
+      document.querySelector("#regions").innerHTML =
+        regions.map(region => {
+
+          const data = counts[region];
+
+          const percentage =
+            data.total
+              ? (data.done / data.total) * 100
+              : 0;
+
+
+          return `
+            <div class="region">
+
+              <b>
+                ${region}
+              </b>
+
+              <span>
+                ${data.done}/${data.total}
+                ·
+                ${percentage.toLocaleString(
+                  "it-IT",
+                  {
+                    maximumFractionDigits: 1
+                  }
+                )}%
+              </span>
+
+            </div>
+          `;
+
+        }).join("");
+
+
+      /* --------------------------------
+         FILTRI
+      -------------------------------- */
+
+      function applyFilters() {
+
+        const query =
+          norm(
+            document.querySelector("#search").value
+          );
+
+        const selectedRegion =
+          select.value;
+
+
+        paths.attr(
+          "display",
+          feature => {
+
+            const name =
+              norm(feature.properties.name);
+
+            const matchesName =
+              !query ||
+              name.includes(query);
+
+            const matchesRegion =
+              !selectedRegion ||
+              feature.properties.reg_name ===
+                selectedRegion;
+
+
+            return matchesName && matchesRegion
+              ? null
+              : "none";
+
+          }
+        );
+
+      }
+
+
+      document
+        .querySelector("#search")
+        .addEventListener(
+          "input",
+          applyFilters
+        );
+
+
+      select.addEventListener(
+        "change",
+        applyFilters
+      );
+
+
+      document
+        .querySelector("#reset")
+        .addEventListener(
+          "click",
+          () => {
+
+            document.querySelector("#search").value = "";
+
+            select.value = "";
+
+            applyFilters();
+
+          }
+        );
 
     }
 
 
-    /* =========================
-       LEGENDA
-       ========================= */
+    /* --------------------------------
+       AVVIO
+    -------------------------------- */
 
-    const legend = L.control({
+    init().catch(error => {
 
-      position: "bottomright"
+      console.error(error);
+
+      document.querySelector("#map").innerHTML = `
+        <div style="padding:25px">
+          La mappa non è riuscita a caricarsi.
+          Riprova con una connessione internet attiva.
+        </div>
+      `;
 
     });
-
-
-    legend.onAdd = function() {
-
-
-      const div =
-        L.DomUtil.create(
-          "div",
-          "legend"
-        );
-
-
-      div.innerHTML =
-
-        '<div>' +
-        '<span style="background:#35a853"></span>' +
-        'Visitato' +
-        '</div>' +
-
-        '<div>' +
-        '<span style="background:#d0d0d0"></span>' +
-        'Da visitare' +
-        '</div>';
-
-
-      return div;
-
-    };
-
-
-    legend.addTo(map);
 
   </script>
 
 </body>
-
 </html>
