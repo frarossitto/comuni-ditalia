@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Mappa — Comuni d’Italia 🇮🇹</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+
+</head>
+
+<body>
+
+<header class="site-header">
+
+  <a href="index.html" class="brand">
+    Comuni d’Italia 🇮🇹
+  </a>
+
+  <button class="menu-button" id="menuButton">
+    ⋯
+  </button>
+
+</header>
+
+
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<aside class="side-menu" id="sideMenu">
+
+  <div class="side-menu-top">
+
+    <div>
+      <small>COMUNI D’ITALIA</small>
+      <h2>Esplora il progetto</h2>
+    </div>
+
+    <button class="menu-close" id="menuClose">×</button>
+
+  </div>
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">IL VIAGGIO</div>
+
+    <a href="mappa.html" class="menu-link">
+      <span>🗺️</span>
+      <div>
+        <strong>Mappa dei comuni</strong>
+        <small>Scopri dove sono stato</small>
+      </div>
+    </a>
+
+    <a href="viaggio.html" class="menu-link">
+      <span>🚗</span>
+      <div>
+        <strong>Il viaggio</strong>
+        <small>Diario e tappe</small>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">IL PROGETTO</div>
+
+    <a href="chi-sono.html" class="menu-link">
+      <span>👤</span>
+      <div>
+        <strong>Chi sono</strong>
+        <small>La storia del progetto</small>
+      </div>
+    </a>
+
+    <a href="traguardi.html" class="menu-link">
+      <span>🏁</span>
+      <div>
+        <strong>Traguardi</strong>
+        <small>I risultati raggiunti</small>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">SEGUIMI</div>
+
+    <a
+      href="https://www.instagram.com/frarossitto/"
+      target="_blank"
+      class="menu-link"
+    >
+      <span>📸</span>
+      <div>
+        <strong>Instagram</strong>
+        <small>Foto e aggiornamenti</small>
+      </div>
+    </a>
+
+    <a
+      href="https://www.tiktok.com/"
+      target="_blank"
+      class="menu-link"
+    >
+      <span>🎬</span>
+      <div>
+        <strong>TikTok</strong>
+        <small>Video del viaggio</small>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">CONTATTI</div>
+
+    <a href="contatti.html" class="menu-link">
+      <span>✉️</span>
+      <div>
+        <strong>Contatti</strong>
+        <small>Scrivimi</small>
+      </div>
+    </a>
+
+  </div>
+
+</aside>
+
+
+<main>
+
+<section class="page-hero">
+
+  <small>ESPLORA IL VIAGGIO</small>
+
+  <h1>
+    La mappa dei comuni.
+  </h1>
+
+  <p>
+    Ogni comune visitato diventa verde.
+    Tutti gli altri aspettano ancora di essere scoperti.
+  </p>
+
+</section>
+
+
+<section class="section">
+
+  <div class="map-page-card">
+
+    <div class="map-controls">
+
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="Cerca un comune..."
+      >
+
+      <select id="regionSelect">
+        <option value="">Tutte le regioni</option>
+      </select>
+
+      <select id="statusSelect">
+
+        <option value="all">
+          Tutti i comuni
+        </option>
+
+        <option value="visited">
+          Visitati
+        </option>
+
+        <option value="not-visited">
+          Da visitare
+        </option>
+
+      </select>
+
+      <button id="resetMap" class="button button-dark">
+        Reset
+      </button>
+
+    </div>
+
+
+    <div class="map-layout">
+
+      <div class="map-container">
+
+        <div id="mapLoading" class="map-loading">
+          Caricamento mappa...
+        </div>
+
+        <svg
+          id="italyMap"
+          viewBox="0 0 900 1050"
+          preserveAspectRatio="xMidYMid meet"
+        ></svg>
+
+      </div>
+
+
+      <aside class="map-info">
+
+        <small>INFORMAZIONI</small>
+
+        <h2>
+          Seleziona un comune
+        </h2>
+
+        <p>
+          Clicca sulla mappa per aprire
+          la scheda del comune.
+        </p>
+
+        <div class="legend">
+
+          <div>
+            <span class="legend-color visited-color"></span>
+            Visitato
+          </div>
+
+          <div>
+            <span class="legend-color not-visited-color"></span>
+            Da visitare
+          </div>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer class="site-footer">
+
+  <div>
+    <strong>Comuni d’Italia 🇮🇹</strong>
+    <span>Un comune alla volta.</span>
+  </div>
+
+</footer>
+
+
+<script src="visitati.js"></script>
+<script src="comuni.js"></script>
+<script src="app.js"></script>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+  const visited = new Set(
+    (window.VISITED_ISTAT || [])
+      .map(String)
+      .map(code => code.padStart(6, "0"))
+  );
+
+
+  const svg = d3.select("#italyMap");
+
+  const loading =
+    document.getElementById("mapLoading");
+
+
+  function getCode(feature) {
+
+    const props = feature.properties || {};
+
+    return String(
+      props.com_istat_code ??
+      props.pro_com ??
+      feature.id ??
+      props.id ??
+      ""
+    ).padStart(6, "0");
+
+  }
+
+
+  function getName(feature) {
+
+    const props = feature.properties || {};
+
+    return (
+      props.name ??
+      props.comune ??
+      props.com_name ??
+      "Comune"
+    );
+
+  }
+
+
+  function getRegion(feature) {
+
+    const props = feature.properties || {};
+
+    return (
+      props.reg_name ??
+      props.regione ??
+      ""
+    );
+
+  }
+
+
+  try {
+
+    const response = await fetch(
+      "https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_municipalities.topo.json"
+    );
+
+    const topology = await response.json();
+
+    const objectName =
+      Object.keys(topology.objects)[0];
+
+    const geo =
+      topojson.feature(
+        topology,
+        topology.objects[objectName]
+      );
+
+    const features = geo.features;
+
+
+    const projection =
+      d3.geoMercator()
+        .fitSize([900, 1050], geo);
+
+    const path =
+      d3.geoPath().projection(projection);
+
+
+    const regions = [
+      ...new Set(
+        features
+          .map(getRegion)
+          .filter(Boolean)
+      )
+    ].sort();
+
+
+    const regionSelect =
+      document.getElementById("regionSelect");
+
+
+    regions.forEach(region => {
+
+      const option =
+        document.createElement("option");
+
+      option.value = region;
+      option.textContent = region;
+
+      regionSelect.appendChild(option);
+
+    });
+
+
+    const paths =
+      svg
+        .selectAll("path")
+        .data(features)
+        .join("path")
+        .attr("d", path)
+        .attr("class", d => {
+
+          const code = getCode(d);
+
+          return visited.has(code)
+            ? "municipality visited"
+            : "municipality";
+
+        })
+        .on("click", (event, d) => {
+
+          const code = getCode(d);
+
+          if (code) {
+
+            window.location.href =
+              `comune.html?codice=${code}`;
+
+          }
+
+        });
+
+
+    function applyFilters() {
+
+      const search =
+        document
+          .getElementById("searchInput")
+          .value
+          .toLowerCase()
+          .trim();
+
+      const region =
+        regionSelect.value;
+
+      const status =
+        document.getElementById("statusSelect").value;
+
+
+      paths.style("display", d => {
+
+        const name =
+          getName(d).toLowerCase();
+
+        const currentRegion =
+          getRegion(d);
+
+        const code =
+          getCode(d);
+
+        const isVisited =
+          visited.has(code);
+
+
+        const matchSearch =
+          !search ||
+          name.includes(search);
+
+        const matchRegion =
+          !region ||
+          currentRegion === region;
+
+        const matchStatus =
+          status === "all" ||
+          (status === "visited" && isVisited) ||
+          (status === "not-visited" && !isVisited);
+
+
+        return (
+          matchSearch &&
+          matchRegion &&
+          matchStatus
+        )
+          ? null
+          : "none";
+
+      });
+
+    }
+
+
+    document
+      .getElementById("searchInput")
+      .addEventListener("input", applyFilters);
+
+    regionSelect
+      .addEventListener("change", applyFilters);
+
+    document
+      .getElementById("statusSelect")
+      .addEventListener("change", applyFilters);
+
+
+    document
+      .getElementById("resetMap")
+      .addEventListener("click", () => {
+
+        document.getElementById("searchInput").value = "";
+
+        regionSelect.value = "";
+
+        document.getElementById("statusSelect").value = "all";
+
+        applyFilters();
+
+      });
+
+
+    loading.style.display = "none";
+
+
+  } catch (error) {
+
+    loading.textContent =
+      "Errore nel caricamento della mappa.";
+
+    console.error(error);
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
