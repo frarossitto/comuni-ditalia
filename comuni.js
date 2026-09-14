@@ -1,0 +1,1 @@
+window.COMUNI_DATA = {};
