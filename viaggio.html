@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Il viaggio — Comuni d'Italia 🇮🇹</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+<header class="site-header">
+
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+
+    <a href="index.html" class="logo">
+      Comuni d'Italia 🇮🇹
+    </a>
+
+    <button class="menu-button">
+      ⋯
+    </button>
+
+  </div>
+
+</header>
+
+
+<div class="menu-overlay"></div>
+
+<aside class="side-menu">
+
+  <div class="menu-top">
+
+    <h2 class="menu-title">
+      Esplora
+    </h2>
+
+    <button class="menu-close">
+      ×
+    </button>
+
+  </div>
+
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">
+      Il viaggio
+    </div>
+
+    <a class="menu-link" href="index.html">
+      Home <span>→</span>
+    </a>
+
+    <a class="menu-link" href="mappa.html">
+      Mappa <span>→</span>
+    </a>
+
+    <a class="menu-link" href="viaggio.html">
+      Il viaggio <span>→</span>
+    </a>
+
+  </div>
+
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">
+      Il progetto
+    </div>
+
+    <a class="menu-link" href="chi-sono.html">
+      Chi sono <span>→</span>
+    </a>
+
+    <a class="menu-link" href="traguardi.html">
+      Traguardi <span>→</span>
+    </a>
+
+  </div>
+
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">
+      Seguimi
+    </div>
+
+    <a
+      class="menu-link"
+      href="https://www.instagram.com/frarossitto/"
+      target="_blank">
+      Instagram <span>↗</span>
+    </a>
+
+    <a
+      class="menu-link"
+      href="https://www.tiktok.com/"
+      target="_blank">
+      TikTok <span>↗</span>
+    </a>
+
+  </div>
+
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">
+      Contatti
+    </div>
+
+    <a class="menu-link" href="contatti.html">
+      Contatti <span>→</span>
+    </a>
+
+  </div>
+
+</aside>
+
+
+<main>
+
+<section class="page-header">
+
+  <div class="container">
+
+    <div class="eyebrow">
+      Diario
+    </div>
+
+    <h1>
+      Il viaggio.
+    </h1>
+
+    <p class="section-text">
+      Un comune alla volta. Qui verranno raccolte le tappe
+      del viaggio attraverso l'Italia.
+    </p>
+
+  </div>
+
+</section>
+
+
+<section class="section" style="padding-top:20px;">
+
+  <div class="container">
+
+    <div id="timeline" class="timeline"></div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer class="site-footer">
+
+  <div class="container footer-inner">
+
+    <div>
+      Comuni d'Italia 🇮🇹
+    </div>
+
+    <a href="index.html">
+      ← Home
+    </a>
+
+  </div>
+
+</footer>
+
+
+<script src="visitati.js"></script>
+<script src="comuni.js"></script>
+<script src="app.js"></script>
+
+
+<script>
+
+const timeline =
+  document.getElementById("timeline");
+
+const visited =
+  new Set(
+    (window.VISITED_ISTAT || [])
+      .map(String)
+      .map(code => code.padStart(6, "0"))
+  );
+
+
+const entries =
+  [...visited]
+    .map(code => ({
+      code,
+      data: window.COMUNI_DATA?.[code] || {}
+    }))
+    .sort((a, b) =>
+      String(b.data.data || "")
+        .localeCompare(String(a.data.data || ""))
+    );
+
+
+if (!entries.length) {
+
+  timeline.innerHTML = `
+    <div class="card">
+      Il viaggio deve ancora iniziare.
+    </div>
+  `;
+
+} else {
+
+  entries.forEach(entry => {
+
+    const item =
+      document.createElement("div");
+
+    item.className = "timeline-item";
+
+    item.innerHTML = `
+
+      <div class="timeline-date">
+        ${entry.data.data || "Tappa"}
+      </div>
+
+      <div class="timeline-content">
+
+        <h3>
+          ${entry.data.nome || "Comune"}
+        </h3>
+
+        <p>
+          ${entry.data.provincia || ""}
+          ${entry.data.provincia && entry.data.regione ? " · " : ""}
+          ${entry.data.regione || ""}
+        </p>
+
+        ${
+          entry.data.descrizione
+            ? `<p>${entry.data.descrizione}</p>`
+            : ""
+        }
+
+        <a
+          href="comune.html?codice=${entry.code}"
+          class="btn">
+          Apri scheda →
+        </a>
+
+      </div>
+
+    `;
+
+    timeline.appendChild(item);
+
+  });
+
+}
+
+</script>
+
+</body>
+</html>
