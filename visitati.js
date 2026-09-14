@@ -1,1 +1,5 @@
-window.COMUNI_VISITATI = [];
+window.VISITED_ISTAT = [
+
+  "108040",
+
+];
