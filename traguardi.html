@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Traguardi — Comuni d'Italia 🇮🇹</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+<header class="site-header">
+
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+
+    <a href="index.html" class="logo">
+      Comuni d'Italia 🇮🇹
+    </a>
+
+    <button class="menu-button">
+      ⋯
+    </button>
+
+  </div>
+
+</header>
+
+
+<div class="menu-overlay"></div>
+
+<aside class="side-menu">
+
+  <div class="menu-top">
+    <h2 class="menu-title">Esplora</h2>
+    <button class="menu-close">×</button>
+  </div>
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">
+      Il viaggio
+    </div>
+
+    <a class="menu-link" href="index.html">
+      Home <span>→</span>
+    </a>
+
+    <a class="menu-link" href="mappa.html">
+      Mappa <span>→</span>
+    </a>
+
+    <a class="menu-link" href="viaggio.html">
+      Il viaggio <span>→</span>
+    </a>
+
+  </div>
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">
+      Il progetto
+    </div>
+
+    <a class="menu-link" href="chi-sono.html">
+      Chi sono <span>→</span>
+    </a>
+
+    <a class="menu-link" href="traguardi.html">
+      Traguardi <span>→</span>
+    </a>
+
+  </div>
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">
+      Seguimi
+    </div>
+
+    <a
+      class="menu-link"
+      href="https://www.instagram.com/frarossitto/"
+      target="_blank">
+      Instagram <span>↗</span>
+    </a>
+
+    <a
+      class="menu-link"
+      href="https://www.tiktok.com/"
+      target="_blank">
+      TikTok <span>↗</span>
+    </a>
+
+  </div>
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">
+      Contatti
+    </div>
+
+    <a class="menu-link" href="contatti.html">
+      Contatti <span>→</span>
+    </a>
+
+  </div>
+
+</aside>
+
+
+<main>
+
+<section class="page-header">
+
+  <div class="container">
+
+    <div class="eyebrow">
+      Progressi
+    </div>
+
+    <h1>
+      I traguardi.
+    </h1>
+
+    <p class="section-text">
+      Ogni comune è una piccola conquista.
+      Alcuni numeri diventeranno tappe speciali del viaggio.
+    </p>
+
+  </div>
+
+</section>
+
+
+<section class="section" style="padding-top:20px;">
+
+  <div class="container">
+
+    <div id="milestones" class="milestone-grid"></div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer class="site-footer">
+
+  <div class="container footer-inner">
+
+    <div>
+      Comuni d'Italia 🇮🇹
+    </div>
+
+    <a href="index.html">
+      ← Home
+    </a>
+
+  </div>
+
+</footer>
+
+
+<script src="visitati.js"></script>
+<script src="comuni.js"></script>
+<script src="app.js"></script>
+
+
+<script>
+
+const count =
+  (window.VISITED_ISTAT || []).length;
+
+
+const milestones = [
+  {
+    value: 10,
+    label: "Primi 10 comuni"
+  },
+  {
+    value: 50,
+    label: "50 comuni"
+  },
+  {
+    value: 100,
+    label: "100 comuni"
+  },
+  {
+    value: 500,
+    label: "500 comuni"
+  },
+  {
+    value: 1000,
+    label: "1.000 comuni"
+  }
+];
+
+
+const box =
+  document.getElementById("milestones");
+
+
+milestones.forEach(milestone => {
+
+  const unlocked =
+    count >= milestone.value;
+
+  const item =
+    document.createElement("div");
+
+  item.className =
+    "milestone " +
+    (unlocked ? "" : "locked");
+
+  item.innerHTML = `
+
+    <div class="eyebrow">
+      ${unlocked ? "✓ Raggiunto" : "Da raggiungere"}
+    </div>
+
+    <div class="milestone-number">
+      ${milestone.value.toLocaleString("it-IT")}
+    </div>
+
+    <h3>
+      ${milestone.label}
+    </h3>
+
+  `;
+
+  box.appendChild(item);
+
+});
+
+
+const percentMilestone =
+  document.createElement("div");
+
+percentMilestone.className =
+  "milestone";
+
+percentMilestone.innerHTML = `
+
+  <div class="eyebrow">
+    Il traguardo finale
+  </div>
+
+  <div class="milestone-number">
+    100%
+  </div>
+
+  <h3>
+    Tutti i comuni d'Italia 🇮🇹
+  </h3>
+
+  <p>
+    L'obiettivo finale del viaggio.
+  </p>
+
+`;
+
+box.appendChild(percentMilestone);
+
+</script>
+
+</body>
+</html>
