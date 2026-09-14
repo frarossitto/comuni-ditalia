@@ -1,1 +1,0 @@
-window.COMUNI_DATA = {};
