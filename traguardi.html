@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Traguardi — Comuni d’Italia 🇮🇹</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header class="site-header">
+
+  <a href="index.html" class="brand">
+    Comuni d’Italia 🇮🇹
+  </a>
+
+  <button class="menu-button" id="menuButton">
+    ⋯
+  </button>
+
+</header>
+
+
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<aside class="side-menu" id="sideMenu">
+
+  <div class="side-menu-top">
+
+    <div>
+      <small>COMUNI D’ITALIA</small>
+      <h2>Esplora il progetto</h2>
+    </div>
+
+    <button class="menu-close" id="menuClose">×</button>
+
+  </div>
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">IL VIAGGIO</div>
+
+    <a href="mappa.html" class="menu-link">
+      <span>🗺️</span>
+      <div>
+        <strong>Mappa</strong>
+        <small>Esplora i comuni</small>
+      </div>
+    </a>
+
+    <a href="viaggio.html" class="menu-link">
+      <span>🚗</span>
+      <div>
+        <strong>Il viaggio</strong>
+        <small>Diario e tappe</small>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="menu-category">
+
+    <div class="menu-category-title">IL PROGETTO</div>
+
+    <a href="chi-sono.html" class="menu-link">
+      <span>👤</span>
+      <div>
+        <strong>Chi sono</strong>
+        <small>La mia storia</small>
+      </div>
+    </a>
+
+  </div>
+
+</aside>
+
+
+<main>
+
+<section class="page-hero">
+
+  <small>OBIETTIVI</small>
+
+  <h1>
+    I traguardi.
+  </h1>
+
+  <p>
+    Ogni numero rappresenta un altro pezzo d’Italia scoperto.
+  </p>
+
+</section>
+
+
+<section class="section">
+
+  <div class="milestones-grid" id="milestones"></div>
+
+</section>
+
+</main>
+
+
+<footer class="site-footer">
+
+  <strong>Comuni d’Italia 🇮🇹</strong>
+
+</footer>
+
+
+<script src="visitati.js"></script>
+<script src="comuni.js"></script>
+<script src="app.js"></script>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+  const visited =
+    new Set(
+      (window.VISITED_ISTAT || [])
+        .map(String)
+        .map(code => code.padStart(6, "0"))
+    );
+
+
+  let total = 0;
+
+
+  try {
+
+    const response = await fetch(
+      "https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_municipalities.limits_IT_municipalities.json"
+    );
+
+    if (response.ok) {
+
+      const data = await response.json();
+
+      total = data.features?.length || 0;
+
+    }
+
+  } catch (error) {
+
+    console.log("Totale non disponibile.");
+
+  }
+
+
+  const milestones = [
+
+    {
+      title: "Prima tappa",
+      value: 1,
+      text: "Il viaggio è ufficialmente iniziato."
+    },
+
+    {
+      title: "10 comuni",
+      value: 10,
+      text: "Le prime dieci tappe."
+    },
+
+    {
+      title: "50 comuni",
+      value: 50,
+      text: "La strada comincia a farsi lunga."
+    },
+
+    {
+      title: "100 comuni",
+      value: 100,
+      text: "Un primo grande traguardo."
+    },
+
+    {
+      title: "500 comuni",
+      value: 500,
+      text: "Cinquecento comuni scoperti."
+    },
+
+    {
+      title: "1.000 comuni",
+      value: 1000,
+      text: "Mille tappe nel viaggio."
+    }
+
+  ];
+
+
+  const container =
+    document.getElementById("milestones");
+
+
+  milestones.forEach(milestone => {
+
+    const reached =
+      visited.size >= milestone.value;
+
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "milestone-card " +
+      (reached ? "reached" : "");
+
+
+    card.innerHTML = `
+
+      <div class="milestone-icon">
+        ${reached ? "✓" : "○"}
+      </div>
+
+      <small>
+        ${reached ? "TRAGUARDO RAGGIUNTO" : "PROSSIMO OBIETTIVO"}
+      </small>
+
+      <h2>
+        ${milestone.title}
+      </h2>
+
+      <p>
+        ${milestone.text}
+      </p>
+
+    `;
+
+
+    container.appendChild(card);
+
+  });
+
+});
+
+</script>
+
+</body>
+</html>
