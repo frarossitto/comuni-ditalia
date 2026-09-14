@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Comuni d'Italia 🇮🇹</title>
+
+  <meta
+    name="description"
+    content="Un viaggio attraverso tutti i comuni d'Italia."
+  >
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    /* =========================
+       RESET
+    ========================= */
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: #f5f1e8;
+      color: #20231f;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    header {
+      position: relative;
+      z-index: 100;
+      width: 100%;
+      padding: 24px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: "Playfair Display", serif;
+      font-size: 25px;
+      font-weight: 600;
+    }
+
+    /* Pulsante tre puntini */
+
+    .menu-button {
+      width: 52px;
+      height: 52px;
+      border: 1px solid rgba(32, 35, 31, 0.18);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .menu-button:hover {
+      background: #20231f;
+      color: white;
+      transform: scale(1.04);
+    }
+
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero {
+      min-height: 78vh;
+      padding: 70px 5% 100px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 60px;
+      align-items: center;
+      max-width: 1400px;
+      margin: auto;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 12px;
+      font-weight: 700;
+      color: #6d746a;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(54px, 8vw, 105px);
+      line-height: 0.95;
+      font-weight: 600;
+      max-width: 850px;
+    }
+
+    .hero-text {
+      margin-top: 30px;
+      max-width: 650px;
+      color: #666b63;
+      font-size: 18px;
+    }
+
+    .hero-button {
+      display: inline-flex;
+      margin-top: 35px;
+      padding: 15px 24px;
+      border-radius: 999px;
+      background: #20231f;
+      color: white;
+      font-weight: 600;
+      transition: 0.25s ease;
+    }
+
+    .hero-button:hover {
+      transform: translateY(-2px);
+    }
+
+
+    /* =========================
+       HERO CARD
+    ========================= */
+
+    .hero-card {
+      background: #20231f;
+      color: white;
+      padding: 42px;
+      border-radius: 24px;
+      min-height: 390px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    }
+
+    .hero-card-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      opacity: 0.6;
+    }
+
+    .hero-percent {
+      font-family: "Playfair Display", serif;
+      font-size: 86px;
+      line-height: 1;
+    }
+
+    .hero-card p {
+      opacity: 0.7;
+      margin-top: 10px;
+    }
+
+    .progress {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 25px;
+    }
+
+    .progress i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: #a9c5a0;
+      border-radius: 99px;
+      transition: width 0.8s ease;
+    }
+
+
+    /* =========================
+       STATS
+    ========================= */
+
+    .stats {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 30px 5% 100px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .stat {
+      padding: 30px;
+      border-top: 1px solid rgba(32,35,31,0.2);
+    }
+
+    .stat-number {
+      font-family: "Playfair Display", serif;
+      font-size: 50px;
+    }
+
+    .stat-label {
+      color: #777b73;
+      margin-top: 4px;
+    }
+
+
+    /* =========================
+       SEZIONI
+    ========================= */
+
+    .section {
+      max-width: 1300px;
+      margin: auto;
+      padding: 100px 5%;
+    }
+
+    .section-title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(40px, 5vw, 65px);
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .section-intro {
+      max-width: 650px;
+      color: #70756d;
+      margin-bottom: 50px;
+    }
+
+
+    /* =========================
+       CHI SONO
+    ========================= */
+
+    .about {
+      display: grid;
+      grid-template-columns: 0.7fr 1.3fr;
+      gap: 70px;
+      align-items: start;
+    }
+
+    .about-label {
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-size: 12px;
+      font-weight: 700;
+      color: #747970;
+    }
+
+    .about-text {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(26px, 3vw, 42px);
+      line-height: 1.25;
+    }
+
+    .about-small {
+      margin-top: 30px;
+      color: #70756d;
+      font-size: 16px;
+    }
+
+
+    /* =========================
+       CONTATTI
+    ========================= */
+
+    .contact-box {
+      background: #e7e1d4;
+      padding: 50px;
+      border-radius: 24px;
+    }
+
+    .contact-box a {
+      display: inline-block;
+      margin-top: 20px;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      padding: 50px 5%;
+      border-top: 1px solid rgba(32,35,31,0.15);
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      color: #73786f;
+      font-size: 14px;
+    }
+
+
+    /* =========================
+       MENU LATERALE
+    ========================= */
+
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20,22,19,0.45);
+      z-index: 900;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.35s ease;
+      backdrop-filter: blur(3px);
+    }
+
+    .menu-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(430px, 90vw);
+      height: 100vh;
+      background: #f5f1e8;
+      z-index: 1000;
+      padding: 32px;
+      overflow-y: auto;
+
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(.77,0,.18,1);
+
+      box-shadow: -20px 0 70px rgba(0,0,0,0.15);
+    }
+
+    .side-menu.active {
+      transform: translateX(0);
+    }
+
+
+    /* intestazione menu */
+
+    .menu-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 30px;
+      border-bottom: 1px solid rgba(32,35,31,0.15);
+    }
+
+    .menu-title {
+      font-family: "Playfair Display", serif;
+      font-size: 30px;
+    }
+
+    .close-menu {
+      width: 45px;
+      height: 45px;
+      border: 1px solid rgba(32,35,31,0.2);
+      background: transparent;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 22px;
+      transition: 0.25s ease;
+    }
+
+    .close-menu:hover {
+      background: #20231f;
+      color: white;
+    }
+
+
+    /* categorie */
+
+    .menu-category {
+      margin-top: 35px;
+    }
+
+    .menu-category-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #7a7f76;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+
+    /* bottoni */
+
+    .menu-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 17px 18px;
+      margin-bottom: 8px;
+
+      border: 1px solid rgba(32,35,31,0.13);
+      border-radius: 14px;
+
+      background: rgba(255,255,255,0.4);
+
+      font-size: 17px;
+      font-weight: 600;
+
+      transition: 0.25s ease;
+    }
+
+    .menu-link:hover {
+      background: #20231f;
+      color: white;
+      transform: translateX(-4px);
+    }
+
+    .menu-link span {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .menu-arrow {
+      opacity: 0.45;
+      font-size: 18px;
+    }
+
+
+    /* frase finale */
+
+    .menu-bottom {
+      margin-top: 45px;
+      padding-top: 25px;
+      border-top: 1px solid rgba(32,35,31,0.15);
+    }
+
+    .menu-bottom p {
+      font-family: "Playfair Display", serif;
+      font-size: 22px;
+      line-height: 1.3;
+    }
+
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 850px) {
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding-top: 45px;
+      }
+
+      .hero-card {
+        min-height: 300px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .about {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      footer {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 500px) {
+
+      header {
+        padding: 18px 5%;
+      }
+
+      .logo {
+        font-size: 21px;
+      }
+
+      .menu-button {
+        width: 46px;
+        height: 46px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 60px 5% 70px;
+      }
+
+      h1 {
+        font-size: 58px;
+      }
+
+      .hero-card {
+        padding: 30px;
+      }
+
+      .hero-percent {
+        font-size: 70px;
+      }
+
+      .section {
+        padding: 70px 5%;
+      }
+
+      .contact-box {
+        padding: 30px;
+      }
+
+      .side-menu {
+        width: 88vw;
+        padding: 25px;
+      }
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+
+  <!-- =========================
+       MENU LATERALE
+  ========================= -->
+
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <aside class="side-menu" id="sideMenu">
+
+    <div class="menu-top">
+
+      <div class="menu-title">
+        Menu
+      </div>
+
+      <button
+        class="close-menu"
+        id="closeMenu"
+        aria-label="Chiudi menu"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- IL VIAGGIO -->
+
+    <div class="menu-category">
+
+      <div class="menu-category-title">
+        Il viaggio
+      </div>
+
+      <a href="mappa.html" class="menu-link">
+        <span>
+          🗺️
+          Mappa dei comuni
+        </span>
+        <span class="menu-arrow">→</span>
+      </a>
+
+      <a href="viaggio.html" class="menu-link">
+        <span>
+          🚗
+          Il viaggio
+        </span>
+        <span class="menu-arrow">→</span>
+      </a>
+
+      <a href="viaggio.html#ultimi" class="menu-link">
+        <span>
+          📍
+          Ultimi comuni visitati
+        </span>
+        <span class="menu-arrow">→</span>
+      </a>
+
+    </div>
+
+
+    <!-- IL PROGETTO -->
+
+    <div class="menu-category">
+
+      <div class="menu-category-title">
+        Il progetto
+      </div>
+
+      <a href="chi-sono.html" class="menu-link">
+        <span>
+          👤
+          Chi sono
+        </span>
+        <span class="menu-arrow">→</span>
+      </a>
+
+      <a href="traguardi.html" class="menu-link">
+        <span>
+          🏆
+          Traguardi
+        </span>
+        <span class="menu-arrow">→</span>
+      </a>
+
+    </div>
+
+
+    <!-- SOCIAL -->
+
+    <div class="menu-category">
+
+      <div class="menu-category-title">
+        Seguimi
+      </div>
+
+      <a
+        href="https://www.instagram.com/frarossitto/"
+        target="_blank"
+        rel="noopener"
+        class="menu-link"
+      >
+        <span>
+          📸
+          Instagram
+        </span>
+        <span class="menu-arrow">↗</span>
+      </a>
+
+      <a
+        href="https://www.tiktok.com/"
+        target="_blank"
+        rel="noopener"
+        class="menu-link"
+      >
+        <span>
+          🎵
+          TikTok
+        </span>
+        <span class="menu-arrow">↗</span>
+      </a>
+
+    </div>
+
+
+    <!-- CONTATTI -->
+
+    <div class="menu-category">
+
+      <div class="menu-category-title">
+        Contatti
+      </div>
+
+      <a
+        href="contatti.html"
+        class="menu-link"
+      >
+        <span>
+          ✉️
+          Contatti
+        </span>
+        <span class="menu-arrow">→</span>
+      </a>
+
+    </div>
+
+
+    <!-- FRASE FINALE -->
+
+    <div class="menu-bottom">
+
+      <p>
+        Un comune alla volta.<br>
+        Una strada alla volta.<br>
+        Tutta l'Italia. 🇮🇹
+      </p>
+
+    </div>
+
+  </aside>
+
+
+
+  <!-- =========================
+       HEADER
+  ========================= -->
+
+  <header>
+
+    <a href="index.html" class="logo">
+      Comuni d'Italia 🇮🇹
+    </a>
+
+    <button
+      class="menu-button"
+      id="openMenu"
+      aria-label="Apri menu"
+      aria-expanded="false"
+    >
+      ⋯
+    </button>
+
+  </header>
+
+
+
+  <!-- =========================
+       HERO
+  ========================= -->
+
+  <main>
+
+    <section class="hero">
+
+      <div>
+
+        <div class="eyebrow">
+          Un viaggio lungo tutta l'Italia
+        </div>
+
+        <h1>
+          Tutti i comuni d'Italia.
+        </h1>
+
+        <p class="hero-text">
+          Un viaggio alla scoperta di ogni angolo d'Italia,
+          dai grandi centri ai piccoli comuni, una strada
+          e una storia alla volta.
+        </p>
+
+        <a href="mappa.html" class="hero-button">
+          Esplora la mappa →
+        </a>
+
+      </div>
+
+
+      <div class="hero-card">
+
+        <div>
+
+          <div class="hero-card-label">
+            Il mio viaggio
+          </div>
+
+        </div>
+
+        <div>
+
+          <div class="hero-percent" id="heroPercent">
+            0%
+          </div>
+
+          <p>
+            dei comuni visitati
+          </p>
+
+          <div class="progress">
+            <i id="fill"></i>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         STATISTICHE
+    ========================= -->
+
+    <section class="stats">
+
+      <div class="stat">
+
+        <div
+          class="stat-number"
+          id="visitedCount"
+        >
+          0
+        </div>
+
+        <div class="stat-label">
+          Comuni visitati
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div
+          class="stat-number"
+          id="totalCount"
+        >
+          0
+        </div>
+
+        <div class="stat-label">
+          Comuni totali
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div
+          class="stat-number"
+          id="percentCount"
+        >
+          0%
+        </div>
+
+        <div class="stat-label">
+          Percentuale completata
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         CHI SONO
+    ========================= -->
+
+    <section class="section">
+
+      <div class="about">
+
+        <div>
+
+          <div class="about-label">
+            Il progetto
+          </div>
+
+        </div>
+
+
+        <div>
+
+          <div class="about-text">
+
+            Ciao, sono Francesco.
+            Ho 25 anni e ho deciso di
+            visitare tutti i comuni d'Italia.
+
+          </div>
+
+          <p class="about-small">
+
+            Un progetto nato dalla passione per i viaggi
+            e dalla voglia di conoscere davvero l'Italia,
+            andando oltre le destinazioni più conosciute
+            e scoprendo anche i piccoli comuni, le loro
+            storie, i paesaggi e le persone.
+
+          </p>
+
+          <a
+            href="chi-sono.html"
+            class="hero-button"
+          >
+            Scopri la mia storia →
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         CONTATTI
+    ========================= -->
+
+    <section class="section">
+
+      <div class="contact-box">
+
+        <div class="eyebrow">
+          Contatti
+        </div>
+
+        <h2 class="section-title">
+          Vuoi scrivermi?
+        </h2>
+
+        <p class="section-intro">
+          Per collaborazioni, domande o semplicemente
+          per parlare del viaggio.
+        </p>
+
+        <a href="mailto:rossitto.francesco001@gmail.com">
+          rossitto.francesco001@gmail.com →
+        </a>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+
+  <!-- =========================
+       FOOTER
+  ========================= -->
+
+  <footer>
+
+    <div>
+      © 2026 Comuni d'Italia 🇮🇹
+    </div>
+
+    <div>
+      <a
+        href="https://www.instagram.com/frarossitto/"
+        target="_blank"
+        rel="noopener"
+      >
+        Instagram
+      </a>
+    </div>
+
+  </footer>
+
+
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================= -->
+
+  <script>
+
+    /* =========================
+       MENU LATERALE
+    ========================= */
+
+    const openMenu = document.getElementById("openMenu");
+    const closeMenu = document.getElementById("closeMenu");
+    const sideMenu = document.getElementById("sideMenu");
+    const menuOverlay = document.getElementById("menuOverlay");
+
+
+    function openSideMenu() {
+
+      sideMenu.classList.add("active");
+      menuOverlay.classList.add("active");
+
+      openMenu.setAttribute("aria-expanded", "true");
+
+      document.body.style.overflow = "hidden";
+    }
+
+
+    function closeSideMenu() {
+
+      sideMenu.classList.remove("active");
+      menuOverlay.classList.remove("active");
+
+      openMenu.setAttribute("aria-expanded", "false");
+
+      document.body.style.overflow = "";
+    }
+
+
+    openMenu.addEventListener("click", openSideMenu);
+
+    closeMenu.addEventListener("click", closeSideMenu);
+
+    menuOverlay.addEventListener("click", closeSideMenu);
+
+
+    /* Chiudi premendo ESC */
+
+    document.addEventListener("keydown", function(event) {
+
+      if (event.key === "Escape") {
+        closeSideMenu();
+      }
+
+    });
+
+
+    /* Chiudi automaticamente quando clicchi
+       un collegamento interno */
+
+    document.querySelectorAll(".side-menu a").forEach(link => {
+
+      link.addEventListener("click", function() {
+
+        closeSideMenu();
+
+      });
+
+    });
+
+
+
+    /* =========================
+       DATI COMUNI
+    ========================= */
+
+    const visited =
+      new Set(window.VISITED_ISTAT || []);
+
+
+    /* =========================
+       CARICAMENTO DATI MAPPA
+    ========================= */
+
+    async function loadStats() {
+
+      try {
+
+        const response = await fetch(
+          "https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_municipalities.topo.json"
+        );
+
+        const topology = await response.json();
+
+        const objectName =
+          Object.keys(topology.objects)[0];
+
+        const municipalities =
+          topojson.feature(
+            topology,
+            topology.objects[objectName]
+          ).features;
+
+
+        const total =
+          municipalities.length;
+
+        const visitedCount =
+          visited.size;
+
+        const percentage =
+          total > 0
+            ? (visitedCount / total) * 100
+            : 0;
+
+
+        document.getElementById("visitedCount")
+          .textContent = visitedCount.toLocaleString("it-IT");
+
+
+        document.getElementById("totalCount")
+          .textContent = total.toLocaleString("it-IT");
+
+
+        document.getElementById("percentCount")
+          .textContent = percentage.toFixed(2) + "%";
+
+
+        document.getElementById("heroPercent")
+          .textContent = percentage.toFixed(2) + "%";
+
+
+        document.getElementById("fill")
+          .style.width = Math.min(percentage, 100) + "%";
+
+
+      } catch (error) {
+
+        console.error(
+          "Errore caricamento dati:",
+          error
+        );
+
+      }
+
+    }
+
+
+    loadStats();
+
+  </script>
+
+
+  <!-- D3 / TopoJSON -->
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+
+  <!-- Lista comuni visitati -->
+
+  <script src="visitati.js"></script>
+
+
+</body>
+</html>
