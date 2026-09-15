@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Comuni d’Italia 🇮🇹</title>
 
-<meta name="description"
-content="Comuni d’Italia — il viaggio di Francesco attraverso tutti i comuni italiani.">
+<meta
+  name="description"
+  content="Comuni d’Italia — il viaggio di Francesco attraverso tutti i comuni italiani."
+>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link
+  href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+  rel="stylesheet"
+>
 
 <style>
+
+/* =========================================================
+   BASE
+========================================================= */
 
 :root{
   --paper:#f7f3e9;
@@ -22,8 +32,10 @@ content="Comuni d’Italia — il viaggio di Francesco attraverso tutti i comuni
   --ink:#20221f;
   --muted:#6e7069;
   --green:#2f6f4e;
+  --green-dark:#24563d;
   --line:#ddd7ca;
-  --map:#fafafa;
+  --map:#fffdf8;
+  --map-line:#d9d8d1;
 }
 
 *{
@@ -45,16 +57,25 @@ a{
   color:inherit;
 }
 
+
+/* =========================================================
+   PAGINA
+========================================================= */
+
 .page{
   max-width:1180px;
   margin:auto;
   padding:20px 22px 50px;
 }
 
-/* HEADER */
+
+/* =========================================================
+   HEADER
+========================================================= */
 
 .top{
   height:50px;
+
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -66,12 +87,17 @@ a{
   font-weight:700;
 }
 
-/* MENU */
+
+/* =========================================================
+   MENU
+========================================================= */
 
 .menu-button{
   position:fixed;
+
   right:22px;
   top:19px;
+
   z-index:4000;
 
   border:0;
@@ -81,6 +107,7 @@ a{
   line-height:1;
 
   cursor:pointer;
+
   color:var(--ink);
 
   transition:.2s;
@@ -88,9 +115,11 @@ a{
 
 .menu-overlay{
   position:fixed;
+
   inset:0;
 
   background:rgba(20,25,21,.45);
+
   backdrop-filter:blur(3px);
 
   opacity:0;
@@ -108,6 +137,7 @@ a{
 
 .side-menu{
   position:fixed;
+
   z-index:5000;
 
   top:0;
@@ -121,6 +151,7 @@ a{
   padding:24px 28px;
 
   transform:translateX(105%);
+
   transition:transform .3s ease;
 
   box-shadow:-15px 0 40px rgba(0,0,0,.12);
@@ -135,6 +166,7 @@ a{
 
 .menu-top{
   display:flex;
+
   justify-content:space-between;
   align-items:center;
 
@@ -143,12 +175,14 @@ a{
 
 .menu-brand{
   font-family:"Playfair Display",serif;
+
   font-size:20px;
   font-weight:700;
 }
 
 .menu-close{
   position:relative;
+
   z-index:5100;
 
   width:40px;
@@ -176,11 +210,13 @@ a{
 
   font-size:10px;
   font-weight:700;
+
   letter-spacing:.18em;
 }
 
 .menu-link{
   display:flex;
+
   align-items:center;
   justify-content:space-between;
 
@@ -201,8 +237,10 @@ a{
   padding-top:22px;
 
   font-family:"Playfair Display",serif;
+
   font-size:20px;
   line-height:1.25;
+
   font-weight:600;
 }
 
@@ -210,7 +248,10 @@ a{
   color:var(--green);
 }
 
-/* HERO */
+
+/* =========================================================
+   HERO
+========================================================= */
 
 .hero{
   position:relative;
@@ -223,35 +264,60 @@ a{
   align-items:flex-end;
 
   overflow:hidden;
+
+  background:#d9d4c7;
 }
+
+/*
+   FOTO:
+   - occupa completamente il contenitore
+   - centrata
+   - nessuno spazio laterale
+*/
 
 .hero-photo{
   position:absolute;
+
   inset:0;
 
   width:100%;
   height:100%;
 
   object-fit:cover;
+
+  object-position:center center;
+
+  display:block;
 }
+
+
+/*
+   Filtro più leggero:
+   la foto rimane molto più visibile.
+*/
 
 .hero::after{
   content:"";
 
   position:absolute;
+
   inset:0;
 
   background:
-  linear-gradient(
-    90deg,
-    rgba(247,243,233,.98) 0%,
-    rgba(247,243,233,.90) 34%,
-    rgba(247,243,233,.15) 75%
-  );
+    linear-gradient(
+      90deg,
+      rgba(247,243,233,.72) 0%,
+      rgba(247,243,233,.48) 32%,
+      rgba(247,243,233,.12) 62%,
+      rgba(247,243,233,0) 100%
+    );
+
+  pointer-events:none;
 }
 
 .hero-content{
   position:relative;
+
   z-index:2;
 
   max-width:620px;
@@ -266,6 +332,7 @@ a{
   font-weight:700;
 
   letter-spacing:.2em;
+
   text-transform:uppercase;
 }
 
@@ -273,7 +340,9 @@ a{
   margin:14px 0 22px;
 
   font-family:"Playfair Display",serif;
+
   font-size:clamp(55px,8vw,95px);
+
   line-height:.92;
 
   letter-spacing:-.04em;
@@ -282,9 +351,10 @@ a{
 .hero p{
   max-width:500px;
 
-  color:#41443f;
+  color:#30332f;
 
   font-size:17px;
+
   line-height:1.6;
 }
 
@@ -294,13 +364,18 @@ a{
   margin-top:20px;
 
   font-size:13px;
+
   font-weight:700;
+
   letter-spacing:.05em;
 
   text-decoration:none;
 }
 
-/* ULTIMO COMUNE */
+
+/* =========================================================
+   ULTIMO COMUNE
+========================================================= */
 
 .last-place{
   padding:75px 0 60px;
@@ -312,6 +387,7 @@ a{
   color:var(--green);
 
   font-size:10px;
+
   font-weight:700;
 
   letter-spacing:.2em;
@@ -321,12 +397,15 @@ a{
   margin:12px 0 8px;
 
   font-family:"Playfair Display",serif;
+
   font-size:clamp(38px,6vw,65px);
+
   line-height:1;
 }
 
 .last-meta{
   color:var(--muted);
+
   font-size:14px;
 }
 
@@ -336,13 +415,18 @@ a{
   margin-top:20px;
 
   color:var(--muted);
+
   line-height:1.6;
 }
 
-/* NUMERI */
+
+/* =========================================================
+   NUMERI
+========================================================= */
 
 .numbers{
   display:grid;
+
   grid-template-columns:repeat(3,1fr);
 
   border-bottom:1px solid var(--line);
@@ -364,6 +448,7 @@ a{
   display:block;
 
   font-family:"Playfair Display",serif;
+
   font-size:38px;
 }
 
@@ -371,14 +456,18 @@ a{
   color:var(--muted);
 
   font-size:11px;
+
   letter-spacing:.04em;
 }
 
 .progress{
   width:100%;
+
   height:5px;
 
   background:#e2dfd6;
+
+  overflow:hidden;
 }
 
 .progress i{
@@ -393,7 +482,10 @@ a{
   transition:width .5s;
 }
 
-/* MAPPA */
+
+/* =========================================================
+   MAPPA
+========================================================= */
 
 .map-section{
   padding:95px 0 80px;
@@ -409,6 +501,7 @@ a{
   color:var(--green);
 
   font-size:10px;
+
   font-weight:700;
 
   letter-spacing:.2em;
@@ -418,20 +511,31 @@ a{
   margin:10px 0 18px;
 
   font-family:"Playfair Display",serif;
+
   font-size:clamp(40px,6vw,65px);
+
   line-height:1;
 }
 
 .map-section p{
   color:var(--muted);
+
   line-height:1.65;
 }
 
+
+/*
+   CONTENITORE MAPPA
+*/
+
 .home-map{
+  position:relative;
+
   width:100%;
+
   min-height:430px;
 
-  background:#fff;
+  background:var(--map);
 
   border:1px solid var(--line);
 
@@ -439,23 +543,48 @@ a{
 }
 
 .home-map svg{
+  display:block;
+
   width:100%;
   height:430px;
 }
 
-.home-muni{
-  fill:#fafafa;
 
-  stroke:#fff;
+/*
+   COMUNI NON VISITATI
+   Quasi bianchi.
+*/
+
+.home-muni{
+  fill:#fffdf8;
+
+  stroke:var(--map-line);
 
   stroke-width:.35;
 
   vector-effect:non-scaling-stroke;
+
+  transition:fill .2s;
 }
+
+
+/*
+   COMUNI VISITATI
+   SOLO questi diventano verdi.
+*/
 
 .home-muni.visited{
   fill:var(--green);
+
+  stroke:var(--green-dark);
+
+  stroke-width:.45;
 }
+
+
+/*
+   Pulsante mappa
+*/
 
 .map-button{
   display:inline-block;
@@ -465,43 +594,137 @@ a{
   text-decoration:none;
 
   font-size:13px;
+
   font-weight:700;
+
   letter-spacing:.05em;
 }
 
-/* MANIFESTO */
+
+/* =========================================================
+   MANIFESTO — VERSIONE PIÙ PROFESSIONALE
+========================================================= */
 
 .manifesto{
-  padding:85px 30px;
+  position:relative;
 
-  background:var(--green);
+  margin-top:10px;
+
+  padding:85px 35px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--green-dark) 0%,
+      var(--green) 55%,
+      #3b7c59 100%
+    );
 
   color:white;
 
   text-align:center;
+
+  overflow:hidden;
+}
+
+
+/*
+   Texture molto leggera
+*/
+
+.manifesto::before{
+  content:"";
+
+  position:absolute;
+
+  width:420px;
+  height:420px;
+
+  right:-180px;
+  top:-210px;
+
+  border:1px solid rgba(255,255,255,.14);
+
+  border-radius:50%;
+}
+
+.manifesto::after{
+  content:"";
+
+  position:absolute;
+
+  width:300px;
+  height:300px;
+
+  left:-170px;
+  bottom:-190px;
+
+  border:1px solid rgba(255,255,255,.10);
+
+  border-radius:50%;
+}
+
+.manifesto-inner{
+  position:relative;
+
+  z-index:2;
+
+  max-width:760px;
+
+  margin:auto;
+}
+
+.manifesto-label{
+  margin-bottom:25px;
+
+  font-size:10px;
+
+  font-weight:700;
+
+  letter-spacing:.22em;
+
+  text-transform:uppercase;
+
+  opacity:.72;
 }
 
 .manifesto p{
-  max-width:720px;
-
-  margin:0 auto;
+  margin:0;
 
   font-family:"Playfair Display",serif;
 
-  font-size:clamp(28px,4vw,45px);
-  line-height:1.2;
+  font-size:clamp(30px,4.5vw,52px);
+
+  line-height:1.16;
+
+  letter-spacing:-.025em;
 }
 
-/* FOOTER */
+.manifesto-line{
+  width:45px;
+
+  height:1px;
+
+  margin:30px auto 0;
+
+  background:rgba(255,255,255,.55);
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
 
 .footer{
   display:flex;
+
   justify-content:space-between;
   align-items:center;
 
   gap:20px;
 
   padding-top:25px;
+
   margin-top:55px;
 
   border-top:1px solid var(--line);
@@ -513,6 +736,7 @@ a{
 
 .social-buttons{
   display:flex;
+
   gap:8px;
 }
 
@@ -524,9 +748,20 @@ a{
   text-decoration:none;
 
   background:var(--white);
+
+  transition:.2s;
 }
 
-/* MOBILE */
+.social-buttons a:hover{
+  border-color:var(--green);
+
+  color:var(--green);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
 
 @media(max-width:760px){
 
@@ -539,8 +774,15 @@ a{
     top:16px;
   }
 
+
+  /* HERO MOBILE */
+
   .hero{
     min-height:610px;
+  }
+
+  .hero-photo{
+    object-position:center center;
   }
 
   .hero-content{
@@ -549,17 +791,27 @@ a{
 
   .hero::after{
     background:
-    linear-gradient(
-      90deg,
-      rgba(247,243,233,.98) 0%,
-      rgba(247,243,233,.83) 55%,
-      rgba(247,243,233,.18) 100%
-    );
+      linear-gradient(
+        90deg,
+        rgba(247,243,233,.66) 0%,
+        rgba(247,243,233,.38) 52%,
+        rgba(247,243,233,.08) 100%
+      );
   }
+
+  .hero p{
+    font-size:16px;
+  }
+
+
+  /* ULTIMO COMUNE */
 
   .last-place{
     padding:60px 0 45px;
   }
+
+
+  /* NUMERI */
 
   .number{
     padding:22px 4px;
@@ -573,6 +825,9 @@ a{
     font-size:9px;
   }
 
+
+  /* MAPPA */
+
   .map-section{
     padding:65px 0;
   }
@@ -580,8 +835,23 @@ a{
   .home-map,
   .home-map svg{
     min-height:300px;
+
     height:300px;
   }
+
+
+  /* MANIFESTO */
+
+  .manifesto{
+    padding:65px 22px;
+  }
+
+  .manifesto p{
+    font-size:31px;
+  }
+
+
+  /* FOOTER */
 
   .footer{
     display:block;
@@ -594,27 +864,58 @@ a{
 }
 
 </style>
+
 </head>
+
 
 <body>
 
 <div class="page">
 
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
 <header class="top">
-  <div class="brand">Comuni d’Italia 🇮🇹</div>
+
+  <div class="brand">
+    Comuni d’Italia 🇮🇹
+  </div>
+
 </header>
+
+
+<!-- =====================================================
+     MENU BUTTON
+===================================================== -->
 
 <button
   class="menu-button"
   id="menuButton"
   aria-label="Apri menu"
   aria-expanded="false">
+
   ⋯
+
 </button>
 
-<div class="menu-overlay" id="menuOverlay"></div>
 
-<aside class="side-menu" id="sideMenu" aria-hidden="true">
+<div
+  class="menu-overlay"
+  id="menuOverlay">
+</div>
+
+
+<!-- =====================================================
+     MENU
+===================================================== -->
+
+<aside
+  class="side-menu"
+  id="sideMenu"
+  aria-hidden="true">
+
 
   <div class="menu-top">
 
@@ -622,14 +923,18 @@ a{
       Comuni d’Italia 🇮🇹
     </div>
 
+
     <button
       class="menu-close"
       id="menuClose"
       aria-label="Chiudi menu">
+
       ×
+
     </button>
 
   </div>
+
 
   <div class="menu-section">
 
@@ -637,12 +942,23 @@ a{
       IL PROGETTO
     </div>
 
-    <a class="menu-link" href="chi-sono.html">
-      <span>Chi sono</span>
-      <span>→</span>
+
+    <a
+      class="menu-link"
+      href="chi-sono.html">
+
+      <span>
+        Chi sono
+      </span>
+
+      <span>
+        →
+      </span>
+
     </a>
 
   </div>
+
 
   <div class="menu-section">
 
@@ -650,12 +966,23 @@ a{
       IL VIAGGIO
     </div>
 
-    <a class="menu-link" href="mappa.html">
-      <span>Mappa</span>
-      <span>→</span>
+
+    <a
+      class="menu-link"
+      href="mappa.html">
+
+      <span>
+        Mappa
+      </span>
+
+      <span>
+        →
+      </span>
+
     </a>
 
   </div>
+
 
   <div class="menu-section">
 
@@ -663,87 +990,148 @@ a{
       CONTATTI
     </div>
 
-    <a class="menu-link" href="contatti.html">
-      <span>Contatti</span>
-      <span>→</span>
+
+    <a
+      class="menu-link"
+      href="contatti.html">
+
+      <span>
+        Contatti
+      </span>
+
+      <span>
+        →
+      </span>
+
     </a>
 
   </div>
 
+
   <div class="menu-quote">
 
-    <div>Un comune alla volta.</div>
-    <div>Una strada alla volta.</div>
-    <div>Tutta l’Italia. 🇮🇹</div>
+    <div>
+      Un comune alla volta.
+    </div>
+
+    <div>
+      Una strada alla volta.
+    </div>
+
+    <div>
+      Tutta l’Italia. 🇮🇹
+    </div>
 
   </div>
 
 </aside>
 
 
-<!-- HERO -->
+<!-- =====================================================
+     HERO
+===================================================== -->
 
 <section class="hero">
+
 
   <img
     class="hero-photo"
     src="FullSizeRender.jpeg"
-    alt="Francesco durante il viaggio">
+    alt="Francesco durante il viaggio"
+  >
+
 
   <div class="hero-content">
+
 
     <div class="eyebrow">
       IL VIAGGIO DI FRANCESCO
     </div>
 
+
     <h1>
+
       Un comune<br>
       alla volta.
+
     </h1>
 
+
     <p>
+
       Un viaggio attraverso tutti i comuni d’Italia.
       Strada dopo strada, paese dopo paese,
       per conoscere davvero il nostro Paese.
+
     </p>
 
-    <a class="text-link" href="#ultimo">
+
+    <a
+      class="text-link"
+      href="#ultimo">
+
       SCOPRI IL VIAGGIO →
+
     </a>
 
+
   </div>
 
 </section>
 
 
-<!-- ULTIMO COMUNE -->
+<!-- =====================================================
+     ULTIMO COMUNE
+===================================================== -->
 
-<section class="last-place" id="ultimo">
+<section
+  class="last-place"
+  id="ultimo">
+
 
   <div class="last-label">
+
     ULTIMO COMUNE VISITATO
+
   </div>
+
 
   <h2 id="lastName">
+
     —
+
   </h2>
 
-  <div class="last-meta" id="lastMeta">
+
+  <div
+    class="last-meta"
+    id="lastMeta">
+
     Caricamento…
+
   </div>
 
-  <div class="last-description" id="lastDescription">
+
+  <div
+    class="last-description"
+    id="lastDescription">
+
     Il viaggio continua, un comune alla volta.
+
   </div>
 
 </section>
 
 
-<!-- NUMERI -->
+<!-- =====================================================
+     NUMERI
+===================================================== -->
 
 <section>
 
+
   <div class="numbers">
+
 
     <div class="number">
 
@@ -757,6 +1145,7 @@ a{
 
     </div>
 
+
     <div class="number">
 
       <strong>
@@ -768,6 +1157,7 @@ a{
       </span>
 
     </div>
+
 
     <div class="number">
 
@@ -781,103 +1171,178 @@ a{
 
     </div>
 
+
   </div>
 
+
   <div class="progress">
+
     <i id="progressFill"></i>
+
   </div>
+
 
 </section>
 
 
-<!-- MAPPA -->
+<!-- =====================================================
+     MAPPA
+===================================================== -->
 
 <section class="map-section">
 
+
   <div class="map-intro">
+
 
     <div class="map-kicker">
       LA MAPPA
     </div>
 
+
     <h2>
+
       Tutta l’Italia,<br>
       comune dopo comune.
+
     </h2>
 
+
     <p>
+
       Ogni comune visitato entra nella mappa.
       Quelli già percorsi diventano verdi,
       mentre il resto dell’Italia rimane da scoprire.
+
     </p>
 
+
   </div>
 
-  <div class="home-map" id="homeMap">
+
+  <div
+    class="home-map"
+    id="homeMap">
+
     Caricamento della mappa…
+
   </div>
 
-  <a class="map-button" href="mappa.html">
+
+  <a
+    class="map-button"
+    href="mappa.html">
+
     SCOPRI LA MAPPA →
+
   </a>
+
 
 </section>
 
 
-<!-- MANIFESTO -->
+<!-- =====================================================
+     MANIFESTO
+===================================================== -->
 
 <section class="manifesto">
 
-  <p>
-    Non è solo una lista.<br>
-    È un modo per conoscere<br>
-    il nostro Paese.
-  </p>
+
+  <div class="manifesto-inner">
+
+
+    <div class="manifesto-label">
+
+      IL SENSO DEL VIAGGIO
+
+    </div>
+
+
+    <p>
+
+      Non è solo una lista.<br>
+      È un modo per conoscere<br>
+      il nostro Paese.
+
+    </p>
+
+
+    <div class="manifesto-line"></div>
+
+
+  </div>
 
 </section>
 
 
-<!-- FOOTER -->
+<!-- =====================================================
+     FOOTER
+===================================================== -->
 
 <footer class="footer">
+
 
   <div>
     Comuni d’Italia 🇮🇹
   </div>
 
+
   <div class="social-buttons">
+
 
     <a
       href="https://www.instagram.com/frarossitto/"
       target="_blank"
       rel="noopener">
+
       Instagram
+
     </a>
 
+
     <a
-      href="https://www.tiktok.com/"
+      href="https://www.tiktok.com/@frarossitto"
       target="_blank"
       rel="noopener">
+
       TikTok
+
     </a>
+
 
   </div>
 
 </footer>
 
+
 </div>
 
 
+<!-- =====================================================
+     LIBRERIE MAPPA
+===================================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
 
+
+<!-- =====================================================
+     DATI DEL SITO
+===================================================== -->
+
 <script src="visitati.js"></script>
+
 <script src="comuni.js"></script>
+
 <script src="app.js"></script>
+
 
 <script>
 
-/* MENU */
+/* =========================================================
+   MENU
+========================================================= */
 
 const menuButton =
   document.getElementById("menuButton");
@@ -899,6 +1364,7 @@ function openMenu(){
   menuOverlay.classList.add("open");
 
   menuButton.style.opacity="0";
+
   menuButton.style.pointerEvents="none";
 
   menuButton.setAttribute(
@@ -912,6 +1378,7 @@ function openMenu(){
   );
 
   document.body.style.overflow="hidden";
+
 }
 
 
@@ -922,6 +1389,7 @@ function closeMenu(){
   menuOverlay.classList.remove("open");
 
   menuButton.style.opacity="1";
+
   menuButton.style.pointerEvents="auto";
 
   menuButton.setAttribute(
@@ -935,6 +1403,7 @@ function closeMenu(){
   );
 
   document.body.style.overflow="";
+
 }
 
 
@@ -943,26 +1412,32 @@ menuButton.addEventListener(
   openMenu
 );
 
+
 menuClose.addEventListener(
   "click",
   closeMenu
 );
+
 
 menuOverlay.addEventListener(
   "click",
   closeMenu
 );
 
+
 document.addEventListener(
   "keydown",
   function(event){
 
-    if(event.key==="Escape"){
+    if(event.key === "Escape"){
+
       closeMenu();
+
     }
 
   }
 );
+
 
 sideMenu
   .querySelectorAll("a")
@@ -976,26 +1451,40 @@ sideMenu
   });
 
 
-/* DATI */
+/* =========================================================
+   DATI
+========================================================= */
 
 const TOTAL_COMUNI = 7894;
 
+
 const visited = new Set(
+
   (window.VISITED_ISTAT || [])
+
     .map(String)
-    .map(code => code.padStart(6,"0"))
+
+    .map(function(code){
+
+      return code
+        .replace(/\D/g,"")
+        .padStart(6,"0");
+
+    })
+
 );
 
 
 document.getElementById(
   "visitedCount"
-).textContent = visited.size.toLocaleString("it-IT");
+).textContent =
+  visited.size.toLocaleString("it-IT");
 
 
 const percentage =
   TOTAL_COMUNI > 0
-  ? (visited.size / TOTAL_COMUNI) * 100
-  : 0;
+    ? (visited.size / TOTAL_COMUNI) * 100
+    : 0;
 
 
 document.getElementById(
@@ -1010,17 +1499,28 @@ document.getElementById(
   Math.min(percentage,100) + "%";
 
 
-/* ULTIMO COMUNE */
+/* =========================================================
+   ULTIMO COMUNE VISITATO
+========================================================= */
 
 const data =
   window.COMUNI_DATA || {};
 
+
 const latest = Object.entries(data)
-  .filter(([code]) =>
-    visited.has(
-      String(code).padStart(6,"0")
-    )
-  )
+
+  .filter(function(entry){
+
+    const code = entry[0];
+
+    return visited.has(
+      String(code)
+        .replace(/\D/g,"")
+        .padStart(6,"0")
+    );
+
+  })
+
   .sort(function(a,b){
 
     const dateA =
@@ -1036,23 +1536,28 @@ const latest = Object.entries(data)
 
 if(latest){
 
-  const latestData = latest[1];
+  const latestData =
+    latest[1];
+
 
   document.getElementById(
     "lastName"
   ).textContent =
     latestData.nome || "Comune";
 
+
   document.getElementById(
     "lastMeta"
-  ).textContent =
-    [
-      latestData.provincia,
-      latestData.regione,
-      latestData.data
-    ]
-    .filter(Boolean)
-    .join(" · ");
+  ).textContent = [
+
+    latestData.provincia,
+    latestData.regione,
+    latestData.data
+
+  ]
+  .filter(Boolean)
+  .join(" · ");
+
 
   document.getElementById(
     "lastDescription"
@@ -1060,35 +1565,121 @@ if(latest){
     latestData.descrizione ||
     "Questo comune fa già parte del viaggio.";
 
-}else{
+}
+else{
 
   document.getElementById(
     "lastName"
   ).textContent =
     "Il viaggio deve ancora iniziare";
 
+
   document.getElementById(
     "lastMeta"
   ).textContent =
     "";
 
+
 }
 
 
-/* MAPPA HOME */
+/* =========================================================
+   MAPPA HOME
+========================================================= */
 
 const MAP_URL =
-"https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_municipalities.topo.json";
+  "https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_municipalities.topo.json";
 
+
+/*
+   Normalizza qualsiasi possibile codice ISTAT
+*/
+
+function normalizeCode(value){
+
+  if(value === undefined || value === null){
+    return null;
+  }
+
+  const cleaned =
+    String(value)
+      .replace(/\D/g,"");
+
+  if(!cleaned){
+    return null;
+  }
+
+  return cleaned.padStart(6,"0");
+
+}
+
+
+/*
+   Cerca il codice ISTAT in tutte le proprietà
+   che il dataset potrebbe utilizzare.
+*/
+
+function getMapCode(feature){
+
+  const properties =
+    feature.properties || {};
+
+
+  const possibleCodes = [
+
+    properties.com_istat_code,
+    properties.pro_com,
+    properties.COD_COM,
+    properties.cod_com,
+    properties.istat,
+    properties.ISTAT,
+    properties.comune_istat,
+    properties.COM_ISTAT,
+    properties.code,
+    properties.CODE,
+    feature.id
+
+  ];
+
+
+  for(
+    const value of possibleCodes
+  ){
+
+    const code =
+      normalizeCode(value);
+
+
+    if(code){
+
+      return code;
+
+    }
+
+  }
+
+
+  return null;
+
+}
+
+
+/*
+   Carica la mappa
+*/
 
 d3.json(MAP_URL)
+
   .then(function(topology){
+
 
     const objects =
       topology.objects;
 
+
     const objectName =
       Object.keys(objects)[0];
+
 
     const geo =
       topojson.feature(
@@ -1096,67 +1687,201 @@ d3.json(MAP_URL)
         objects[objectName]
       );
 
+
     const container =
       document.getElementById("homeMap");
 
+
     container.innerHTML="";
 
-    const width =
-      container.clientWidth;
 
-    const height = 430;
+    const width =
+      Math.max(
+        container.clientWidth,
+        300
+      );
+
+
+    const height =
+      window.innerWidth <= 760
+        ? 300
+        : 430;
+
 
     const svg =
       d3.select(container)
+
         .append("svg")
-        .attr("viewBox",
+
+        .attr(
+          "viewBox",
           `0 0 ${width} ${height}`
+        )
+
+        .attr(
+          "preserveAspectRatio",
+          "xMidYMid meet"
         );
+
+
+    /*
+       Proiezione centrata sull'Italia
+    */
 
     const projection =
       d3.geoMercator()
         .fitSize(
-          [width-30,height-30],
+          [width - 24, height - 24],
           geo
         );
+
 
     const path =
       d3.geoPath()
         .projection(projection);
 
-    svg.selectAll("path")
-      .data(geo.features)
-      .enter()
-      .append("path")
-      .attr("class","home-muni")
-      .classed("visited",function(d){
 
-        const p =
-          d.properties || {};
+    /*
+       Disegna tutti i comuni.
+    */
+
+    svg
+      .append("g")
+      .attr("class","home-municipalities")
+
+      .selectAll("path")
+
+      .data(geo.features)
+
+      .enter()
+
+      .append("path")
+
+      .attr(
+        "class",
+        "home-muni"
+      )
+
+      .classed(
+        "visited",
+        function(d){
+
+          const code =
+            getMapCode(d);
+
+
+          /*
+             SOLO i comuni presenti
+             in visitati.js diventano verdi.
+          */
+
+          return code
+            ? visited.has(code)
+            : false;
+
+        }
+      )
+
+      .attr(
+        "d",
+        path
+      );
+
+
+    /*
+       Piccolo controllo.
+       Se nessun comune risulta verde,
+       lasciamo comunque la mappa visibile
+       e leggibile.
+    */
+
+    const visitedOnMap =
+      geo.features.filter(function(d){
 
         const code =
-          p.com_istat_code ||
-          p.pro_com ||
-          d.id;
+          getMapCode(d);
 
-        if(!code) return false;
+        return code
+          ? visited.has(code)
+          : false;
 
-        return visited.has(
-          String(code).padStart(6,"0")
+      }).length;
+
+
+    /*
+       Se il dataset utilizza un formato
+       di codice diverso, proviamo anche
+       a confrontare direttamente i valori
+       numerici a 6 cifre.
+    */
+
+    if(
+      visited.size > 0 &&
+      visitedOnMap === 0
+    ){
+
+      d3.select(container)
+        .selectAll(".home-muni")
+        .classed(
+          "visited",
+          function(d){
+
+            const code =
+              getMapCode(d);
+
+            if(!code){
+              return false;
+            }
+
+            return Array.from(visited)
+              .some(function(v){
+
+                return normalizeCode(v) === code;
+
+              });
+
+          }
         );
 
-      })
-      .attr("d",path);
+    }
 
   })
-  .catch(function(){
 
-    document.getElementById(
-      "homeMap"
-    ).textContent =
-      "La mappa non è disponibile al momento.";
+
+  .catch(function(error){
+
+    console.error(
+      "Errore caricamento mappa:",
+      error
+    );
+
+
+    const container =
+      document.getElementById("homeMap");
+
+
+    container.innerHTML = `
+
+      <div style="
+        height:100%;
+        min-height:430px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:30px;
+        text-align:center;
+        color:#6e7069;
+        font-size:14px;
+      ">
+
+        La mappa non è disponibile al momento.
+
+      </div>
+
+    `;
 
   });
+
 
 </script>
 
