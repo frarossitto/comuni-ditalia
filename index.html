@@ -1,0 +1,2612 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f0e7">
+
+  <title>Comuni d’Italia 🇮🇹 — Un comune alla volta</title>
+
+  <meta
+    name="description"
+    content="Il viaggio di Francesco attraverso tutti i comuni d’Italia."
+  >
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+    rel="stylesheet"
+  >
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+
+  <style>
+
+    :root{
+      --paper:#f4f0e7;
+      --paper-light:#faf8f2;
+      --paper-dark:#e8e1d4;
+      --ink:#1d211c;
+      --muted:#77766d;
+      --green:#477b57;
+      --green-dark:#315a3d;
+      --line:#d6d0c3;
+      --white:#fffdf8;
+      --black:#151714;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      margin:0;
+      background:var(--paper);
+      color:var(--ink);
+      font-family:"DM Sans",sans-serif;
+    }
+
+    body.menu-open{
+      overflow:hidden;
+    }
+
+    a{
+      color:inherit;
+    }
+
+
+    /* =====================================================
+       MENU
+       ===================================================== */
+
+    .menu-button{
+      position:fixed;
+      top:22px;
+      right:22px;
+
+      z-index:4000;
+
+      width:58px;
+      height:58px;
+
+      border:1px solid rgba(30,30,25,.12);
+      border-radius:50%;
+
+      background:rgba(255,253,248,.96);
+      color:var(--ink);
+
+      font-size:29px;
+      line-height:1;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      cursor:pointer;
+
+      box-shadow:0 12px 35px rgba(0,0,0,.14);
+
+      transition:
+        transform .2s ease,
+        opacity .2s ease;
+    }
+
+    .menu-button:hover{
+      transform:scale(1.05);
+    }
+
+    .menu-button.hidden{
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .menu-overlay{
+      position:fixed;
+      inset:0;
+
+      z-index:4998;
+
+      background:rgba(15,17,14,.48);
+
+      backdrop-filter:blur(5px);
+
+      opacity:0;
+      pointer-events:none;
+
+      transition:opacity .3s ease;
+    }
+
+    .menu-overlay.open{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .side-menu{
+      position:fixed;
+
+      top:0;
+      right:0;
+      bottom:0;
+
+      z-index:5000;
+
+      width:min(440px,90vw);
+
+      background:#f6f0e3;
+
+      padding:32px 44px 38px;
+
+      overflow-y:auto;
+
+      transform:translateX(100%);
+
+      transition:
+        transform .35s cubic-bezier(.22,.61,.36,1);
+
+      box-shadow:-25px 0 70px rgba(0,0,0,.17);
+    }
+
+    .side-menu.open{
+      transform:translateX(0);
+    }
+
+    .menu-top{
+      min-height:52px;
+
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+
+      margin-bottom:45px;
+    }
+
+    .menu-brand{
+      font-family:"Playfair Display",serif;
+
+      font-size:25px;
+
+      line-height:1.1;
+    }
+
+    .menu-close{
+      flex:none;
+
+      width:46px;
+      height:46px;
+
+      border:1px solid var(--line);
+      border-radius:50%;
+
+      background:#f6f0e3;
+
+      color:var(--ink);
+
+      font-size:31px;
+      font-weight:300;
+
+      line-height:1;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      cursor:pointer;
+
+      transition:
+        transform .2s ease,
+        background .2s ease;
+    }
+
+    .menu-close:hover{
+      background:var(--paper-dark);
+      transform:rotate(90deg);
+    }
+
+    .menu-section{
+      margin-bottom:34px;
+    }
+
+    .menu-heading{
+      margin-bottom:13px;
+
+      color:var(--green);
+
+      font-size:11px;
+      font-weight:700;
+
+      letter-spacing:.18em;
+
+      text-transform:uppercase;
+    }
+
+    .menu-link{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+
+      gap:20px;
+
+      padding:8px 0;
+
+      text-decoration:none;
+
+      font-size:18px;
+
+      line-height:1.25;
+
+      transition:
+        color .18s ease,
+        transform .18s ease;
+    }
+
+    .menu-link span{
+      color:var(--muted);
+
+      transition:transform .18s ease;
+    }
+
+    .menu-link:hover{
+      color:var(--green);
+      transform:translateX(3px);
+    }
+
+    .menu-link:hover span{
+      transform:translateX(4px);
+    }
+
+    .menu-home{
+      padding:13px 15px;
+
+      border:1px solid var(--line);
+      border-radius:4px;
+
+      background:var(--paper-dark);
+
+      font-weight:600;
+    }
+
+    .menu-quote{
+      margin-top:45px;
+
+      padding-top:27px;
+
+      border-top:1px solid var(--line);
+
+      font-family:"Playfair Display",serif;
+
+      font-size:22px;
+
+      line-height:1.3;
+    }
+
+
+    /* =====================================================
+       HERO
+       ===================================================== */
+
+    .hero{
+      min-height:100svh;
+
+      position:relative;
+
+      display:flex;
+      align-items:flex-end;
+
+      padding:100px 7vw 72px;
+
+      overflow:hidden;
+
+      color:white;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(0,0,0,.08) 0%,
+          rgba(0,0,0,.18) 38%,
+          rgba(0,0,0,.76) 100%
+        ),
+        url("https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=2400&q=90")
+        center center / cover no-repeat;
+    }
+
+    .hero::after{
+      content:"";
+
+      position:absolute;
+      inset:0;
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(0,0,0,.28),
+          transparent 70%
+        );
+
+      pointer-events:none;
+    }
+
+    .hero-inner{
+      position:relative;
+
+      z-index:2;
+
+      width:100%;
+      max-width:1450px;
+
+      margin:0 auto;
+    }
+
+    .hero-project{
+      position:absolute;
+
+      top:-62px;
+      left:0;
+
+      display:flex;
+      align-items:center;
+
+      gap:12px;
+
+      font-size:11px;
+      font-weight:700;
+
+      letter-spacing:.18em;
+
+      text-transform:uppercase;
+    }
+
+    .hero-project::before{
+      content:"";
+
+      width:35px;
+      height:1px;
+
+      background:rgba(255,255,255,.8);
+    }
+
+    .hero-kicker{
+      margin-bottom:20px;
+
+      font-size:12px;
+      font-weight:700;
+
+      letter-spacing:.2em;
+
+      text-transform:uppercase;
+    }
+
+    .hero h1{
+      max-width:1050px;
+
+      margin:0;
+
+      font-family:"Playfair Display",serif;
+
+      font-size:clamp(64px,9.3vw,145px);
+
+      font-weight:500;
+
+      line-height:.87;
+
+      letter-spacing:-.055em;
+    }
+
+    .hero h1 em{
+      font-style:italic;
+      font-weight:400;
+    }
+
+    .hero-bottom{
+      margin-top:48px;
+
+      display:flex;
+
+      align-items:flex-end;
+      justify-content:space-between;
+
+      gap:45px;
+    }
+
+    .hero-description{
+      max-width:520px;
+
+      margin:0;
+
+      font-size:17px;
+
+      line-height:1.65;
+
+      color:rgba(255,255,255,.88);
+    }
+
+    .hero-buttons{
+      display:flex;
+
+      gap:12px;
+
+      flex:none;
+    }
+
+    .hero-button{
+      min-height:54px;
+
+      padding:0 23px;
+
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+
+      border:1px solid rgba(255,255,255,.55);
+      border-radius:999px;
+
+      text-decoration:none;
+
+      font-size:13px;
+      font-weight:600;
+
+      transition:
+        background .2s ease,
+        color .2s ease,
+        transform .2s ease;
+    }
+
+    .hero-button.primary{
+      background:white;
+      color:var(--ink);
+
+      border-color:white;
+    }
+
+    .hero-button:hover{
+      transform:translateY(-2px);
+      background:white;
+      color:var(--ink);
+    }
+
+    .hero-scroll{
+      position:absolute;
+
+      right:5vw;
+      bottom:72px;
+
+      z-index:2;
+
+      writing-mode:vertical-rl;
+
+      font-size:10px;
+      font-weight:700;
+
+      letter-spacing:.18em;
+
+      text-transform:uppercase;
+
+      opacity:.72;
+    }
+
+
+    /* =====================================================
+       INTRO
+       ===================================================== */
+
+    .intro{
+      padding:150px 7vw 135px;
+    }
+
+    .intro-inner{
+      max-width:1450px;
+
+      margin:auto;
+
+      display:grid;
+
+      grid-template-columns:.65fr 1.35fr;
+
+      gap:10vw;
+    }
+
+    .eyebrow{
+      color:var(--green);
+
+      font-size:11px;
+      font-weight:700;
+
+      letter-spacing:.18em;
+
+      text-transform:uppercase;
+    }
+
+    .intro h2{
+      margin:0;
+
+      max-width:950px;
+
+      font-family:"Playfair Display",serif;
+
+      font-size:clamp(44px,5.7vw,82px);
+
+      font-weight:500;
+
+      line-height:1;
+
+      letter-spacing:-.045em;
+    }
+
+    .intro h2 em{
+      font-style:italic;
+    }
+
+    .intro-text{
+      max-width:690px;
+
+      margin:38px 0 0;
+
+      font-size:19px;
+
+      line-height:1.72;
+
+      color:#55564f;
+    }
+
+
+    /* =====================================================
+       STATS
+       ===================================================== */
+
+    .stats{
+      padding:0 7vw 145px;
+    }
+
+    .stats-inner{
+      max-width:1450px;
+
+      margin:auto;
+
+      display:grid;
+
+      grid-template-columns:repeat(3,1fr);
+
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .stat{
+      padding:55px 32px;
+
+      border-right:1px solid var(--line);
+    }
+
+    .stat:last-child{
+      border-right:0;
+    }
+
+    .stat strong{
+      display:block;
+
+      font-family:"Playfair Display",serif;
+
+      font-size:clamp(50px,6vw,88px);
+
+      line-height:.9;
+
+      font-weight:500;
+
+      letter-spacing:-.05em;
+    }
+
+    .stat-label{
+      display:block;
+
+      margin-top:18px;
+
+      color:var(--muted);
+
+      font-size:11px;
+      font-weight:700;
+
+      letter-spacing:.16em;
+
+      text-transform:uppercase;
+    }
+
+    .progress{
+      height:4px;
+
+      margin-top:30px;
+
+      overflow:hidden;
+
+      background:#d8d2c6;
+    }
+
+    .progress i{
+      display:block;
+
+      width:0;
+      height:100%;
+
+      background:var(--green);
+
+      transition:width 1.2s ease;
+    }
+
+
+    /* =====================================================
+       MAP
+       ===================================================== */
+
+    .map-section{
+      padding:120px 5vw 0;
+
+      background:var(--black);
+
+      color:white;
+    }
+
+    .map-header{
+      max-width:1450px;
+
+      margin:auto;
+
+      padding:0 2vw 55px;
+
+      display:flex;
+
+      align-items:flex-end;
+      justify-content:space-between;
+
+      gap:40px;
+    }
+
+    .map-header .eyebrow{
+      color:#91b29a;
+    }
+
+    .map-header h2{
+      margin:17px 0 0;
+
+      font-family:"Playfair Display",serif;
+
+      font-size:clamp(44px,6vw,86px);
+
+      font-weight:500;
+
+      line-height:.94;
+
+      letter-spacing:-.045em;
+    }
+
+    .map-header h2 em{
+      font-style:italic;
+    }
+
+    .map-link{
+      flex:none;
+
+      padding-bottom:9px;
+
+      border-bottom:1px solid rgba(255,255,255,.5);
+
+      color:white;
+
+      text-decoration:none;
+
+      font-size:13px;
+      font-weight:600;
+    }
+
+    .map-box{
+      max-width:1550px;
+
+      height:min(70vh,760px);
+
+      min-height:480px;
+
+      margin:auto;
+
+      overflow:hidden;
+
+      position:relative;
+
+      background:#e8e3d8;
+    }
+
+    #home-map{
+      width:100%;
+      height:100%;
+    }
+
+    #home-map svg{
+      width:100%;
+      height:100%;
+
+      display:block;
+    }
+
+    #home-map path{
+      stroke:#f8f5ed;
+
+      stroke-width:.45;
+
+      cursor:pointer;
+
+      transition:opacity .15s ease;
+    }
+
+    #home-map path.visited{
+      fill:var(--green);
+    }
+
+    #home-map path.todo{
+      fill:#bdbdb7;
+    }
+
+    #home-map path:hover{
+      opacity:.65;
+    }
+
+    .map-loading{
+      width:100%;
+      height:100%;
+
+      display:flex;
+
+      align-items:center;
+      justify-content:center;
+
+      color:#666;
+
+      font-size:14px;
+    }
+
+    .map-legend{
+      max-width:1550px;
+
+      margin:auto;
+
+      padding:20px 5px 45px;
+
+      display:flex;
+
+      gap:25px;
+
+      color:#a9aaa1;
+
+      font-size:10px;
+      font-weight:600;
+
+      letter-spacing:.13em;
+
+      text-transform:uppercase;
+    }
+
+    .legend-item{
+      display:flex;
+
+      align-items:center;
+
+      gap:8px;
+    }
+
+    .legend-dot{
+      width:9px;
+      height:9px;
+
+      border-radius:50%;
+    }
+
+    .legend-green{
+      background:var(--green);
+    }
+
+    .legend-gray{
+      background:#bdbdb7;
+    }
+
+
+    /* =====================================================
+       MANIFESTO
+       ===================================================== */
+
+    .manifesto{
+      padding:155px 7vw;
+
+      background:var(--paper-dark);
+    }
+
+    .manifesto-inner{
+      max-width:1450px;
+
+      margin:auto;
+
+      display:grid;
+
+      grid-template-columns:.65fr 1.35fr;
+
+      gap:10vw;
+    }
+
+    .manifesto h2{
+      margin:0;
+
+      font-family:"Playfair Display",serif;
+
+      font-size:clamp(47px,6vw,90px);
+
+      font-weight:500;
+
+      line-height:.96;
+
+      letter-spacing:-.05em;
+    }
+
+    .manifesto h2 em{
+      font-style:italic;
+    }
+
+    .manifesto p{
+      max-width:720px;
+
+      margin:40px 0 0;
+
+      color:#55564f;
+
+      font-size:19px;
+
+      line-height:1.72;
+    }
+
+    .manifesto p + p{
+      margin-top:20px;
+    }
+
+
+    /* =====================================================
+       REGIONI
+       ===================================================== */
+
+    .regions{
+      padding:145px 7vw;
+    }
+
+    .regions-inner{
+      max-width:1450px;
+
+      margin:auto;
+    }
+
+    .regions-header{
+      margin-bottom:60px;
+
+      display:flex;
+
+      align-items:flex-end;
+      justify-content:space-between;
+
+      gap:30px;
+    }
+
+    .regions h2{
+      margin:17px 0 0;
+
+      font-family:"Playfair Display",serif;
+
+      font-size:clamp(45px,5.5vw,76px);
+
+      font-weight:500;
+
+      line-height:.95;
+
+      letter-spacing:-.045em;
+    }
+
+    .regions-grid{
+      display:grid;
+
+      grid-template-columns:repeat(4,1fr);
+
+      border-top:1px solid var(--line);
+      border-left:1px solid var(--line);
+    }
+
+    .region{
+      padding:27px;
+
+      min-height:135px;
+
+      border-right:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+
+      text-decoration:none;
+
+      transition:
+        background .2s ease;
+    }
+
+    .region:hover{
+      background:#ebe5d8;
+    }
+
+    .region-name{
+      margin-bottom:17px;
+
+      font-family:"Playfair Display",serif;
+
+      font-size:22px;
+    }
+
+    .region-data{
+      display:flex;
+
+      align-items:center;
+      justify-content:space-between;
+
+      gap:10px;
+
+      color:var(--muted);
+
+      font-size:10px;
+      font-weight:600;
+
+      letter-spacing:.05em;
+    }
+
+    .region-progress{
+      height:3px;
+
+      margin-top:18px;
+
+      background:#d7d1c5;
+
+      overflow:hidden;
+    }
+
+    .region-progress i{
+      display:block;
+
+      width:0;
+      height:100%;
+
+      background:var(--green);
+    }
+
+
+    /* =====================================================
+       SOCIAL
+       ===================================================== */
+
+    .social{
+      padding:125px 7vw;
+
+      background:var(--green-dark);
+
+      color:white;
+    }
+
+    .social-inner{
+      max-width:1450px;
+
+      margin:auto;
+
+      display:grid;
+
+      grid-template-columns:1fr 1fr;
+
+      gap:10vw;
+
+      align-items:end;
+    }
+
+    .social h2{
+      margin:18px 0 0;
+
+      font-family:"Playfair Display",serif;
+
+      font-size:clamp(48px,6vw,90px);
+
+      font-weight:500;
+
+      line-height:.94;
+
+      letter-spacing:-.05em;
+    }
+
+    .social h2 em{
+      font-style:italic;
+    }
+
+    .social-copy{
+      max-width:600px;
+
+      margin:0;
+
+      color:rgba(255,255,255,.78);
+
+      font-size:17px;
+
+      line-height:1.65;
+    }
+
+    .social-links{
+      display:flex;
+
+      gap:12px;
+
+      margin-top:30px;
+    }
+
+    .social-link{
+      padding:14px 21px;
+
+      border:1px solid rgba(255,255,255,.32);
+
+      border-radius:999px;
+
+      color:white;
+
+      text-decoration:none;
+
+      font-size:13px;
+      font-weight:600;
+
+      transition:
+        background .2s ease,
+        color .2s ease;
+    }
+
+    .social-link:hover{
+      background:white;
+      color:var(--green-dark);
+    }
+
+
+    /* =====================================================
+       FOOTER
+       ===================================================== */
+
+    footer{
+      padding:90px 7vw 35px;
+
+      background:var(--black);
+
+      color:white;
+    }
+
+    .footer-inner{
+      max-width:1450px;
+
+      margin:auto;
+    }
+
+    .footer-big{
+      max-width:850px;
+
+      font-family:"Playfair Display",serif;
+
+      font-size:clamp(43px,6vw,82px);
+
+      font-weight:500;
+
+      line-height:.95;
+
+      letter-spacing:-.05em;
+    }
+
+    .footer-big em{
+      font-style:italic;
+    }
+
+    .footer-bottom{
+      margin-top:100px;
+
+      padding-top:25px;
+
+      border-top:1px solid rgba(255,255,255,.15);
+
+      display:flex;
+
+      align-items:center;
+      justify-content:space-between;
+
+      gap:25px;
+
+      color:#969890;
+
+      font-size:11px;
+    }
+
+    .footer-bottom a{
+      color:white;
+
+      text-decoration:none;
+    }
+
+
+    /* =====================================================
+       MOBILE
+       ===================================================== */
+
+    @media(max-width:900px){
+
+      .hero{
+        padding:105px 7vw 55px;
+      }
+
+      .hero h1{
+        font-size:clamp(57px,13vw,100px);
+      }
+
+      .hero-bottom{
+        display:block;
+      }
+
+      .hero-buttons{
+        margin-top:30px;
+      }
+
+      .hero-scroll{
+        display:none;
+      }
+
+      .intro-inner,
+      .manifesto-inner{
+        grid-template-columns:1fr;
+        gap:55px;
+      }
+
+      .social-inner{
+        grid-template-columns:1fr;
+        gap:55px;
+      }
+
+      .regions-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+    }
+
+
+    @media(max-width:600px){
+
+      .menu-button{
+        top:16px;
+        right:16px;
+
+        width:54px;
+        height:54px;
+      }
+
+      .side-menu{
+        width:92vw;
+
+        padding:28px 27px 30px;
+      }
+
+      .menu-brand{
+        font-size:22px;
+      }
+
+      .menu-top{
+        margin-bottom:38px;
+      }
+
+      .menu-link{
+        font-size:17px;
+      }
+
+      .hero{
+        min-height:92svh;
+
+        padding:100px 25px 45px;
+
+        background-position:center;
+      }
+
+      .hero-project{
+        top:-63px;
+
+        font-size:9px;
+      }
+
+      .hero-kicker{
+        font-size:10px;
+      }
+
+      .hero h1{
+        font-size:clamp(54px,16vw,86px);
+      }
+
+      .hero-description{
+        font-size:15px;
+      }
+
+      .hero-buttons{
+        flex-direction:column;
+
+        align-items:stretch;
+      }
+
+      .hero-button{
+        width:100%;
+      }
+
+      .intro{
+        padding:95px 25px 90px;
+      }
+
+      .intro h2{
+        font-size:44px;
+      }
+
+      .intro-text{
+        font-size:17px;
+      }
+
+      .stats{
+        padding:0 25px 90px;
+      }
+
+      .stats-inner{
+        grid-template-columns:1fr;
+      }
+
+      .stat{
+        padding:36px 0;
+
+        border-right:0;
+        border-bottom:1px solid var(--line);
+      }
+
+      .stat:last-child{
+        border-bottom:0;
+      }
+
+      .map-section{
+        padding:85px 18px 0;
+      }
+
+      .map-header{
+        display:block;
+
+        padding:0 7px 35px;
+      }
+
+      .map-header h2{
+        font-size:47px;
+      }
+
+      .map-link{
+        display:inline-block;
+
+        margin-top:30px;
+      }
+
+      .map-box{
+        min-height:410px;
+
+        height:62vh;
+      }
+
+      .map-legend{
+        padding-bottom:30px;
+      }
+
+      .manifesto{
+        padding:95px 25px;
+      }
+
+      .manifesto h2{
+        font-size:46px;
+      }
+
+      .manifesto p{
+        font-size:17px;
+      }
+
+      .regions{
+        padding:95px 25px;
+      }
+
+      .regions-header{
+        display:block;
+
+        margin-bottom:45px;
+      }
+
+      .regions h2{
+        font-size:46px;
+      }
+
+      .regions-grid{
+        grid-template-columns:1fr;
+      }
+
+      .social{
+        padding:90px 25px;
+      }
+
+      .social h2{
+        font-size:52px;
+      }
+
+      .social-links{
+        flex-direction:column;
+      }
+
+      .social-link{
+        text-align:center;
+      }
+
+      footer{
+        padding:70px 25px 30px;
+      }
+
+      .footer-bottom{
+        margin-top:70px;
+
+        flex-direction:column;
+
+        align-items:flex-start;
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+
+  <!-- ===================================================
+       MENU
+       =================================================== -->
+
+  <button
+    class="menu-button"
+    id="menuButton"
+    aria-label="Apri menu"
+    aria-expanded="false"
+  >
+    ⋯
+  </button>
+
+
+  <div
+    class="menu-overlay"
+    id="menuOverlay"
+  ></div>
+
+
+  <aside
+    class="side-menu"
+    id="sideMenu"
+    aria-hidden="true"
+  >
+
+    <div class="menu-top">
+
+      <div class="menu-brand">
+        Comuni d’Italia 🇮🇹
+      </div>
+
+      <button
+        class="menu-close"
+        id="menuClose"
+        aria-label="Chiudi menu"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        NAVIGAZIONE
+      </div>
+
+      <a
+        href="index.html"
+        class="menu-link menu-home"
+      >
+        <span>Home</span>
+        <span>⌂</span>
+      </a>
+
+    </div>
+
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        IL VIAGGIO
+      </div>
+
+      <a
+        href="mappa.html"
+        class="menu-link"
+      >
+        <span>Mappa dei comuni</span>
+        <span>→</span>
+      </a>
+
+      <a
+        href="viaggio.html"
+        class="menu-link"
+      >
+        <span>Il viaggio</span>
+        <span>→</span>
+      </a>
+
+      <a
+        href="#ultimi"
+        class="menu-link"
+      >
+        <span>Regioni</span>
+        <span>→</span>
+      </a>
+
+    </div>
+
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        IL PROGETTO
+      </div>
+
+      <a
+        href="chi-sono.html"
+        class="menu-link"
+      >
+        <span>Chi sono</span>
+        <span>→</span>
+      </a>
+
+      <a
+        href="traguardi.html"
+        class="menu-link"
+      >
+        <span>Traguardi</span>
+        <span>→</span>
+      </a>
+
+    </div>
+
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        SEGUIMI
+      </div>
+
+      <a
+        href="https://www.instagram.com/frarossitto/"
+        target="_blank"
+        rel="noopener"
+        class="menu-link"
+      >
+        <span>Instagram</span>
+        <span>↗</span>
+      </a>
+
+      <a
+        href="https://www.tiktok.com/"
+        target="_blank"
+        rel="noopener"
+        class="menu-link"
+      >
+        <span>TikTok</span>
+        <span>↗</span>
+      </a>
+
+    </div>
+
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        CONTATTI
+      </div>
+
+      <a
+        href="contatti.html"
+        class="menu-link"
+      >
+        <span>Contatti</span>
+        <span>→</span>
+      </a>
+
+    </div>
+
+
+    <div class="menu-quote">
+
+      <div>Un comune alla volta.</div>
+      <div>Una strada alla volta.</div>
+      <div>Tutta l’Italia. 🇮🇹</div>
+
+    </div>
+
+  </aside>
+
+
+
+  <!-- ===================================================
+       HERO
+       =================================================== -->
+
+  <header class="hero">
+
+    <div class="hero-inner">
+
+      <div class="hero-project">
+        COMUNI D'ITALIA
+      </div>
+
+      <div class="hero-kicker">
+        Un viaggio attraverso l'Italia
+      </div>
+
+      <h1>
+        Un comune<br>
+        alla <em>volta.</em>
+      </h1>
+
+
+      <div class="hero-bottom">
+
+        <p class="hero-description">
+          Sto visitando tutti i comuni d’Italia.
+          Una strada alla volta, attraversando città,
+          paesi e piccoli centri per conoscere
+          davvero il nostro Paese.
+        </p>
+
+
+        <div class="hero-buttons">
+
+          <a
+            href="mappa.html"
+            class="hero-button primary"
+          >
+            Esplora la mappa →
+          </a>
+
+          <a
+            href="viaggio.html"
+            class="hero-button"
+          >
+            Scopri il viaggio
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="hero-scroll">
+      Scorri per iniziare ↓
+    </div>
+
+  </header>
+
+
+
+  <main>
+
+
+    <!-- =================================================
+         INTRO
+         ================================================= -->
+
+    <section class="intro">
+
+      <div class="intro-inner">
+
+        <div>
+          <div class="eyebrow">
+            IL PROGETTO
+          </div>
+        </div>
+
+
+        <div>
+
+          <h2>
+            7.000+ comuni.
+            <br>
+            <em>Una sola Italia.</em>
+          </h2>
+
+
+          <p class="intro-text">
+            Ho deciso di mettermi in macchina e attraversare
+            l’Italia comune dopo comune. Non soltanto le grandi
+            città e le destinazioni più conosciute, ma anche
+            i piccoli centri, le strade secondarie, i paesaggi
+            e le storie che spesso rimangono fuori dalle rotte.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         STATISTICHE
+         ================================================= -->
+
+    <section class="stats">
+
+      <div class="stats-inner">
+
+
+        <div class="stat">
+
+          <strong id="count">
+            0
+          </strong>
+
+          <span class="stat-label">
+            comuni visitati
+          </span>
+
+        </div>
+
+
+        <div class="stat">
+
+          <strong id="total">
+            —
+          </strong>
+
+          <span class="stat-label">
+            comuni totali
+          </span>
+
+        </div>
+
+
+        <div class="stat">
+
+          <strong id="pct">
+            0,00%
+          </strong>
+
+          <span class="stat-label">
+            del viaggio completato
+          </span>
+
+
+          <div class="progress">
+
+            <i id="progressFill"></i>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         MAPPA
+         ================================================= -->
+
+    <section class="map-section">
+
+      <div class="map-header">
+
+        <div>
+
+          <div class="eyebrow">
+            LA MAPPA
+          </div>
+
+          <h2>
+            L’Italia,<br>
+            comune dopo <em>comune.</em>
+          </h2>
+
+        </div>
+
+
+        <a
+          href="mappa.html"
+          class="map-link"
+        >
+          Apri la mappa completa →
+        </a>
+
+      </div>
+
+
+      <div class="map-box">
+
+        <div id="home-map">
+
+          <div class="map-loading">
+            Caricamento della mappa…
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="map-legend">
+
+        <div class="legend-item">
+          <i class="legend-dot legend-green"></i>
+          Visitato
+        </div>
+
+        <div class="legend-item">
+          <i class="legend-dot legend-gray"></i>
+          Da visitare
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         MANIFESTO
+         ================================================= -->
+
+    <section class="manifesto">
+
+      <div class="manifesto-inner">
+
+        <div>
+
+          <div class="eyebrow">
+            01 — PERCHÉ LO FACCIO
+          </div>
+
+        </div>
+
+
+        <div>
+
+          <h2>
+            Voglio conoscere
+            <em>davvero</em>
+            l’Italia.
+          </h2>
+
+
+          <p>
+            Questo viaggio nasce da una passione semplice:
+            viaggiare, guidare e scoprire posti nuovi.
+            Ma anche da una sfida personale: provare a
+            raggiungere un traguardo enorme attraversando
+            tutta l’Italia.
+          </p>
+
+
+          <p>
+            Perché l’Italia non è soltanto Roma, Milano,
+            Firenze o Venezia. È fatta anche di migliaia
+            di piccoli comuni, ognuno con qualcosa da
+            raccontare.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         REGIONI
+         ================================================= -->
+
+    <section
+      class="regions"
+      id="ultimi"
+    >
+
+      <div class="regions-inner">
+
+        <div class="regions-header">
+
+          <div>
+
+            <div class="eyebrow">
+              IL PERCORSO
+            </div>
+
+            <h2>
+              Regione<br>
+              per regione.
+            </h2>
+
+          </div>
+
+
+          <a
+            href="viaggio.html"
+            class="map-link"
+          >
+            Vedi il viaggio →
+          </a>
+
+        </div>
+
+
+        <div
+          class="regions-grid"
+          id="home-regions"
+        >
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         SOCIAL
+         ================================================= -->
+
+    <section class="social">
+
+      <div class="social-inner">
+
+        <div>
+
+          <div
+            class="eyebrow"
+            style="color:#a8c5ad;"
+          >
+            SEGUI IL VIAGGIO
+          </div>
+
+          <h2>
+            Una strada<br>
+            <em>alla volta.</em>
+          </h2>
+
+        </div>
+
+
+        <div>
+
+          <p class="social-copy">
+            Il viaggio continua anche sui social:
+            fotografie, video, strade, comuni e tutte
+            le storie incontrate lungo il percorso.
+          </p>
+
+
+          <div class="social-links">
+
+            <a
+              href="https://www.instagram.com/frarossitto/"
+              target="_blank"
+              rel="noopener"
+              class="social-link"
+            >
+              Instagram ↗
+            </a>
+
+            <a
+              href="https://www.tiktok.com/"
+              target="_blank"
+              rel="noopener"
+              class="social-link"
+            >
+              TikTok ↗
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+
+  <!-- ===================================================
+       FOOTER
+       =================================================== -->
+
+  <footer>
+
+    <div class="footer-inner">
+
+      <div class="footer-big">
+
+        Un comune alla volta.<br>
+        Una strada alla volta.<br>
+        <em>Tutta l’Italia. 🇮🇹</em>
+
+      </div>
+
+
+      <div class="footer-bottom">
+
+        <span>
+          Comuni d’Italia 🇮🇹 · un progetto di Francesco
+        </span>
+
+
+        <span>
+
+          <a
+            href="https://www.instagram.com/frarossitto/"
+            target="_blank"
+            rel="noopener"
+          >
+            Instagram
+          </a>
+
+          &nbsp;·&nbsp;
+
+          <a href="contatti.html">
+            Contatti
+          </a>
+
+        </span>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+
+  <!-- ===================================================
+       DATI DEL PROGETTO
+       =================================================== -->
+
+  <script src="visitati.js"></script>
+  <script src="comuni.js"></script>
+  <script src="app.js"></script>
+
+
+
+  <!-- ===================================================
+       JAVASCRIPT HOME
+       =================================================== -->
+
+  <script>
+
+    /* ===================================================
+       MENU
+       =================================================== */
+
+    const menuButton =
+      document.getElementById("menuButton");
+
+    const menuClose =
+      document.getElementById("menuClose");
+
+    const menuOverlay =
+      document.getElementById("menuOverlay");
+
+    const sideMenu =
+      document.getElementById("sideMenu");
+
+
+    function openMenu(){
+
+      sideMenu.classList.add("open");
+      menuOverlay.classList.add("open");
+
+      menuButton.classList.add("hidden");
+
+      menuButton.setAttribute(
+        "aria-expanded",
+        "true"
+      );
+
+      sideMenu.setAttribute(
+        "aria-hidden",
+        "false"
+      );
+
+      document.body.classList.add(
+        "menu-open"
+      );
+
+    }
+
+
+    function closeMenu(){
+
+      sideMenu.classList.remove("open");
+      menuOverlay.classList.remove("open");
+
+      menuButton.classList.remove("hidden");
+
+      menuButton.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
+      sideMenu.setAttribute(
+        "aria-hidden",
+        "true"
+      );
+
+      document.body.classList.remove(
+        "menu-open"
+      );
+
+    }
+
+
+    menuButton.addEventListener(
+      "click",
+      openMenu
+    );
+
+
+    menuClose.addEventListener(
+      "click",
+      closeMenu
+    );
+
+
+    menuOverlay.addEventListener(
+      "click",
+      closeMenu
+    );
+
+
+    document.addEventListener(
+      "keydown",
+      function(event){
+
+        if(
+          event.key === "Escape" &&
+          sideMenu.classList.contains("open")
+        ){
+
+          closeMenu();
+
+        }
+
+      }
+    );
+
+
+    sideMenu
+      .querySelectorAll("a")
+      .forEach(function(link){
+
+        link.addEventListener(
+          "click",
+          function(){
+
+            closeMenu();
+
+          }
+        );
+
+      });
+
+
+
+    /* ===================================================
+       DATI
+       =================================================== */
+
+    const TOPO_URL =
+      "https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_municipalities.topo.json";
+
+
+    const visited =
+      new Set(
+        (window.VISITED_ISTAT || [])
+          .map(String)
+          .map(function(code){
+
+            return code.padStart(6,"0");
+
+          })
+      );
+
+
+    function getCode(feature){
+
+      const properties =
+        feature.properties || {};
+
+      return String(
+        properties.com_istat_code ||
+        properties.pro_com ||
+        properties.id ||
+        feature.id ||
+        ""
+      ).padStart(6,"0");
+
+    }
+
+
+    function formatNumber(number){
+
+      return Number(number)
+        .toLocaleString("it-IT");
+
+    }
+
+
+    function formatPercent(number){
+
+      return Number(number)
+        .toLocaleString(
+          "it-IT",
+          {
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+          }
+        ) + "%";
+
+    }
+
+
+    function escapeHtml(value){
+
+      return String(value)
+        .replace(
+          /[&<>"']/g,
+          function(character){
+
+            return {
+              "&":"&amp;",
+              "<":"&lt;",
+              ">":"&gt;",
+              '"':"&quot;",
+              "'":"&#039;"
+            }[character];
+
+          }
+        );
+
+    }
+
+
+
+    /* ===================================================
+       MAPPA + STATISTICHE
+       =================================================== */
+
+    async function loadHome(){
+
+      const topo =
+        await d3.json(TOPO_URL);
+
+
+      const objectNames =
+        Object.keys(topo.objects);
+
+
+      const municipalitiesObject =
+        objectNames.find(function(name){
+
+          return /municip/i.test(name);
+
+        }) || objectNames[0];
+
+
+      const collection =
+        topojson.feature(
+          topo,
+          topo.objects[municipalitiesObject]
+        );
+
+
+      const features =
+        collection.features || [];
+
+
+      const total =
+        features.length;
+
+
+      const percentage =
+        total
+          ? visited.size / total * 100
+          : 0;
+
+
+      /* statistiche */
+
+      document.getElementById(
+        "count"
+      ).textContent =
+        formatNumber(visited.size);
+
+
+      document.getElementById(
+        "total"
+      ).textContent =
+        formatNumber(total);
+
+
+      document.getElementById(
+        "pct"
+      ).textContent =
+        formatPercent(percentage);
+
+
+      document.getElementById(
+        "progressFill"
+      ).style.width =
+        Math.min(percentage,100) + "%";
+
+
+
+      /* mappa */
+
+      const mapContainer =
+        document.getElementById(
+          "home-map"
+        );
+
+
+      mapContainer.innerHTML = "";
+
+
+      const width =
+        mapContainer.clientWidth;
+
+
+      const height =
+        mapContainer.clientHeight;
+
+
+      const svg =
+        d3.select(mapContainer)
+          .append("svg")
+          .attr(
+            "viewBox",
+            "0 0 " + width + " " + height
+          )
+          .attr(
+            "preserveAspectRatio",
+            "xMidYMid meet"
+          );
+
+
+      const projection =
+        d3.geoMercator()
+          .fitSize(
+            [width,height],
+            collection
+          );
+
+
+      const path =
+        d3.geoPath(projection);
+
+
+      const group =
+        svg.append("g");
+
+
+      group
+        .selectAll("path")
+        .data(features)
+        .join("path")
+        .attr(
+          "class",
+          function(feature){
+
+            return visited.has(
+              getCode(feature)
+            )
+              ? "visited"
+              : "todo";
+
+          }
+        )
+        .attr(
+          "d",
+          path
+        )
+        .on(
+          "click",
+          function(event,feature){
+
+            const code =
+              getCode(feature);
+
+
+            if(!code){
+              return;
+            }
+
+
+            window.location.href =
+              "comune.html?codice=" +
+              encodeURIComponent(code);
+
+          }
+        );
+
+
+      /* zoom */
+
+      svg.call(
+
+        d3.zoom()
+          .scaleExtent([1,8])
+          .on(
+            "zoom",
+            function(event){
+
+              group.attr(
+                "transform",
+                event.transform
+              );
+
+            }
+          )
+
+      );
+
+    }
+
+
+
+    /* ===================================================
+       REGIONI
+       =================================================== */
+
+    async function loadRegions(){
+
+      const container =
+        document.getElementById(
+          "home-regions"
+        );
+
+
+      try{
+
+        const topo =
+          await d3.json(TOPO_URL);
+
+
+        const objectNames =
+          Object.keys(topo.objects);
+
+
+        const municipalitiesObject =
+          objectNames.find(function(name){
+
+            return /municip/i.test(name);
+
+          }) || objectNames[0];
+
+
+        const features =
+          topojson.feature(
+            topo,
+            topo.objects[
+              municipalitiesObject
+            ]
+          ).features;
+
+
+        const regionNames =
+          [
+            ...new Set(
+              features
+                .map(function(feature){
+
+                  return (
+                    feature.properties &&
+                    feature.properties.reg_name
+                  );
+
+                })
+                .filter(Boolean)
+            )
+          ]
+          .sort(function(a,b){
+
+            return a.localeCompare(
+              b,
+              "it"
+            );
+
+          });
+
+
+        const stats = {};
+
+
+        regionNames.forEach(
+          function(region){
+
+            stats[region] = {
+              total:0,
+              visited:0
+            };
+
+          }
+        );
+
+
+        features.forEach(
+          function(feature){
+
+            const region =
+              feature.properties &&
+              feature.properties.reg_name;
+
+
+            if(
+              !region ||
+              !stats[region]
+            ){
+              return;
+            }
+
+
+            stats[region].total++;
+
+
+            if(
+              visited.has(
+                getCode(feature)
+              )
+            ){
+
+              stats[region].visited++;
+
+            }
+
+          }
+        );
+
+
+        container.innerHTML =
+          regionNames
+            .map(function(region){
+
+              const data =
+                stats[region];
+
+
+              const percentage =
+                data.total
+                  ? data.visited /
+                    data.total *
+                    100
+                  : 0;
+
+
+              return `
+
+                <a
+                  href="viaggio.html"
+                  class="region"
+                >
+
+                  <div class="region-name">
+                    ${escapeHtml(region)}
+                  </div>
+
+
+                  <div class="region-data">
+
+                    <span>
+                      ${formatNumber(data.visited)}
+                      /
+                      ${formatNumber(data.total)}
+                    </span>
+
+                    <span>
+                      ${percentage.toLocaleString(
+                        "it-IT",
+                        {
+                          maximumFractionDigits:1
+                        }
+                      )}%
+                    </span>
+
+                  </div>
+
+
+                  <div class="region-progress">
+
+                    <i
+                      style="width:${Math.min(
+                        percentage,
+                        100
+                      )}%"
+                    ></i>
+
+                  </div>
+
+                </a>
+
+              `;
+
+            })
+            .join("");
+
+
+      }catch(error){
+
+        console.error(
+          "Errore caricamento regioni:",
+          error
+        );
+
+      }
+
+    }
+
+
+
+    /* ===================================================
+       AVVIO
+       =================================================== */
+
+    loadHome()
+      .catch(function(error){
+
+        console.error(
+          "Errore caricamento homepage:",
+          error
+        );
+
+
+        document.getElementById(
+          "home-map"
+        ).innerHTML = `
+
+          <div class="map-loading">
+
+            Impossibile caricare la mappa.
+            <br>
+            Ricarica la pagina e riprova.
+
+          </div>
+
+        `;
+
+      });
+
+
+    loadRegions();
+
+  </script>
+
+</body>
+</html>
