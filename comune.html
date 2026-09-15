@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comune — Comuni d’Italia 🇮🇹</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<button class="menu-button" id="menuButton" aria-label="Apri menu" aria-expanded="false">⋯</button>
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<aside class="side-menu" id="sideMenu" aria-hidden="true">
+
+<div class="menu-top">
+<div class="menu-brand">Comuni d’Italia 🇮🇹</div>
+<button class="menu-close" id="menuClose" aria-label="Chiudi menu">×</button>
+</div>
+
+<div class="menu-section">
+<div class="menu-heading">NAVIGAZIONE</div>
+<a href="index.html" class="menu-link"><span>Home</span><span>⌂</span></a>
+</div>
+
+<div class="menu-section">
+<div class="menu-heading">IL VIAGGIO</div>
+<a href="mappa.html" class="menu-link"><span>Mappa dei comuni</span><span>→</span></a>
+<a href="viaggio.html" class="menu-link"><span>Il viaggio</span><span>→</span></a>
+<a href="index.html#regioni" class="menu-link"><span>Regioni</span><span>→</span></a>
+</div>
+
+<div class="menu-section">
+<div class="menu-heading">IL PROGETTO</div>
+<a href="chi-sono.html" class="menu-link"><span>Chi sono</span><span>→</span></a>
+<a href="traguardi.html" class="menu-link"><span>Traguardi</span><span>→</span></a>
+</div>
+
+<div class="menu-section">
+<div class="menu-heading">SEGUIMI</div>
+<a href="https://www.instagram.com/frarossitto/" target="_blank" rel="noopener" class="menu-link"><span>Instagram</span><span>↗</span></a>
+<a href="https://www.tiktok.com/" target="_blank" rel="noopener" class="menu-link"><span>TikTok</span><span>↗</span></a>
+</div>
+
+<div class="menu-section">
+<div class="menu-heading">CONTATTI</div>
+<a href="contatti.html" class="menu-link"><span>Contatti</span><span>→</span></a>
+</div>
+
+<div class="menu-quote">
+<div>Un comune alla volta.</div>
+<div>Una strada alla volta.</div>
+<div>Tutta l’Italia. 🇮🇹</div>
+</div>
+
+</aside>
+
+<main class="page">
+
+<div class="container">
+
+<header class="page-header">
+<a class="brand" href="index.html">Comuni d’Italia 🇮🇹</a>
+</header>
+
+<section class="page-hero">
+<div class="page-kicker">Scheda comune</div>
+<h1 id="title">Caricamento…</h1>
+<p id="subtitle">Sto cercando le informazioni del comune.</p>
+</section>
+
+<section class="editorial-section">
+
+<div class="detail-box">
+
+<h2 class="detail-name" id="name">—</h2>
+
+<div class="detail-meta" id="meta">—</div>
+
+<div class="detail-description" id="description">
+</div>
+
+<div id="instagram"></div>
+
+</div>
+
+</section>
+
+<footer class="site-footer">
+<span>Comuni d’Italia 🇮🇹 · un progetto di Francesco</span>
+<a href="mappa.html">Torna alla mappa →</a>
+</footer>
+
+</div>
+
+</main>
+
+<script src="./visitati.js"></script>
+<script src="./comuni.js"></script>
+
+<script>
+
+const menuButton=document.getElementById("menuButton");
+const menuClose=document.getElementById("menuClose");
+const menuOverlay=document.getElementById("menuOverlay");
+const sideMenu=document.getElementById("sideMenu");
+
+function openMenu(){
+sideMenu.classList.add("open");
+menuOverlay.classList.add("open");
+menuButton.classList.add("hidden");
+menuButton.setAttribute("aria-expanded","true");
+sideMenu.setAttribute("aria-hidden","false");
+document.body.classList.add("menu-open");
+}
+
+function closeMenu(){
+sideMenu.classList.remove("open");
+menuOverlay.classList.remove("open");
+menuButton.classList.remove("hidden");
+menuButton.setAttribute("aria-expanded","false");
+sideMenu.setAttribute("aria-hidden","true");
+document.body.classList.remove("menu-open");
+}
+
+menuButton.addEventListener("click",openMenu);
+menuClose.addEventListener("click",closeMenu);
+menuOverlay.addEventListener("click",closeMenu);
+
+document.addEventListener("keydown",e=>{
+if(e.key==="Escape") closeMenu();
+});
+
+sideMenu.querySelectorAll("a").forEach(link=>{
+link.addEventListener("click",closeMenu);
+});
+
+const params=new URLSearchParams(location.search);
+
+const codice=
+String(params.get("codice")||"")
+.padStart(6,"0");
+
+const visited=
+new Set(
+(window.VISITED_ISTAT||[])
+.map(String)
+.map(x=>x.padStart(6,"0"))
+);
+
+const data=
+window.COMUNI_DATA?.[codice];
+
+if(data){
+
+document.getElementById("title").textContent=
+data.nome || "Comune";
+
+document.getElementById("subtitle").textContent=
+visited.has(codice)
+? "Comune visitato ✓"
+: "Comune ancora da visitare";
+
+document.getElementById("name").textContent=
+data.nome || "Comune";
+
+document.getElementById("meta").textContent=
+[
+data.provincia,
+data.regione,
+"ISTAT "+codice
+]
+.filter(Boolean)
+.join(" · ");
+
+document.getElementById("description").textContent=
+data.descrizione || "";
+
+if(visited.has(codice)){
+
+document.getElementById("instagram").innerHTML=`
+<a
+href="https://www.instagram.com/frarossitto/"
+target="_blank"
+rel="noopener"
+style="
+display:inline-block;
+margin-top:30px;
+color:var(--green);
+font-weight:700;
+text-decoration:none;
+">
+Vedi il viaggio su Instagram ↗
+</a>
+`;
+
+}
+
+}else{
+
+document.getElementById("title").textContent=
+"Comune";
+
+document.getElementById("subtitle").textContent=
+"Informazioni non ancora disponibili.";
+
+document.getElementById("name").textContent=
+"Comune non trovato";
+
+document.getElementById("meta").textContent=
+codice
+? "Codice ISTAT: "+codice
+: "Nessun codice comune specificato.";
+
+}
+
+</script>
+
+</body>
+</html>
