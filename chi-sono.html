@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chi sono — Comuni d’Italia 🇮🇹</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<button class="menu-button" id="menuButton" aria-label="Apri menu" aria-expanded="false">⋯</button>
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<aside class="side-menu" id="sideMenu" aria-hidden="true">
+
+<div class="menu-top">
+<div class="menu-brand">Comuni d’Italia 🇮🇹</div>
+<button class="menu-close" id="menuClose" aria-label="Chiudi menu">×</button>
+</div>
+
+<div class="menu-section">
+<div class="menu-heading">NAVIGAZIONE</div>
+<a href="index.html" class="menu-link"><span>Home</span><span>⌂</span></a>
+</div>
+
+<div class="menu-section">
+<div class="menu-heading">IL VIAGGIO</div>
+<a href="mappa.html" class="menu-link"><span>Mappa dei comuni</span><span>→</span></a>
+<a href="viaggio.html" class="menu-link"><span>Il viaggio</span><span>→</span></a>
+<a href="index.html#regioni" class="menu-link"><span>Regioni</span><span>→</span></a>
+</div>
+
+<div class="menu-section">
+<div class="menu-heading">IL PROGETTO</div>
+<a href="chi-sono.html" class="menu-link"><span>Chi sono</span><span>→</span></a>
+<a href="traguardi.html" class="menu-link"><span>Traguardi</span><span>→</span></a>
+</div>
+
+<div class="menu-section">
+<div class="menu-heading">SEGUIMI</div>
+<a href="https://www.instagram.com/frarossitto/" target="_blank" rel="noopener" class="menu-link"><span>Instagram</span><span>↗</span></a>
+<a href="https://www.tiktok.com/" target="_blank" rel="noopener" class="menu-link"><span>TikTok</span><span>↗</span></a>
+</div>
+
+<div class="menu-section">
+<div class="menu-heading">CONTATTI</div>
+<a href="contatti.html" class="menu-link"><span>Contatti</span><span>→</span></a>
+</div>
+
+<div class="menu-quote">
+<div>Un comune alla volta.</div>
+<div>Una strada alla volta.</div>
+<div>Tutta l’Italia. 🇮🇹</div>
+</div>
+
+</aside>
+
+<main class="page">
+
+<div class="container">
+
+<header class="page-header">
+<a class="brand" href="index.html">Comuni d’Italia 🇮🇹</a>
+</header>
+
+<section class="page-hero">
+<div class="page-kicker">Chi sono</div>
+<h1>Francesco,<br>e un’idea piuttosto ambiziosa.</h1>
+<p>
+Ho 25 anni e vivo in provincia di Monza e Brianza.
+Da sempre mi piace viaggiare, mettermi in macchina
+e scoprire posti nuovi.
+</p>
+</section>
+
+<section class="editorial-section">
+
+<div class="profile">
+
+<div class="profile-photo">
+Comuni d’Italia 🇮🇹
+<br><br>
+Un viaggio personale attraverso il Paese.
+</div>
+
+<div class="profile-copy">
+
+<h2>Perché visitare tutti i comuni?</h2>
+
+<p>
+Da questa passione per il viaggio è nata un’idea tanto semplice
+quanto ambiziosa: visitare tutti i comuni d’Italia.
+</p>
+
+<p>
+Per me questo viaggio ha due obiettivi.
+Il primo è personale: provare a diventare la prima persona
+a riuscire nell’impresa.
+</p>
+
+<p>
+Il secondo è conoscere davvero l’Italia, andando oltre le destinazioni
+più famose e scoprendo anche i piccoli comuni, le loro storie,
+i paesaggi e le persone che li rendono unici.
+</p>
+
+<p>
+Un comune alla volta, una strada alla volta, voglio attraversare
+tutta l’Italia.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="editorial-section">
+
+<div class="editorial-grid">
+
+<div>
+<div class="page-kicker">Il manifesto</div>
+<h2>Non cercare soltanto i posti famosi.</h2>
+</div>
+
+<div class="editorial-copy">
+<p>
+L’Italia è molto più grande delle sue città più conosciute.
+È fatta anche di piccoli comuni, strade provinciali,
+piazze quasi vuote e paesaggi che spesso si incontrano
+soltanto decidendo di uscire dalla strada principale.
+</p>
+
+<p>
+Questo progetto nasce proprio dalla curiosità di vedere
+quella parte d’Italia.
+</p>
+</div>
+
+</div>
+
+</section>
+
+<footer class="site-footer">
+<span>Comuni d’Italia 🇮🇹 · un progetto di Francesco</span>
+<a href="https://www.instagram.com/frarossitto/" target="_blank" rel="noopener">Instagram ↗</a>
+</footer>
+
+</div>
+
+</main>
+
+<script>
+const menuButton=document.getElementById("menuButton");
+const menuClose=document.getElementById("menuClose");
+const menuOverlay=document.getElementById("menuOverlay");
+const sideMenu=document.getElementById("sideMenu");
+
+function openMenu(){
+sideMenu.classList.add("open");
+menuOverlay.classList.add("open");
+menuButton.classList.add("hidden");
+menuButton.setAttribute("aria-expanded","true");
+sideMenu.setAttribute("aria-hidden","false");
+document.body.classList.add("menu-open");
+}
+
+function closeMenu(){
+sideMenu.classList.remove("open");
+menuOverlay.classList.remove("open");
+menuButton.classList.remove("hidden");
+menuButton.setAttribute("aria-expanded","false");
+sideMenu.setAttribute("aria-hidden","true");
+document.body.classList.remove("menu-open");
+}
+
+menuButton.addEventListener("click",openMenu);
+menuClose.addEventListener("click",closeMenu);
+menuOverlay.addEventListener("click",closeMenu);
+
+document.addEventListener("keydown",e=>{
+if(e.key==="Escape") closeMenu();
+});
+
+sideMenu.querySelectorAll("a").forEach(link=>{
+link.addEventListener("click",closeMenu);
+});
+</script>
+
+</body>
+</html>
