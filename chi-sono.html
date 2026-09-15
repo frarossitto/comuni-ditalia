@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Chi sono — Comuni d’Italia 🇮🇹</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+rel="stylesheet">
+
+<style>
+
+:root{
+--paper:#f7f3e9;
+--white:#fffdf8;
+--ink:#20221f;
+--muted:#6e7069;
+--green:#2f6f4e;
+--line:#ddd7ca;
+}
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+background:var(--paper);
+color:var(--ink);
+font-family:"DM Sans",sans-serif;
+}
+
+.page{
+max-width:1000px;
+margin:auto;
+padding:20px 22px 50px;
+}
+
+.top{
+height:50px;
+display:flex;
+align-items:center;
+}
+
+.brand{
+font-family:"Playfair Display",serif;
+font-size:21px;
+font-weight:700;
+}
+
+/* MENU */
+
+.menu-button{
+position:fixed;
+right:22px;
+top:19px;
+z-index:4000;
+
+border:0;
+background:transparent;
+
+font-size:30px;
+cursor:pointer;
+}
+
+.menu-overlay{
+position:fixed;
+inset:0;
+
+background:rgba(20,25,21,.45);
+backdrop-filter:blur(3px);
+
+opacity:0;
+pointer-events:none;
+
+transition:.25s;
+
+z-index:4998;
+}
+
+.menu-overlay.open{
+opacity:1;
+pointer-events:auto;
+}
+
+.side-menu{
+position:fixed;
+z-index:5000;
+
+top:0;
+right:0;
+
+width:min(430px,92vw);
+height:100dvh;
+
+background:var(--paper);
+
+padding:24px 28px;
+
+transform:translateX(105%);
+transition:.3s;
+
+display:flex;
+flex-direction:column;
+}
+
+.side-menu.open{
+transform:translateX(0);
+}
+
+.menu-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+margin-bottom:55px;
+}
+
+.menu-brand{
+font-family:"Playfair Display",serif;
+font-size:20px;
+font-weight:700;
+}
+
+.menu-close{
+width:40px;
+height:40px;
+
+border:1px solid var(--line);
+border-radius:50%;
+
+background:var(--white);
+
+font-size:27px;
+cursor:pointer;
+}
+
+.menu-section{
+margin-bottom:30px;
+}
+
+.menu-heading{
+margin-bottom:10px;
+
+color:var(--green);
+
+font-size:10px;
+font-weight:700;
+letter-spacing:.18em;
+}
+
+.menu-link{
+display:flex;
+justify-content:space-between;
+
+padding:12px 0;
+
+border-bottom:1px solid var(--line);
+
+text-decoration:none;
+
+font-size:18px;
+}
+
+.menu-quote{
+margin-top:auto;
+
+border-top:1px solid var(--line);
+
+padding-top:22px;
+
+font-family:"Playfair Display",serif;
+font-size:20px;
+line-height:1.25;
+font-weight:600;
+}
+
+.menu-quote div:last-child{
+color:var(--green);
+}
+
+/* CONTENUTO */
+
+.content{
+padding:90px 0;
+max-width:780px;
+}
+
+.kicker{
+color:var(--green);
+
+font-size:10px;
+font-weight:700;
+letter-spacing:.2em;
+}
+
+h1{
+margin:12px 0 30px;
+
+font-family:"Playfair Display",serif;
+
+font-size:clamp(50px,8vw,90px);
+
+line-height:.92;
+}
+
+.lead{
+font-size:21px;
+line-height:1.55;
+}
+
+p{
+color:var(--muted);
+line-height:1.7;
+}
+
+.story{
+margin-top:50px;
+
+border-top:1px solid var(--line);
+}
+
+.story p{
+padding:25px 0;
+
+border-bottom:1px solid var(--line);
+}
+
+.quote{
+margin:70px 0;
+
+font-family:"Playfair Display",serif;
+
+font-size:clamp(30px,5vw,55px);
+
+line-height:1.15;
+
+color:var(--green);
+}
+
+.footer{
+border-top:1px solid var(--line);
+
+padding-top:22px;
+
+color:var(--muted);
+
+font-size:12px;
+}
+
+@media(max-width:760px){
+
+.page{
+padding:16px 15px 35px;
+}
+
+.content{
+padding-top:65px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+<header class="top">
+
+<div class="brand">
+Comuni d’Italia 🇮🇹
+</div>
+
+</header>
+
+
+<button
+class="menu-button"
+id="menuButton">
+⋯
+</button>
+
+
+<div
+class="menu-overlay"
+id="menuOverlay">
+</div>
+
+
+<aside
+class="side-menu"
+id="sideMenu">
+
+<div class="menu-top">
+
+<div class="menu-brand">
+Comuni d’Italia 🇮🇹
+</div>
+
+<button
+class="menu-close"
+id="menuClose">
+×
+</button>
+
+</div>
+
+
+<div class="menu-section">
+
+<div class="menu-heading">
+IL PROGETTO
+</div>
+
+<a
+class="menu-link"
+href="chi-sono.html">
+
+<span>Chi sono</span>
+<span>→</span>
+
+</a>
+
+</div>
+
+
+<div class="menu-section">
+
+<div class="menu-heading">
+IL VIAGGIO
+</div>
+
+<a
+class="menu-link"
+href="mappa.html">
+
+<span>Mappa</span>
+<span>→</span>
+
+</a>
+
+</div>
+
+
+<div class="menu-section">
+
+<div class="menu-heading">
+CONTATTI
+</div>
+
+<a
+class="menu-link"
+href="contatti.html">
+
+<span>Contatti</span>
+<span>→</span>
+
+</a>
+
+</div>
+
+
+<div class="menu-quote">
+
+<div>Un comune alla volta.</div>
+<div>Una strada alla volta.</div>
+<div>Tutta l’Italia. 🇮🇹</div>
+
+</div>
+
+</aside>
+
+
+<main class="content">
+
+<div class="kicker">
+CHI SONO
+</div>
+
+<h1>
+Ciao, sono<br>
+Francesco.
+</h1>
+
+<p class="lead">
+Ho 25 anni e vivo in provincia di Monza e Brianza.
+Da sempre mi piace viaggiare, mettermi in macchina
+e scoprire posti nuovi.
+</p>
+
+
+<div class="story">
+
+<p>
+Da questa passione è nata un'idea tanto semplice
+quanto ambiziosa: visitare tutti i comuni d'Italia.
+</p>
+
+<p>
+Per me questo viaggio ha due obiettivi.
+Il primo è personale: provare a diventare la prima
+persona a riuscire nell'impresa.
+</p>
+
+<p>
+Il secondo è conoscere davvero l'Italia, andando
+oltre le destinazioni più famose e scoprendo anche
+i piccoli comuni, le loro storie, i paesaggi
+e le persone che li rendono unici.
+</p>
+
+</div>
+
+
+<div class="quote">
+
+Un comune alla volta.<br>
+Una strada alla volta.<br>
+Tutta l’Italia. 🇮🇹
+
+</div>
+
+</main>
+
+
+<footer class="footer">
+Comuni d’Italia 🇮🇹
+</footer>
+
+</div>
+
+
+<script>
+
+const menuButton=
+document.getElementById("menuButton");
+
+const menuClose=
+document.getElementById("menuClose");
+
+const menuOverlay=
+document.getElementById("menuOverlay");
+
+const sideMenu=
+document.getElementById("sideMenu");
+
+
+function openMenu(){
+
+sideMenu.classList.add("open");
+menuOverlay.classList.add("open");
+
+menuButton.style.opacity="0";
+menuButton.style.pointerEvents="none";
+
+document.body.style.overflow="hidden";
+
+}
+
+
+function closeMenu(){
+
+sideMenu.classList.remove("open");
+menuOverlay.classList.remove("open");
+
+menuButton.style.opacity="1";
+menuButton.style.pointerEvents="auto";
+
+document.body.style.overflow="";
+
+}
+
+
+menuButton.onclick=openMenu;
+menuClose.onclick=closeMenu;
+menuOverlay.onclick=closeMenu;
+
+document.addEventListener(
+"keydown",
+e=>{
+if(e.key==="Escape") closeMenu();
+}
+);
+
+</script>
+
+</body>
+</html>
