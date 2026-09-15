@@ -1,0 +1,2595 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>La mappa dei comuni — Comuni d’Italia 🇮🇹</title>
+
+  <meta
+    name="description"
+    content="Esplora tutti i comuni d’Italia e scopri quelli già visitati durante il viaggio."
+  >
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- LEAFLET -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
+  <style>
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      margin:0;
+      background:#f6f0e3;
+      color:#24251f;
+      font-family:"DM Sans",sans-serif;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .page{
+      width:min(1180px,calc(100% - 40px));
+      margin:auto;
+      padding:55px 0 80px;
+    }
+
+    .hero{
+      position:relative;
+      padding:15px 0 55px;
+    }
+
+    .hero h1{
+      margin:0;
+      max-width:760px;
+      font-family:"Playfair Display",serif;
+      font-size:clamp(58px,8vw,105px);
+      line-height:.91;
+      letter-spacing:-.055em;
+      font-weight:600;
+    }
+
+    .hero p{
+      max-width:850px;
+      margin:30px 0 0;
+      color:#77766e;
+      font-size:clamp(18px,2.1vw,25px);
+      line-height:1.55;
+    }
+
+    /* =========================
+       MENU
+    ========================= */
+
+    .menu-button{
+      position:fixed;
+      top:20px;
+      right:20px;
+      z-index:2000;
+
+      width:58px;
+      height:58px;
+
+      border-radius:50%;
+      border:1px solid #ddd5c5;
+
+      background:#fffdf8;
+      color:#24251f;
+
+      font-size:28px;
+      line-height:1;
+
+      cursor:pointer;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      box-shadow:0 8px 25px rgba(50,45,30,.10);
+
+      transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+    }
+
+    .menu-button:hover{
+      transform:translateY(-1px);
+      box-shadow:0 12px 30px rgba(50,45,30,.14);
+    }
+
+    .menu-overlay{
+      position:fixed;
+      inset:0;
+      z-index:1998;
+
+      background:rgba(20,20,18,.38);
+
+      backdrop-filter:blur(3px);
+
+      opacity:0;
+      pointer-events:none;
+
+      transition:opacity .25s ease;
+    }
+
+    .menu-overlay.open{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .side-menu{
+      position:fixed;
+      top:0;
+      right:0;
+      bottom:0;
+
+      z-index:1999;
+
+      width:min(430px,88vw);
+
+      background:#f6f0e3;
+
+      padding:55px 48px 38px;
+
+      overflow-y:auto;
+
+      transform:translateX(100%);
+
+      transition:
+        transform .32s cubic-bezier(.22,.61,.36,1);
+
+      box-shadow:-18px 0 50px rgba(30,28,20,.15);
+    }
+
+    .side-menu.open{
+      transform:translateX(0);
+    }
+
+    .menu-close{
+      position:absolute;
+      top:22px;
+      right:25px;
+
+      width:42px;
+      height:42px;
+
+      border:0;
+      background:transparent;
+
+      color:#252620;
+
+      font-size:34px;
+      line-height:1;
+
+      cursor:pointer;
+      font-weight:300;
+    }
+
+    .menu-brand{
+      font-family:"Playfair Display",serif;
+      font-size:26px;
+      line-height:1.1;
+
+      margin-bottom:55px;
+
+      color:#24251f;
+    }
+
+    .menu-section{
+      margin-bottom:42px;
+    }
+
+    .menu-heading{
+      color:#477b57;
+
+      font-size:12px;
+      font-weight:700;
+
+      letter-spacing:.18em;
+
+      margin-bottom:17px;
+    }
+
+    .menu-section a{
+      display:block;
+
+      padding:8px 0;
+
+      color:#24251f;
+      text-decoration:none;
+
+      font-size:19px;
+      line-height:1.25;
+
+      transition:
+        color .15s ease,
+        transform .15s ease;
+    }
+
+    .menu-section a:hover{
+      color:#477b57;
+      transform:translateX(3px);
+    }
+
+    .menu-quote{
+      margin-top:5px;
+      padding-top:35px;
+
+      border-top:1px solid #ddd5c5;
+
+      font-family:"Playfair Display",serif;
+
+      font-size:23px;
+      line-height:1.28;
+
+      color:#24251f;
+    }
+
+    /* =========================
+       MAP CARD
+    ========================= */
+
+    .map-card{
+      background:rgba(255,253,248,.72);
+
+      border:1px solid #ddd5c5;
+      border-radius:30px;
+
+      padding:18px;
+
+      box-shadow:
+        0 20px 60px rgba(45,40,28,.06);
+    }
+
+    /* =========================
+       SEARCH
+    ========================= */
+
+    .map-tools{
+      display:grid;
+
+      grid-template-columns:
+        minmax(0,1fr)
+        310px;
+
+      gap:14px;
+
+      margin-bottom:14px;
+    }
+
+    .search-box{
+      position:relative;
+      display:flex;
+      gap:12px;
+    }
+
+    .search-input{
+      width:100%;
+      height:74px;
+
+      border:1px solid #ddd5c5;
+      border-radius:22px;
+
+      background:#fffdf8;
+
+      padding:0 22px;
+
+      color:#24251f;
+
+      font-family:"DM Sans",sans-serif;
+      font-size:21px;
+
+      outline:none;
+    }
+
+    .search-input:focus{
+      border-color:#477b57;
+
+      box-shadow:
+        0 0 0 3px rgba(71,123,87,.10);
+    }
+
+    .search-button{
+      flex:0 0 310px;
+
+      height:74px;
+
+      border:0;
+      border-radius:22px;
+
+      background:#22231f;
+      color:#fffdf8;
+
+      font-family:"DM Sans",sans-serif;
+      font-size:22px;
+      font-weight:700;
+
+      cursor:pointer;
+
+      transition:
+        transform .15s ease,
+        background .15s ease;
+    }
+
+    .search-button:hover{
+      transform:translateY(-1px);
+      background:#30312c;
+    }
+
+    .suggestions{
+      position:absolute;
+
+      top:82px;
+      left:0;
+      right:322px;
+
+      z-index:1000;
+
+      background:#fffdf8;
+
+      border:1px solid #ddd5c5;
+      border-radius:18px;
+
+      box-shadow:
+        0 18px 40px rgba(40,35,25,.13);
+
+      overflow:hidden;
+
+      display:none;
+    }
+
+    .suggestions.open{
+      display:block;
+    }
+
+    .suggestion{
+      padding:14px 18px;
+
+      cursor:pointer;
+
+      border-bottom:1px solid #eee8dc;
+
+      font-size:16px;
+    }
+
+    .suggestion:last-child{
+      border-bottom:0;
+    }
+
+    .suggestion:hover{
+      background:#f2eee4;
+    }
+
+    .suggestion strong{
+      font-weight:600;
+    }
+
+    .suggestion small{
+      display:block;
+
+      margin-top:3px;
+
+      color:#85837b;
+      font-size:13px;
+    }
+
+    /* =========================
+       FILTERS
+    ========================= */
+
+    .filters{
+      display:grid;
+
+      grid-template-columns:
+        minmax(0,1fr)
+        180px;
+
+      gap:14px;
+
+      margin-bottom:20px;
+    }
+
+    .region-select,
+    .reset-button{
+      height:74px;
+
+      border:1px solid #ddd5c5;
+
+      border-radius:22px;
+
+      background:#fffdf8;
+
+      padding:0 22px;
+
+      color:#24251f;
+
+      font-family:"DM Sans",sans-serif;
+
+      font-size:20px;
+    }
+
+    .region-select{
+      width:100%;
+    }
+
+    .reset-button{
+      cursor:pointer;
+      font-weight:600;
+
+      transition:
+        background .15s ease,
+        transform .15s ease;
+    }
+
+    .reset-button:hover{
+      background:#f1ece1;
+      transform:translateY(-1px);
+    }
+
+    /* =========================
+       MAP
+    ========================= */
+
+    #map{
+      width:100%;
+      height:760px;
+
+      border-radius:25px;
+
+      overflow:hidden;
+
+      background:#e7e2d6;
+    }
+
+    .leaflet-container{
+      font-family:"DM Sans",sans-serif;
+
+      background:#e7e2d6;
+    }
+
+    .leaflet-control-zoom{
+      border:0!important;
+
+      box-shadow:
+        0 8px 25px rgba(40,35,25,.12)!important;
+    }
+
+    .leaflet-control-zoom a{
+      color:#24251f!important;
+
+      background:#fffdf8!important;
+
+      border-color:#ddd5c5!important;
+    }
+
+    /* =========================
+       MUNICIPALITY LABELS
+    ========================= */
+
+    .municipality-label{
+      background:transparent;
+      border:0;
+
+      color:#3c3d38;
+
+      font-size:10px;
+      font-weight:500;
+
+      white-space:nowrap;
+
+      text-shadow:
+        0 1px 3px rgba(255,255,255,.95);
+    }
+
+    .selected-label{
+      background:#24251f;
+
+      border:0;
+
+      border-radius:8px;
+
+      padding:6px 9px;
+
+      color:#fffdf8;
+
+      font-size:13px;
+      font-weight:700;
+
+      white-space:nowrap;
+
+      box-shadow:
+        0 6px 18px rgba(20,20,18,.20);
+    }
+
+    .selected-label::after{
+      content:"";
+
+      position:absolute;
+
+      left:50%;
+      bottom:-5px;
+
+      transform:translateX(-50%);
+
+      border-left:5px solid transparent;
+      border-right:5px solid transparent;
+      border-top:5px solid #24251f;
+    }
+
+    /* =========================
+       INFO
+    ========================= */
+
+    .map-info{
+      margin-top:18px;
+
+      padding:25px 26px;
+
+      border-radius:22px;
+
+      background:#fffdf8;
+
+      border:1px solid #ddd5c5;
+
+      display:none;
+    }
+
+    .map-info.open{
+      display:block;
+    }
+
+    .info-status{
+      display:inline-block;
+
+      margin-bottom:10px;
+
+      padding:6px 10px;
+
+      border-radius:999px;
+
+      background:#e5efe7;
+
+      color:#477b57;
+
+      font-size:12px;
+      font-weight:700;
+
+      letter-spacing:.08em;
+
+      text-transform:uppercase;
+    }
+
+    .info-status.not-visited{
+      background:#ecebe6;
+      color:#77766e;
+    }
+
+    .map-info h2{
+      margin:0 0 8px;
+
+      font-family:"Playfair Display",serif;
+
+      font-size:32px;
+      line-height:1.05;
+    }
+
+    .info-meta{
+      color:#77766e;
+
+      font-size:16px;
+      line-height:1.7;
+    }
+
+    .info-link{
+      display:inline-block;
+
+      margin-top:15px;
+
+      color:#477b57;
+
+      text-decoration:none;
+
+      font-weight:700;
+    }
+
+    .info-empty{
+      margin-top:18px;
+
+      padding:18px;
+
+      border-radius:18px;
+
+      background:#fffdf8;
+
+      border:1px solid #ddd5c5;
+
+      color:#77766e;
+
+      display:none;
+    }
+
+    .info-empty.open{
+      display:block;
+    }
+
+    /* =========================
+       LEGEND
+    ========================= */
+
+    .legend{
+      display:flex;
+
+      flex-wrap:wrap;
+
+      gap:20px;
+
+      align-items:center;
+
+      margin-top:18px;
+
+      padding:0 5px;
+
+      color:#77766e;
+
+      font-size:14px;
+    }
+
+    .legend-item{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .legend-dot{
+      width:13px;
+      height:13px;
+
+      border-radius:50%;
+    }
+
+    .legend-dot.visited{
+      background:#477b57;
+    }
+
+    .legend-dot.not-visited{
+      background:#c9c9c4;
+    }
+
+    .legend-dot.selected{
+      background:#f2c84b;
+    }
+
+    /* =========================
+       ERROR
+    ========================= */
+
+    .map-error{
+      margin-top:14px;
+
+      padding:15px 18px;
+
+      border-radius:16px;
+
+      background:#f3e7e2;
+
+      color:#8a5145;
+
+      display:none;
+    }
+
+    .map-error.open{
+      display:block;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media(max-width:760px){
+
+      .page{
+        width:min(100% - 30px,1180px);
+
+        padding-top:28px;
+      }
+
+      .hero{
+        padding-top:5px;
+        padding-bottom:40px;
+      }
+
+      .hero h1{
+        font-size:58px;
+      }
+
+      .hero p{
+        font-size:18px;
+        line-height:1.55;
+        margin-top:25px;
+      }
+
+      .map-card{
+        padding:17px;
+
+        border-radius:28px;
+      }
+
+      .map-tools{
+        display:grid;
+
+        grid-template-columns:1fr 1fr;
+
+        gap:13px;
+      }
+
+      .search-box{
+        display:contents;
+      }
+
+      .search-input{
+        height:74px;
+
+        font-size:18px;
+        border-radius:20px;
+      }
+
+      .search-button{
+        height:74px;
+
+        min-width:0;
+
+        font-size:20px;
+
+        border-radius:20px;
+      }
+
+      .suggestions{
+        top:82px;
+        left:0;
+        right:calc(50% + 7px);
+      }
+
+      .filters{
+        grid-template-columns:minmax(0,1fr) 180px;
+        gap:13px;
+      }
+
+      .region-select,
+      .reset-button{
+        height:74px;
+        font-size:17px;
+        border-radius:20px;
+      }
+
+      #map{
+        height:760px;
+        border-radius:23px;
+      }
+
+      .side-menu{
+        width:88vw;
+        padding:45px 34px 32px;
+      }
+
+      .menu-brand{
+        font-size:24px;
+        margin-bottom:48px;
+      }
+
+      .menu-section{
+        margin-bottom:34px;
+      }
+
+      .menu-heading{
+        font-size:11px;
+        margin-bottom:13px;
+      }
+
+      .menu-section a{
+        font-size:18px;
+        padding:7px 0;
+      }
+
+      .menu-quote{
+        font-size:21px;
+        padding-top:28px;
+      }
+    }
+
+    @media(max-width:390px){
+
+      .side-menu{
+        width:90vw;
+        padding-left:28px;
+        padding-right:28px;
+      }
+
+      .menu-brand{
+        font-size:22px;
+        margin-bottom:42px;
+      }
+
+      .menu-section{
+        margin-bottom:30px;
+      }
+
+      .menu-section a{
+        font-size:17px;
+      }
+
+      .map-tools{
+        gap:10px;
+      }
+
+      .search-input,
+      .search-button{
+        height:70px;
+      }
+
+      .filters{
+        gap:10px;
+        grid-template-columns:minmax(0,1fr) 125px;
+      }
+
+      .region-select,
+      .reset-button{
+        height:70px;
+        padding:0 13px;
+        font-size:15px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       MENU
+  ========================= -->
+
+  <button
+    class="menu-button"
+    id="menuButton"
+    aria-label="Apri menu"
+  >
+    ⋯
+  </button>
+
+  <div
+    class="menu-overlay"
+    id="menuOverlay"
+  ></div>
+
+  <aside
+    class="side-menu"
+    id="sideMenu"
+  >
+
+    <button
+      class="menu-close"
+      id="menuClose"
+      aria-label="Chiudi menu"
+    >
+      ×
+    </button>
+
+    <div class="menu-brand">
+      Comuni d’Italia 🇮🇹
+    </div>
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        IL VIAGGIO
+      </div>
+
+      <a href="mappa.html">
+        Mappa dei comuni
+      </a>
+
+      <a href="viaggio.html">
+        Il viaggio
+      </a>
+
+      <a href="index.html#ultimi">
+        Ultimi comuni visitati
+      </a>
+
+    </div>
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        IL PROGETTO
+      </div>
+
+      <a href="chi-sono.html">
+        Chi sono
+      </a>
+
+      <a href="traguardi.html">
+        Traguardi
+      </a>
+
+    </div>
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        SEGUIMI
+      </div>
+
+      <a
+        href="https://www.instagram.com/frarossitto/"
+        target="_blank"
+        rel="noopener"
+      >
+        Instagram ↗
+      </a>
+
+      <a
+        href="https://www.tiktok.com/"
+        target="_blank"
+        rel="noopener"
+      >
+        TikTok ↗
+      </a>
+
+    </div>
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        CONTATTI
+      </div>
+
+      <a href="contatti.html">
+        Contatti
+      </a>
+
+    </div>
+
+    <div class="menu-quote">
+      <div>Un comune alla volta.</div>
+      <div>Una strada alla volta.</div>
+      <div>Tutta l’Italia. 🇮🇹</div>
+    </div>
+
+  </aside>
+
+
+  <!-- =========================
+       PAGINA
+  ========================= -->
+
+  <main class="page">
+
+    <section class="hero">
+
+      <h1>
+        La mappa dei comuni.
+      </h1>
+
+      <p>
+        Esplora tutti i comuni d’Italia, cerca un luogo,
+        ingrandisci la mappa e scopri quelli già visitati
+        durante il viaggio.
+      </p>
+
+    </section>
+
+
+    <!-- =========================
+         MAPPA
+    ========================= -->
+
+    <section class="map-card">
+
+      <div class="map-tools">
+
+        <div class="search-box">
+
+          <input
+            id="searchInput"
+            class="search-input"
+            type="text"
+            autocomplete="off"
+            placeholder="Cerca comune"
+            aria-label="Cerca comune"
+          >
+
+          <button
+            id="searchButton"
+            class="search-button"
+            type="button"
+          >
+            🔎 Cerca
+          </button>
+
+          <div
+            id="suggestions"
+            class="suggestions"
+          ></div>
+
+        </div>
+
+      </div>
+
+
+      <div class="filters">
+
+        <select
+          id="regionSelect"
+          class="region-select"
+        >
+          <option value="">
+            Tutte le regioni
+          </option>
+        </select>
+
+        <button
+          id="resetButton"
+          class="reset-button"
+          type="button"
+        >
+          ↻ Reset
+        </button>
+
+      </div>
+
+
+      <div id="map"></div>
+
+
+      <div
+        id="mapError"
+        class="map-error"
+      >
+        Impossibile caricare la mappa.
+        Ricarica la pagina e riprova.
+      </div>
+
+
+      <div
+        id="mapInfo"
+        class="map-info"
+      ></div>
+
+
+      <div
+        id="infoEmpty"
+        class="info-empty"
+      >
+        Cerca un comune oppure clicca direttamente sulla mappa.
+      </div>
+
+
+      <div class="legend">
+
+        <div class="legend-item">
+          <span class="legend-dot visited"></span>
+          Comune visitato
+        </div>
+
+        <div class="legend-item">
+          <span class="legend-dot not-visited"></span>
+          Da visitare
+        </div>
+
+        <div class="legend-item">
+          <span class="legend-dot selected"></span>
+          Comune selezionato
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       LIBRERIE
+  ========================= -->
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+
+  <script src="./visitati.js"></script>
+  <script src="./comuni.js"></script>
+
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================= -->
+
+  <script>
+
+    /* =========================
+       CONFIGURAZIONE
+    ========================= */
+
+    const TOPO_URL =
+      "https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_all.topo.json";
+
+
+    /* =========================
+       COMUNI VISITATI
+    ========================= */
+
+    const visited = new Set(
+      (window.VISITED_ISTAT || [])
+        .map(String)
+        .map(code => code.padStart(6,"0"))
+    );
+
+
+    /* =========================
+       ELEMENTI
+    ========================= */
+
+    const searchInput =
+      document.getElementById("searchInput");
+
+    const searchButton =
+      document.getElementById("searchButton");
+
+    const suggestions =
+      document.getElementById("suggestions");
+
+    const regionSelect =
+      document.getElementById("regionSelect");
+
+    const resetButton =
+      document.getElementById("resetButton");
+
+    const mapInfo =
+      document.getElementById("mapInfo");
+
+    const infoEmpty =
+      document.getElementById("infoEmpty");
+
+    const mapError =
+      document.getElementById("mapError");
+
+
+    /* =========================
+       MENU
+    ========================= */
+
+    const menuButton =
+      document.getElementById("menuButton");
+
+    const menuClose =
+      document.getElementById("menuClose");
+
+    const menuOverlay =
+      document.getElementById("menuOverlay");
+
+    const sideMenu =
+      document.getElementById("sideMenu");
+
+
+    function openMenu(){
+
+      sideMenu.classList.add("open");
+
+      menuOverlay.classList.add("open");
+
+      document.body.style.overflow = "hidden";
+    }
+
+
+    function closeMenu(){
+
+      sideMenu.classList.remove("open");
+
+      menuOverlay.classList.remove("open");
+
+      document.body.style.overflow = "";
+    }
+
+
+    menuButton.addEventListener(
+      "click",
+      openMenu
+    );
+
+
+    menuClose.addEventListener(
+      "click",
+      closeMenu
+    );
+
+
+    menuOverlay.addEventListener(
+      "click",
+      closeMenu
+    );
+
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        if(event.key === "Escape"){
+          closeMenu();
+        }
+
+      }
+    );
+
+
+    document
+      .querySelectorAll(".side-menu a")
+      .forEach(link => {
+
+        link.addEventListener(
+          "click",
+          closeMenu
+        );
+
+      });
+
+
+    /* =========================
+       MAPPA
+    ========================= */
+
+    let map;
+
+    let municipalityLayer;
+
+    let provinceLayer;
+
+    let regionLayer;
+
+    let selectedLayer = null;
+
+    let selectedLabel = null;
+
+    let selectedCode = null;
+
+    let allMunicipalities = [];
+
+
+    /* =========================
+       NORMALIZZAZIONE TESTO
+    ========================= */
+
+    function normalizeText(value){
+
+      return String(value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"")
+        .toLowerCase()
+        .trim();
+
+    }
+
+
+    /* =========================
+       CODICE ISTAT
+    ========================= */
+
+    function codeOf(feature){
+
+      const p = feature.properties || {};
+
+      const value =
+        p.com_istat_code ??
+        p.pro_com ??
+        p.codice_istat ??
+        p.istat ??
+        feature.id ??
+        "";
+
+      return String(value)
+        .replace(/\D/g,"")
+        .padStart(6,"0");
+
+    }
+
+
+    /* =========================
+       NOME COMUNE
+    ========================= */
+
+    function nameOf(feature){
+
+      const p = feature.properties || {};
+
+      return (
+        p.com_name ||
+        p.name ||
+        p.comune ||
+        p.nome ||
+        p.COMUNE ||
+        p.NOME ||
+        "Comune"
+      );
+
+    }
+
+
+    /* =========================
+       PROVINCIA
+    ========================= */
+
+    function provinceOf(feature){
+
+      const p = feature.properties || {};
+
+      return (
+        p.pro_name ||
+        p.provincia ||
+        p.province ||
+        p.PROVINCIA ||
+        ""
+      );
+
+    }
+
+
+    /* =========================
+       REGIONE
+    ========================= */
+
+    function regionOf(feature){
+
+      const p = feature.properties || {};
+
+      return (
+        p.reg_name ||
+        p.regione ||
+        p.region ||
+        p.REGIONE ||
+        ""
+      );
+
+    }
+
+
+    /* =========================
+       STILI
+    ========================= */
+
+    function municipalityStyle(feature){
+
+      const code =
+        codeOf(feature);
+
+      const isVisited =
+        visited.has(code);
+
+      return {
+
+        color:"#fffdf8",
+
+        weight:.45,
+
+        opacity:1,
+
+        fillColor:
+          isVisited
+            ? "#477b57"
+            : "#c9c9c4",
+
+        fillOpacity:
+          isVisited
+            ? .86
+            : .72
+
+      };
+
+    }
+
+
+    function selectedStyle(){
+
+      return {
+
+        color:"#24251f",
+
+        weight:2.5,
+
+        opacity:1,
+
+        fillColor:"#f2c84b",
+
+        fillOpacity:.95
+
+      };
+
+    }
+
+
+    /* =========================
+       RESET SELEZIONE
+    ========================= */
+
+    function clearSelection(){
+
+      if(selectedLayer){
+
+        selectedLayer.setStyle(
+          municipalityStyle(
+            selectedLayer.feature
+          )
+        );
+
+      }
+
+
+      if(selectedLabel){
+
+        map.removeLayer(
+          selectedLabel
+        );
+
+      }
+
+
+      selectedLayer = null;
+
+      selectedLabel = null;
+
+      selectedCode = null;
+
+    }
+
+
+    /* =========================
+       INFO
+    ========================= */
+
+    function showInfo(feature){
+
+      const code =
+        codeOf(feature);
+
+      const name =
+        nameOf(feature);
+
+      const province =
+        provinceOf(feature);
+
+      const region =
+        regionOf(feature);
+
+      const isVisited =
+        visited.has(code);
+
+
+      mapInfo.innerHTML = `
+
+        <div class="info-status ${
+          isVisited
+            ? ""
+            : "not-visited"
+        }">
+
+          ${
+            isVisited
+              ? "Comune visitato"
+              : "Da visitare"
+          }
+
+        </div>
+
+        <h2>
+          ${name}
+        </h2>
+
+        <div class="info-meta">
+
+          ${province ? province + " · " : ""}
+          ${region ? region + "<br>" : ""}
+
+          Codice ISTAT:
+          <strong>${code}</strong>
+
+        </div>
+
+        ${
+          isVisited
+            ? `
+              <a
+                class="info-link"
+                href="comune.html?codice=${code}"
+              >
+                Apri scheda comune →
+              </a>
+            `
+            : ""
+        }
+
+      `;
+
+
+      mapInfo.classList.add("open");
+
+      infoEmpty.classList.remove("open");
+
+    }
+
+
+    function resetInfo(){
+
+      mapInfo.classList.remove("open");
+
+      mapInfo.innerHTML = "";
+
+      infoEmpty.classList.add("open");
+
+    }
+
+
+    /* =========================
+       SELEZIONA COMUNE
+    ========================= */
+
+    function selectMunicipality(
+      layer,
+      zoomTo = true
+    ){
+
+      if(!layer){
+        return;
+      }
+
+
+      clearSelection();
+
+
+      selectedLayer =
+        layer;
+
+
+      selectedCode =
+        codeOf(layer.feature);
+
+
+      /* evidenzia comune */
+
+      layer.setStyle(
+        selectedStyle()
+      );
+
+
+      /* mostra informazioni */
+
+      showInfo(
+        layer.feature
+      );
+
+
+      /* etichetta */
+
+      const center =
+        layer
+          .getBounds()
+          .getCenter();
+
+
+      selectedLabel =
+        L.marker(
+          center,
+          {
+            interactive:false,
+
+            icon:
+              L.divIcon({
+
+                className:
+                  "selected-label",
+
+                html:
+                  `<span>${nameOf(layer.feature)}</span>`,
+
+                iconSize:null,
+
+                iconAnchor:[
+                  0,
+                  0
+                ]
+
+              })
+          }
+        )
+        .addTo(map);
+
+
+      /*
+        QUESTO È IL PUNTO IMPORTANTE:
+
+        quando cerchi un comune,
+        la mappa si avvicina
+        automaticamente.
+      */
+
+      if(zoomTo){
+
+        const bounds =
+          layer.getBounds();
+
+
+        map.fitBounds(
+          bounds,
+          {
+
+            paddingTopLeft:[
+              80,
+              100
+            ],
+
+            paddingBottomRight:[
+              80,
+              100
+            ],
+
+            /*
+              zoom massimo abbastanza
+              ravvicinato per vedere
+              chiaramente il comune
+            */
+
+            maxZoom:13,
+
+            /*
+              animazione
+            */
+
+            animate:true,
+
+            duration:.8
+
+          }
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       CLICK SULLA MAPPA
+    ========================= */
+
+    function onMunicipalityClick(
+      event
+    ){
+
+      selectMunicipality(
+        event.target,
+        true
+      );
+
+    }
+
+
+    /* =========================
+       CREA LISTA COMUNI
+    ========================= */
+
+    function buildMunicipalitySearch(){
+
+      allMunicipalities = [];
+
+
+      municipalityLayer.eachLayer(
+        layer => {
+
+          const feature =
+            layer.feature;
+
+
+          allMunicipalities.push({
+
+            layer:layer,
+
+            feature:feature,
+
+            name:nameOf(feature),
+
+            province:provinceOf(feature),
+
+            region:regionOf(feature),
+
+            code:codeOf(feature)
+
+          });
+
+        }
+      );
+
+
+      allMunicipalities.sort(
+        (a,b) =>
+          a.name.localeCompare(
+            b.name,
+            "it"
+          )
+      );
+
+    }
+
+
+    /* =========================
+       SUGGERIMENTI
+    ========================= */
+
+    function showSuggestions(){
+
+      const query =
+        normalizeText(
+          searchInput.value
+        );
+
+
+      if(!query){
+
+        closeSuggestions();
+
+        return;
+      }
+
+
+      const results =
+        allMunicipalities
+          .filter(item => {
+
+            const name =
+              normalizeText(
+                item.name
+              );
+
+            const province =
+              normalizeText(
+                item.province
+              );
+
+            const region =
+              normalizeText(
+                item.region
+              );
+
+            const code =
+              normalizeText(
+                item.code
+              );
+
+
+            return (
+              name.includes(query) ||
+              province.includes(query) ||
+              region.includes(query) ||
+              code.includes(query)
+            );
+
+          })
+          .slice(0,8);
+
+
+      if(!results.length){
+
+        suggestions.innerHTML = `
+
+          <div class="suggestion">
+            Nessun comune trovato.
+          </div>
+
+        `;
+
+        suggestions.classList.add("open");
+
+        return;
+      }
+
+
+      suggestions.innerHTML =
+        results
+          .map(
+            (item,index) => `
+
+              <div
+                class="suggestion"
+                data-index="${index}"
+              >
+
+                <strong>
+                  ${item.name}
+                </strong>
+
+                <small>
+                  ${
+                    item.province
+                      ? item.province + " · "
+                      : ""
+                  }
+
+                  ${
+                    item.region
+                  }
+
+                </small>
+
+              </div>
+
+            `
+          )
+          .join("");
+
+
+      suggestions.classList.add(
+        "open"
+      );
+
+
+      suggestions
+        .querySelectorAll(
+          ".suggestion"
+        )
+        .forEach(
+          element => {
+
+            element.addEventListener(
+              "click",
+              () => {
+
+                const index =
+                  Number(
+                    element.dataset.index
+                  );
+
+
+                const item =
+                  results[index];
+
+
+                searchInput.value =
+                  item.name;
+
+
+                closeSuggestions();
+
+
+                selectMunicipality(
+                  item.layer,
+                  true
+                );
+
+              }
+            );
+
+          }
+        );
+
+    }
+
+
+    function closeSuggestions(){
+
+      suggestions.classList.remove(
+        "open"
+      );
+
+      suggestions.innerHTML = "";
+
+    }
+
+
+    /* =========================
+       RICERCA
+    ========================= */
+
+    function performSearch(){
+
+      const query =
+        normalizeText(
+          searchInput.value
+        );
+
+
+      if(!query){
+
+        return;
+      }
+
+
+      if(!allMunicipalities.length){
+
+        return;
+      }
+
+
+      const exact =
+        allMunicipalities.find(
+          item =>
+            normalizeText(
+              item.name
+            ) === query
+        );
+
+
+      const starts =
+        allMunicipalities.find(
+          item =>
+            normalizeText(
+              item.name
+            ).startsWith(query)
+        );
+
+
+      const contains =
+        allMunicipalities.find(
+          item =>
+            normalizeText(
+              item.name
+            ).includes(query)
+        );
+
+
+      const byCode =
+        allMunicipalities.find(
+          item =>
+            normalizeText(
+              item.code
+            ) === query
+        );
+
+
+      const result =
+        exact ||
+        starts ||
+        byCode ||
+        contains;
+
+
+      if(!result){
+
+        suggestions.innerHTML = `
+
+          <div class="suggestion">
+            Nessun comune trovato.
+          </div>
+
+        `;
+
+        suggestions.classList.add(
+          "open"
+        );
+
+        return;
+      }
+
+
+      searchInput.value =
+        result.name;
+
+
+      closeSuggestions();
+
+
+      /*
+        SELEZIONE + ZOOM
+      */
+
+      selectMunicipality(
+        result.layer,
+        true
+      );
+
+    }
+
+
+    searchButton.addEventListener(
+      "click",
+      performSearch
+    );
+
+
+    searchInput.addEventListener(
+      "keydown",
+      event => {
+
+        if(event.key === "Enter"){
+
+          event.preventDefault();
+
+          performSearch();
+
+        }
+
+      }
+    );
+
+
+    searchInput.addEventListener(
+      "input",
+      () => {
+
+        if(!searchInput.value.trim()){
+
+          clearSelection();
+
+          resetInfo();
+
+          closeSuggestions();
+
+          return;
+
+        }
+
+        showSuggestions();
+
+      }
+    );
+
+
+    document.addEventListener(
+      "click",
+      event => {
+
+        if(
+          !event.target.closest(
+            ".search-box"
+          )
+        ){
+
+          closeSuggestions();
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       RESET
+    ========================= */
+
+    resetButton.addEventListener(
+      "click",
+      () => {
+
+        searchInput.value = "";
+
+        regionSelect.value = "";
+
+        closeSuggestions();
+
+        clearSelection();
+
+        resetInfo();
+
+
+        municipalityLayer.eachLayer(
+          layer => {
+
+            layer.setStyle(
+              municipalityStyle(
+                layer.feature
+              )
+            );
+
+            layer.setOpacity(1);
+
+          }
+        );
+
+
+        if(
+          municipalityLayer &&
+          municipalityLayer.getBounds()
+        ){
+
+          map.fitBounds(
+            municipalityLayer.getBounds(),
+            {
+              padding:[
+                20,
+                20
+              ],
+
+              animate:true
+            }
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       REGIONI
+    ========================= */
+
+    function populateRegions(){
+
+      const regions =
+        new Set();
+
+
+      municipalityLayer.eachLayer(
+        layer => {
+
+          const region =
+            regionOf(
+              layer.feature
+            );
+
+
+          if(region){
+            regions.add(region);
+          }
+
+        }
+      );
+
+
+      [...regions]
+        .sort(
+          (a,b) =>
+            a.localeCompare(
+              b,
+              "it"
+            )
+        )
+        .forEach(
+          region => {
+
+            const option =
+              document.createElement(
+                "option"
+              );
+
+            option.value =
+              region;
+
+            option.textContent =
+              region;
+
+            regionSelect.appendChild(
+              option
+            );
+
+          }
+        );
+
+    }
+
+
+    regionSelect.addEventListener(
+      "change",
+      () => {
+
+        const selected =
+          regionSelect.value;
+
+
+        clearSelection();
+
+
+        municipalityLayer.eachLayer(
+          layer => {
+
+            const region =
+              regionOf(
+                layer.feature
+              );
+
+
+            if(
+              !selected ||
+              region === selected
+            ){
+
+              layer.setStyle(
+                municipalityStyle(
+                  layer.feature
+                )
+              );
+
+              layer.setOpacity(1);
+
+            }else{
+
+              layer.setStyle({
+                opacity:0,
+                fillOpacity:0
+              });
+
+            }
+
+          }
+        );
+
+
+        if(selected){
+
+          const selectedLayers =
+            [];
+
+
+          municipalityLayer.eachLayer(
+            layer => {
+
+              if(
+                regionOf(
+                  layer.feature
+                ) === selected
+              ){
+
+                selectedLayers.push(
+                  layer
+                );
+
+              }
+
+            }
+          );
+
+
+          if(selectedLayers.length){
+
+            const group =
+              L.featureGroup(
+                selectedLayers
+              );
+
+
+            map.fitBounds(
+              group.getBounds(),
+              {
+                padding:[
+                  30,
+                  30
+                ],
+
+                animate:true
+              }
+            );
+
+          }
+
+        }else{
+
+          map.fitBounds(
+            municipalityLayer.getBounds(),
+            {
+              padding:[
+                20,
+                20
+              ],
+
+              animate:true
+            }
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       CARICAMENTO MAPPA
+    ========================= */
+
+    async function loadMap(){
+
+      try{
+
+        map =
+          L.map(
+            "map",
+            {
+
+              zoomControl:true,
+
+              preferCanvas:true,
+
+              minZoom:5,
+
+              maxZoom:16
+
+            }
+          );
+
+
+        const response =
+          await fetch(
+            TOPO_URL
+          );
+
+
+        if(!response.ok){
+
+          throw new Error(
+            "TopoJSON non disponibile"
+          );
+
+        }
+
+
+        const topo =
+          await response.json();
+
+
+        /*
+          Trova automaticamente
+          gli oggetti TopoJSON.
+        */
+
+        const objects =
+          topo.objects || {};
+
+
+        const objectNames =
+          Object.keys(objects);
+
+
+        const municipalityObject =
+          objectNames.find(
+            name =>
+              /municip|comun/i.test(
+                name
+              )
+          );
+
+
+        const provinceObject =
+          objectNames.find(
+            name =>
+              /provin/i.test(
+                name
+              )
+          );
+
+
+        const regionObject =
+          objectNames.find(
+            name =>
+              /region/i.test(
+                name
+              )
+          );
+
+
+        if(!municipalityObject){
+
+          throw new Error(
+            "Comuni non trovati nel file geografico"
+          );
+
+        }
+
+
+        /*
+          COMUNI
+        */
+
+        const municipalitiesGeo =
+          topojson.feature(
+            topo,
+            objects[
+              municipalityObject
+            ]
+          );
+
+
+        municipalityLayer =
+          L.geoJSON(
+            municipalitiesGeo,
+            {
+
+              style:
+                municipalityStyle,
+
+              onEachFeature:
+                (feature,layer) => {
+
+                  layer.on(
+                    "click",
+                    onMunicipalityClick
+                  );
+
+                  layer.on(
+                    "mouseover",
+                    () => {
+
+                      if(
+                        layer !==
+                        selectedLayer
+                      ){
+
+                        layer.setStyle({
+
+                          weight:1.2
+
+                        });
+
+                      }
+
+                    }
+                  );
+
+
+                  layer.on(
+                    "mouseout",
+                    () => {
+
+                      if(
+                        layer !==
+                        selectedLayer
+                      ){
+
+                        layer.setStyle(
+                          municipalityStyle(
+                            feature
+                          )
+                        );
+
+                      }
+
+                    }
+                  );
+
+                }
+
+            }
+          )
+          .addTo(map);
+
+
+        /*
+          REGIONI
+        */
+
+        if(regionObject){
+
+          const regionsGeo =
+            topojson.feature(
+              topo,
+              objects[
+                regionObject
+              ]
+            );
+
+
+          regionLayer =
+            L.geoJSON(
+              regionsGeo,
+              {
+
+                style:{
+                  color:"#65645d",
+                  weight:1.5,
+                  opacity:.65,
+                  fill:false
+                },
+
+                interactive:false
+
+              }
+            )
+            .addTo(map);
+
+        }
+
+
+        /*
+          PROVINCE
+        */
+
+        if(provinceObject){
+
+          const provincesGeo =
+            topojson.feature(
+              topo,
+              objects[
+                provinceObject
+              ]
+            );
+
+
+          provinceLayer =
+            L.geoJSON(
+              provincesGeo,
+              {
+
+                style:{
+                  color:"#77766e",
+                  weight:.7,
+                  opacity:.45,
+                  fill:false
+                },
+
+                interactive:false
+
+              }
+            )
+            .addTo(map);
+
+        }
+
+
+        /*
+          COSTRUISCE INDICE RICERCA
+        */
+
+        buildMunicipalitySearch();
+
+
+        /*
+          POPOLA REGIONI
+        */
+
+        populateRegions();
+
+
+        /*
+          VISTA INIZIALE ITALIA
+        */
+
+        map.fitBounds(
+          municipalityLayer.getBounds(),
+          {
+            padding:[
+              20,
+              20
+            ]
+          }
+        );
+
+
+        /*
+          Nascondi info iniziale
+        */
+
+        resetInfo();
+
+
+      }catch(error){
+
+        console.error(
+          error
+        );
+
+        mapError.classList.add(
+          "open"
+        );
+
+      }
+
+    }
+
+
+    loadMap();
+
+  </script>
+
+</body>
+</html>
