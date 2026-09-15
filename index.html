@@ -36,6 +36,7 @@
   --line:#ddd7ca;
   --map:#fffdf8;
   --map-line:#d9d8d1;
+  --social:#4f514d;
 }
 
 *{
@@ -268,13 +269,6 @@ a{
   background:#d9d4c7;
 }
 
-/*
-   FOTO:
-   - occupa completamente il contenitore
-   - centrata
-   - nessuno spazio laterale
-*/
-
 .hero-photo{
   position:absolute;
 
@@ -289,12 +283,6 @@ a{
 
   display:block;
 }
-
-
-/*
-   Filtro più leggero:
-   la foto rimane molto più visibile.
-*/
 
 .hero::after{
   content:"";
@@ -524,9 +512,9 @@ a{
 }
 
 
-/*
+/* =========================================================
    CONTENITORE MAPPA
-*/
+========================================================= */
 
 .home-map{
   position:relative;
@@ -550,10 +538,9 @@ a{
 }
 
 
-/*
+/* =========================================================
    COMUNI NON VISITATI
-   Quasi bianchi.
-*/
+========================================================= */
 
 .home-muni{
   fill:#fffdf8;
@@ -568,10 +555,9 @@ a{
 }
 
 
-/*
+/* =========================================================
    COMUNI VISITATI
-   SOLO questi diventano verdi.
-*/
+========================================================= */
 
 .home-muni.visited{
   fill:var(--green);
@@ -582,9 +568,9 @@ a{
 }
 
 
-/*
-   Pulsante mappa
-*/
+/* =========================================================
+   PULSANTE MAPPA
+========================================================= */
 
 .map-button{
   display:inline-block;
@@ -602,7 +588,7 @@ a{
 
 
 /* =========================================================
-   MANIFESTO — VERSIONE PIÙ PROFESSIONALE
+   MANIFESTO
 ========================================================= */
 
 .manifesto{
@@ -626,11 +612,6 @@ a{
 
   overflow:hidden;
 }
-
-
-/*
-   Texture molto leggera
-*/
 
 .manifesto::before{
   content:"";
@@ -719,7 +700,7 @@ a{
   display:flex;
 
   justify-content:space-between;
-  align-items:center;
+  align-items:flex-end;
 
   gap:20px;
 
@@ -734,28 +715,48 @@ a{
   font-size:12px;
 }
 
+
+/* =========================================================
+   SOCIAL — SOLO SCRITTA, GRIGIO SCURO, IN BASSO A DESTRA
+========================================================= */
+
 .social-buttons{
   display:flex;
 
-  gap:8px;
+  justify-content:flex-end;
+  align-items:center;
+
+  gap:22px;
+
+  margin-left:auto;
 }
 
 .social-buttons a{
-  padding:8px 13px;
+  padding:0;
 
-  border:1px solid var(--line);
+  border:0;
+
+  background:transparent;
+
+  color:var(--social);
 
   text-decoration:none;
 
-  background:var(--white);
+  font-size:12px;
 
-  transition:.2s;
+  font-weight:600;
+
+  letter-spacing:.02em;
+
+  transition:
+    color .2s ease,
+    opacity .2s ease;
 }
 
 .social-buttons a:hover{
-  border-color:var(--green);
-
   color:var(--green);
+
+  opacity:1;
 }
 
 
@@ -854,11 +855,21 @@ a{
   /* FOOTER */
 
   .footer{
-    display:block;
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:18px;
   }
 
   .social-buttons{
-    margin-top:15px;
+    width:100%;
+
+    justify-content:flex-end;
+
+    margin-left:0;
   }
 
 }
@@ -1243,7 +1254,7 @@ a{
 
 <!-- =====================================================
      MANIFESTO
-===================================================== -->
+========================================================= -->
 
 <section class="manifesto">
 
@@ -1277,7 +1288,7 @@ a{
 
 <!-- =====================================================
      FOOTER
-===================================================== -->
+========================================================= -->
 
 <footer class="footer">
 
@@ -1320,7 +1331,7 @@ a{
 
 <!-- =====================================================
      LIBRERIE MAPPA
-===================================================== -->
+========================================================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 
@@ -1329,7 +1340,7 @@ a{
 
 <!-- =====================================================
      DATI DEL SITO
-===================================================== -->
+========================================================= -->
 
 <script src="visitati.js"></script>
 
@@ -1770,11 +1781,6 @@ d3.json(MAP_URL)
             getMapCode(d);
 
 
-          /*
-             SOLO i comuni presenti
-             in visitati.js diventano verdi.
-          */
-
           return code
             ? visited.has(code)
             : false;
@@ -1789,10 +1795,7 @@ d3.json(MAP_URL)
 
 
     /*
-       Piccolo controllo.
-       Se nessun comune risulta verde,
-       lasciamo comunque la mappa visibile
-       e leggibile.
+       Controllo comuni visitati
     */
 
     const visitedOnMap =
@@ -1809,10 +1812,7 @@ d3.json(MAP_URL)
 
 
     /*
-       Se il dataset utilizza un formato
-       di codice diverso, proviamo anche
-       a confrontare direttamente i valori
-       numerici a 6 cifre.
+       Secondo controllo di sicurezza
     */
 
     if(
