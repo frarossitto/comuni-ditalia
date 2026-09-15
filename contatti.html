@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Contatti — Comuni d’Italia 🇮🇹</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+rel="stylesheet">
+
+<style>
+
+:root{
+--paper:#f7f3e9;
+--white:#fffdf8;
+--ink:#20221f;
+--muted:#6e7069;
+--green:#2f6f4e;
+--line:#ddd7ca;
+}
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+background:var(--paper);
+color:var(--ink);
+font-family:"DM Sans",sans-serif;
+}
+
+.page{
+max-width:1000px;
+margin:auto;
+padding:20px 22px 50px;
+}
+
+.top{
+height:50px;
+display:flex;
+align-items:center;
+}
+
+.brand{
+font-family:"Playfair Display",serif;
+font-size:21px;
+font-weight:700;
+}
+
+.menu-button{
+position:fixed;
+right:22px;
+top:19px;
+z-index:4000;
+
+border:0;
+background:transparent;
+
+font-size:30px;
+cursor:pointer;
+}
+
+.menu-overlay{
+position:fixed;
+inset:0;
+
+background:rgba(20,25,21,.45);
+backdrop-filter:blur(3px);
+
+opacity:0;
+pointer-events:none;
+
+transition:.25s;
+
+z-index:4998;
+}
+
+.menu-overlay.open{
+opacity:1;
+pointer-events:auto;
+}
+
+.side-menu{
+position:fixed;
+z-index:5000;
+
+top:0;
+right:0;
+
+width:min(430px,92vw);
+height:100dvh;
+
+background:var(--paper);
+
+padding:24px 28px;
+
+transform:translateX(105%);
+transition:.3s;
+
+display:flex;
+flex-direction:column;
+}
+
+.side-menu.open{
+transform:translateX(0);
+}
+
+.menu-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+margin-bottom:55px;
+}
+
+.menu-brand{
+font-family:"Playfair Display",serif;
+font-size:20px;
+font-weight:700;
+}
+
+.menu-close{
+width:40px;
+height:40px;
+
+border:1px solid var(--line);
+border-radius:50%;
+
+background:var(--white);
+
+font-size:27px;
+cursor:pointer;
+}
+
+.menu-section{
+margin-bottom:30px;
+}
+
+.menu-heading{
+margin-bottom:10px;
+
+color:var(--green);
+
+font-size:10px;
+font-weight:700;
+
+letter-spacing:.18em;
+}
+
+.menu-link{
+display:flex;
+justify-content:space-between;
+
+padding:12px 0;
+
+border-bottom:1px solid var(--line);
+
+text-decoration:none;
+
+font-size:18px;
+}
+
+.menu-quote{
+margin-top:auto;
+
+border-top:1px solid var(--line);
+
+padding-top:22px;
+
+font-family:"Playfair Display",serif;
+font-size:20px;
+line-height:1.25;
+font-weight:600;
+}
+
+.menu-quote div:last-child{
+color:var(--green);
+}
+
+.content{
+padding:90px 0;
+max-width:700px;
+}
+
+.kicker{
+color:var(--green);
+
+font-size:10px;
+font-weight:700;
+
+letter-spacing:.2em;
+}
+
+h1{
+margin:12px 0 20px;
+
+font-family:"Playfair Display",serif;
+
+font-size:clamp(50px,8vw,90px);
+
+line-height:.92;
+}
+
+.lead{
+font-size:20px;
+line-height:1.6;
+color:var(--muted);
+}
+
+.contact-box{
+margin-top:45px;
+
+border-top:1px solid var(--line);
+}
+
+.contact-row{
+padding:22px 0;
+
+border-bottom:1px solid var(--line);
+}
+
+.contact-label{
+color:var(--green);
+
+font-size:10px;
+font-weight:700;
+
+letter-spacing:.15em;
+}
+
+.contact-row a{
+display:block;
+
+margin-top:7px;
+
+font-size:20px;
+font-weight:600;
+
+text-decoration:none;
+}
+
+.social{
+display:grid;
+grid-template-columns:1fr 1fr;
+
+gap:12px;
+
+margin-top:35px;
+}
+
+.social a{
+padding:25px;
+
+border:1px solid var(--line);
+
+background:var(--white);
+
+text-decoration:none;
+}
+
+.social strong{
+display:block;
+
+font-family:"Playfair Display",serif;
+
+font-size:28px;
+
+margin-bottom:5px;
+}
+
+.social span{
+font-size:12px;
+
+color:var(--muted);
+}
+
+.footer{
+border-top:1px solid var(--line);
+
+padding-top:22px;
+
+color:var(--muted);
+
+font-size:12px;
+}
+
+@media(max-width:760px){
+
+.page{
+padding:16px 15px 35px;
+}
+
+.content{
+padding-top:65px;
+}
+
+.social{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+<header class="top">
+
+<div class="brand">
+Comuni d’Italia 🇮🇹
+</div>
+
+</header>
+
+
+<button
+class="menu-button"
+id="menuButton">
+⋯
+</button>
+
+
+<div
+class="menu-overlay"
+id="menuOverlay">
+</div>
+
+
+<aside
+class="side-menu"
+id="sideMenu">
+
+<div class="menu-top">
+
+<div class="menu-brand">
+Comuni d’Italia 🇮🇹
+</div>
+
+<button
+class="menu-close"
+id="menuClose">
+×
+</button>
+
+</div>
+
+
+<div class="menu-section">
+
+<div class="menu-heading">
+IL PROGETTO
+</div>
+
+<a
+class="menu-link"
+href="chi-sono.html">
+
+<span>Chi sono</span>
+<span>→</span>
+
+</a>
+
+</div>
+
+
+<div class="menu-section">
+
+<div class="menu-heading">
+IL VIAGGIO
+</div>
+
+<a
+class="menu-link"
+href="mappa.html">
+
+<span>Mappa</span>
+<span>→</span>
+
+</a>
+
+</div>
+
+
+<div class="menu-section">
+
+<div class="menu-heading">
+CONTATTI
+</div>
+
+<a
+class="menu-link"
+href="contatti.html">
+
+<span>Contatti</span>
+<span>→</span>
+
+</a>
+
+</div>
+
+
+<div class="menu-quote">
+
+<div>Un comune alla volta.</div>
+<div>Una strada alla volta.</div>
+<div>Tutta l’Italia. 🇮🇹</div>
+
+</div>
+
+</aside>
+
+
+<main class="content">
+
+<div class="kicker">
+CONTATTI
+</div>
+
+<h1>
+Parliamone.
+</h1>
+
+<p class="lead">
+Per collaborazioni, domande sul viaggio,
+segnalazioni o semplicemente per scrivermi,
+puoi contattarmi qui.
+</p>
+
+
+<div class="contact-box">
+
+<div class="contact-row">
+
+<div class="contact-label">
+EMAIL
+</div>
+
+<a href="mailto:rossitto.francesco001@gmail.com">
+rossitto.francesco001@gmail.com
+</a>
+
+</div>
+
+</div>
+
+
+<div class="social">
+
+<a
+href="https://www.instagram.com/frarossitto/"
+target="_blank"
+rel="noopener">
+
+<strong>
+Instagram
+</strong>
+
+<span>
+Seguimi durante il viaggio →
+</span>
+
+</a>
+
+
+<a
+href="https://www.tiktok.com/"
+target="_blank"
+rel="noopener">
+
+<strong>
+TikTok
+</strong>
+
+<span>
+Il viaggio anche in video →
+</span>
+
+</a>
+
+</div>
+
+</main>
+
+
+<footer class="footer">
+Comuni d’Italia 🇮🇹
+</footer>
+
+</div>
+
+
+<script>
+
+const menuButton=
+document.getElementById("menuButton");
+
+const menuClose=
+document.getElementById("menuClose");
+
+const menuOverlay=
+document.getElementById("menuOverlay");
+
+const sideMenu=
+document.getElementById("sideMenu");
+
+
+function openMenu(){
+
+sideMenu.classList.add("open");
+menuOverlay.classList.add("open");
+
+menuButton.style.opacity="0";
+menuButton.style.pointerEvents="none";
+
+document.body.style.overflow="hidden";
+
+}
+
+
+function closeMenu(){
+
+sideMenu.classList.remove("open");
+menuOverlay.classList.remove("open");
+
+menuButton.style.opacity="1";
+menuButton.style.pointerEvents="auto";
+
+document.body.style.overflow="";
+
+}
+
+
+menuButton.onclick=openMenu;
+menuClose.onclick=closeMenu;
+menuOverlay.onclick=closeMenu;
+
+document.addEventListener(
+"keydown",
+e=>{
+if(e.key==="Escape") closeMenu();
+}
+);
+
+</script>
+
+</body>
+</html>
