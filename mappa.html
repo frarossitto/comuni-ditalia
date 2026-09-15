@@ -1,0 +1,2311 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Mappa — Comuni d’Italia 🇮🇹</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+
+<style>
+
+:root{
+  --paper:#f5efe3;
+  --white:#fffdf8;
+  --ink:#24251f;
+  --muted:#74766e;
+  --green:#2f704e;
+  --green-dark:#214f38;
+  --grey:#d4d4cd;
+  --gold:#f2c84b;
+  --line:#ded6c7;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"DM Sans",sans-serif;
+}
+
+body.menu-open{
+  overflow:hidden;
+}
+
+button,
+input,
+select{
+  font:inherit;
+}
+
+a{
+  color:inherit;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+  max-width:1250px;
+  margin:auto;
+  padding:20px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo{
+  text-decoration:none;
+  font-family:"Playfair Display",serif;
+  font-size:25px;
+  font-weight:700;
+}
+
+.menu-btn{
+  width:48px;
+  height:48px;
+
+  border:1px solid var(--line);
+  border-radius:50%;
+
+  background:var(--white);
+
+  cursor:pointer;
+  font-size:27px;
+}
+
+
+/* =========================
+   MENU
+========================= */
+
+.overlay{
+  position:fixed;
+  inset:0;
+
+  background:rgba(20,20,18,.45);
+  backdrop-filter:blur(4px);
+
+  opacity:0;
+  pointer-events:none;
+
+  transition:.3s;
+
+  z-index:1000;
+}
+
+.overlay.open{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.menu{
+  position:fixed;
+  right:0;
+  top:0;
+
+  width:min(430px,92vw);
+  height:100vh;
+
+  padding:28px;
+
+  background:var(--white);
+
+  overflow:auto;
+
+  transform:translateX(100%);
+  transition:.35s;
+
+  z-index:1001;
+
+  box-shadow:-20px 0 60px rgba(0,0,0,.15);
+}
+
+.menu.open{
+  transform:translateX(0);
+}
+
+.menu-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:30px;
+}
+
+.menu-title{
+  font-family:"Playfair Display",serif;
+  font-size:30px;
+  font-weight:700;
+}
+
+.close-btn{
+  width:45px;
+  height:45px;
+
+  border:1px solid var(--line);
+  border-radius:50%;
+
+  background:var(--paper);
+
+  cursor:pointer;
+  font-size:25px;
+}
+
+.menu-section{
+  margin-bottom:28px;
+}
+
+.menu-section small{
+  display:block;
+
+  color:var(--green);
+
+  text-transform:uppercase;
+  letter-spacing:.12em;
+
+  font-size:11px;
+  font-weight:700;
+
+  margin-bottom:8px;
+}
+
+.menu-link{
+  display:flex;
+  justify-content:space-between;
+
+  padding:14px 0;
+
+  border-bottom:1px solid var(--line);
+
+  text-decoration:none;
+
+  font-weight:600;
+  font-size:18px;
+}
+
+
+/* =========================
+   PAGINA
+========================= */
+
+main{
+  max-width:1250px;
+  margin:auto;
+
+  padding:35px 20px 70px;
+}
+
+.eyebrow{
+  color:var(--green);
+
+  text-transform:uppercase;
+  letter-spacing:.15em;
+
+  font-size:11px;
+  font-weight:700;
+}
+
+h1{
+  margin:10px 0;
+
+  font-family:"Playfair Display",serif;
+
+  font-size:clamp(45px,7vw,78px);
+
+  line-height:.98;
+}
+
+.intro{
+  max-width:720px;
+
+  color:var(--muted);
+
+  font-size:18px;
+  line-height:1.6;
+
+  margin-bottom:30px;
+}
+
+
+/* =========================
+   PANNELLO
+========================= */
+
+.map-card{
+  background:var(--white);
+
+  border:1px solid var(--line);
+  border-radius:26px;
+
+  padding:16px;
+
+  box-shadow:0 20px 50px rgba(40,38,30,.10);
+}
+
+
+/* =========================
+   CERCA
+========================= */
+
+.search-row{
+  display:grid;
+
+  grid-template-columns:
+    minmax(0,1fr)
+    auto
+    auto
+    auto;
+
+  gap:9px;
+
+  margin-bottom:12px;
+}
+
+.search-box{
+  position:relative;
+}
+
+#search{
+  width:100%;
+
+  padding:15px 16px;
+
+  border:1px solid var(--line);
+  border-radius:13px;
+
+  background:#fffefa;
+
+  outline:none;
+
+  font-size:16px;
+}
+
+#search:focus{
+  border-color:var(--green);
+
+  box-shadow:
+    0 0 0 4px rgba(47,112,78,.10);
+}
+
+.control{
+  padding:12px 16px;
+
+  border:1px solid var(--line);
+  border-radius:13px;
+
+  background:var(--white);
+
+  cursor:pointer;
+
+  font-weight:600;
+}
+
+.control:hover{
+  background:var(--paper);
+}
+
+.search-suggestions{
+  position:absolute;
+
+  left:0;
+  right:0;
+  top:calc(100% + 7px);
+
+  background:white;
+
+  border:1px solid var(--line);
+  border-radius:15px;
+
+  overflow:hidden;
+
+  box-shadow:0 18px 45px rgba(0,0,0,.16);
+
+  z-index:100;
+
+  display:none;
+}
+
+.search-suggestions.open{
+  display:block;
+}
+
+.suggestion{
+  width:100%;
+
+  padding:13px 15px;
+
+  border:0;
+  border-bottom:1px solid var(--line);
+
+  background:white;
+
+  text-align:left;
+
+  cursor:pointer;
+}
+
+.suggestion:hover{
+  background:#f5edd8;
+}
+
+.suggestion strong{
+  display:block;
+
+  font-size:16px;
+}
+
+.suggestion span{
+  display:block;
+
+  color:var(--muted);
+
+  font-size:12px;
+
+  margin-top:3px;
+}
+
+
+/* =========================
+   MAPPA
+========================= */
+
+.map-container{
+  position:relative;
+
+  height:min(75vh,760px);
+  min-height:500px;
+
+  overflow:hidden;
+
+  border-radius:20px;
+
+  background:#e7e2d6;
+
+  border:1px solid var(--line);
+}
+
+#map{
+  width:100%;
+  height:100%;
+}
+
+#map svg{
+  width:100%;
+  height:100%;
+
+  display:block;
+
+  touch-action:none;
+}
+
+.background{
+  fill:#e7e2d6;
+}
+
+
+/* COMUNI */
+
+.comune{
+  fill:var(--grey);
+
+  stroke:#fffdf8;
+  stroke-width:.45;
+
+  vector-effect:non-scaling-stroke;
+
+  cursor:pointer;
+}
+
+.comune.visitato{
+  fill:var(--green);
+}
+
+.comune:hover{
+  fill:#aaa99f;
+
+  stroke:#34352f;
+  stroke-width:1.4;
+}
+
+
+/* COMUNE CERCATO */
+
+.comune.selezionato{
+  fill:var(--gold) !important;
+
+  stroke:#11140f !important;
+  stroke-width:3px !important;
+
+  filter:drop-shadow(
+    0 0 7px rgba(242,200,75,.95)
+  );
+}
+
+
+/* REGIONI */
+
+.confini-regioni{
+  fill:none;
+
+  stroke:#55574f;
+  stroke-width:2;
+
+  vector-effect:non-scaling-stroke;
+
+  pointer-events:none;
+}
+
+
+/* NOMI */
+
+.nome-comune{
+  pointer-events:none;
+
+  fill:#20221e;
+
+  text-anchor:middle;
+
+  font-size:9px;
+  font-weight:600;
+
+  paint-order:stroke;
+
+  stroke:white;
+  stroke-width:3px;
+
+  opacity:0;
+}
+
+.nome-comune.selezionato{
+  opacity:1;
+
+  font-size:16px;
+  font-weight:800;
+
+  stroke-width:5px;
+}
+
+
+/* =========================
+   CONTROLLI MAPPA
+========================= */
+
+.map-controls{
+  position:absolute;
+
+  top:15px;
+  right:15px;
+
+  display:flex;
+  flex-direction:column;
+
+  gap:7px;
+
+  z-index:20;
+}
+
+.map-btn{
+  width:44px;
+  height:44px;
+
+  border:1px solid var(--line);
+  border-radius:12px;
+
+  background:rgba(255,253,248,.97);
+
+  box-shadow:0 7px 18px rgba(0,0,0,.10);
+
+  cursor:pointer;
+
+  font-size:20px;
+}
+
+
+/* =========================
+   SCHEDA
+========================= */
+
+.selected-card{
+  display:none;
+
+  margin-top:14px;
+
+  padding:20px;
+
+  border-radius:18px;
+
+  background:#f3ead3;
+
+  border:1px solid #ddcfad;
+
+  align-items:center;
+  justify-content:space-between;
+
+  gap:20px;
+}
+
+.selected-card.show{
+  display:flex;
+}
+
+.selected-name{
+  font-family:"Playfair Display",serif;
+
+  font-size:30px;
+  font-weight:700;
+}
+
+.selected-info{
+  color:var(--muted);
+
+  font-size:14px;
+
+  margin-top:4px;
+}
+
+.status{
+  display:inline-block;
+
+  margin-top:9px;
+
+  padding:5px 10px;
+
+  border-radius:30px;
+
+  background:var(--green);
+
+  color:white;
+
+  font-size:11px;
+  font-weight:700;
+}
+
+.status.no{
+  background:#999990;
+}
+
+.details{
+  padding:13px 17px;
+
+  border-radius:12px;
+
+  background:var(--ink);
+
+  color:white;
+
+  text-decoration:none;
+
+  font-size:14px;
+  font-weight:700;
+
+  white-space:nowrap;
+}
+
+
+/* =========================
+   LEGENDA
+========================= */
+
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+
+  gap:18px;
+
+  padding:14px 2px 2px;
+
+  color:var(--muted);
+
+  font-size:13px;
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+
+  gap:7px;
+}
+
+.legend-color{
+  width:15px;
+  height:15px;
+
+  border-radius:4px;
+
+  border:1px solid rgba(0,0,0,.08);
+}
+
+.green{
+  background:var(--green);
+}
+
+.grey{
+  background:var(--grey);
+}
+
+.yellow{
+  background:var(--gold);
+
+  border:2px solid #11140f;
+}
+
+.region{
+  background:transparent;
+
+  border:2px solid #55574f;
+}
+
+
+/* =========================
+   STATO
+========================= */
+
+.status-message{
+  padding:18px;
+
+  color:var(--muted);
+
+  text-align:center;
+
+  display:none;
+}
+
+.status-message.show{
+  display:block;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+  max-width:1250px;
+  margin:auto;
+
+  padding:25px 20px 45px;
+
+  border-top:1px solid var(--line);
+
+  display:flex;
+  justify-content:space-between;
+
+  color:var(--muted);
+
+  font-size:13px;
+}
+
+footer a{
+  color:var(--green);
+
+  text-decoration:none;
+
+  font-weight:700;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:850px){
+
+  .search-row{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .search-box{
+    grid-column:1/-1;
+  }
+
+  .map-container{
+    height:65vh;
+    min-height:450px;
+  }
+
+  .selected-card{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .details{
+    width:100%;
+    text-align:center;
+  }
+}
+
+@media(max-width:560px){
+
+  header{
+    padding:15px;
+  }
+
+  main{
+    padding:25px 12px 50px;
+  }
+
+  .logo{
+    font-size:20px;
+  }
+
+  h1{
+    font-size:48px;
+  }
+
+  .intro{
+    font-size:16px;
+  }
+
+  .map-card{
+    padding:9px;
+  }
+
+  .search-row{
+    grid-template-columns:1fr;
+  }
+
+  .search-box{
+    grid-column:auto;
+  }
+
+  .control{
+    width:100%;
+  }
+
+  .map-container{
+    height:68vh;
+    min-height:420px;
+  }
+
+  footer{
+    flex-direction:column;
+    gap:10px;
+  }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+  <a href="index.html" class="logo">
+    Comuni d’Italia 🇮🇹
+  </a>
+
+  <button
+    class="menu-btn"
+    id="openMenu"
+    type="button"
+  >
+    ⋯
+  </button>
+
+</header>
+
+
+<!-- =========================
+     MENU
+========================= -->
+
+<div class="overlay" id="overlay"></div>
+
+<aside class="menu" id="menu">
+
+  <div class="menu-head">
+
+    <div class="menu-title">
+      Menu
+    </div>
+
+    <button
+      class="close-btn"
+      id="closeMenu"
+      type="button"
+    >
+      ×
+    </button>
+
+  </div>
+
+
+  <div class="menu-section">
+
+    <small>Il viaggio</small>
+
+    <a class="menu-link" href="index.html">
+      Home
+      <span>→</span>
+    </a>
+
+    <a class="menu-link" href="mappa.html">
+      Mappa dei comuni
+      <span>→</span>
+    </a>
+
+    <a class="menu-link" href="viaggio.html">
+      Il viaggio
+      <span>→</span>
+    </a>
+
+  </div>
+
+
+  <div class="menu-section">
+
+    <small>Il progetto</small>
+
+    <a class="menu-link" href="chi-sono.html">
+      Chi sono
+      <span>→</span>
+    </a>
+
+    <a class="menu-link" href="traguardi.html">
+      Traguardi
+      <span>→</span>
+    </a>
+
+  </div>
+
+
+  <div class="menu-section">
+
+    <small>Seguimi</small>
+
+    <a
+      class="menu-link"
+      href="https://www.instagram.com/frarossitto/"
+      target="_blank"
+    >
+      Instagram
+      <span>↗</span>
+    </a>
+
+    <a
+      class="menu-link"
+      href="https://www.tiktok.com/"
+      target="_blank"
+    >
+      TikTok
+      <span>↗</span>
+    </a>
+
+  </div>
+
+
+  <div class="menu-section">
+
+    <small>Contatti</small>
+
+    <a class="menu-link" href="contatti.html">
+      Contatti
+      <span>→</span>
+    </a>
+
+  </div>
+
+</aside>
+
+
+<!-- =========================
+     CONTENUTO
+========================= -->
+
+<main>
+
+  <div class="eyebrow">
+    La mappa del viaggio
+  </div>
+
+  <h1>
+    Tutti i comuni d’Italia.
+  </h1>
+
+  <p class="intro">
+    Cerca un comune e trovalo direttamente sulla mappa.
+    Puoi spostarti, ingrandire e vedere i confini dei comuni
+    e delle regioni.
+  </p>
+
+
+  <section class="map-card">
+
+
+    <!-- CERCA -->
+
+    <div class="search-row">
+
+      <div class="search-box">
+
+        <input
+          id="search"
+          type="search"
+          placeholder="Cerca comune"
+          autocomplete="off"
+        >
+
+        <div
+          class="search-suggestions"
+          id="suggestions"
+        ></div>
+
+      </div>
+
+
+      <button
+        class="control"
+        id="searchButton"
+        type="button"
+      >
+        🔎 Cerca
+      </button>
+
+
+      <select
+        class="control"
+        id="region"
+      >
+
+        <option value="">
+          Tutte le regioni
+        </option>
+
+      </select>
+
+
+      <button
+        class="control"
+        id="italyButton"
+        type="button"
+      >
+        🇮🇹 Italia
+      </button>
+
+    </div>
+
+
+    <!-- MAPPA -->
+
+    <div class="map-container">
+
+      <div id="map"></div>
+
+
+      <div class="map-controls">
+
+        <button
+          class="map-btn"
+          id="plus"
+          type="button"
+        >
+          +
+        </button>
+
+        <button
+          class="map-btn"
+          id="minus"
+          type="button"
+        >
+          −
+        </button>
+
+        <button
+          class="map-btn"
+          id="resetMap"
+          type="button"
+        >
+          🇮🇹
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- SCHEDA COMUNE -->
+
+    <div
+      class="selected-card"
+      id="selectedCard"
+    >
+
+      <div>
+
+        <div
+          class="selected-name"
+          id="selectedName"
+        >
+          —
+        </div>
+
+        <div
+          class="selected-info"
+          id="selectedInfo"
+        >
+          —
+        </div>
+
+        <div
+          class="status"
+          id="selectedStatus"
+        >
+          —
+        </div>
+
+      </div>
+
+
+      <a
+        class="details"
+        id="details"
+        href="#"
+      >
+        Apri scheda comune →
+      </a>
+
+    </div>
+
+
+    <!-- LEGENDA -->
+
+    <div class="legend">
+
+      <div class="legend-item">
+        <span class="legend-color green"></span>
+        Comune visitato
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color grey"></span>
+        Da visitare
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color yellow"></span>
+        Comune cercato
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color region"></span>
+        Confine regionale
+      </div>
+
+    </div>
+
+
+    <div
+      class="status-message"
+      id="statusMessage"
+    >
+      Caricamento mappa…
+    </div>
+
+  </section>
+
+</main>
+
+
+<footer>
+
+  <span>
+    Comuni d’Italia 🇮🇹 · un progetto di Francesco
+  </span>
+
+  <a
+    href="https://www.instagram.com/frarossitto/"
+    target="_blank"
+  >
+    Instagram ↗
+  </a>
+
+</footer>
+
+
+<!-- DATI -->
+
+<script src="visitati.js"></script>
+<script src="comuni.js"></script>
+
+
+<script>
+
+/* =========================================================
+   CONFIGURAZIONE
+========================================================= */
+
+const MAP_URL =
+"https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_all.topo.json";
+
+
+/* =========================================================
+   VARIABILI
+========================================================= */
+
+let features = [];
+
+let svg;
+let group;
+
+let comuniLayer;
+let labelsLayer;
+let regionLayer;
+
+let projection;
+let path;
+
+let zoom;
+
+let selected = null;
+
+
+/* =========================================================
+   VISITATI
+========================================================= */
+
+const visited = new Set(
+  (window.VISITED_ISTAT || [])
+    .map(String)
+    .map(x => x.padStart(6,"0"))
+);
+
+
+/* =========================================================
+   FUNZIONI DATI
+========================================================= */
+
+function props(f){
+  return f.properties || {};
+}
+
+
+function code(f){
+
+  const p = props(f);
+
+  return String(
+    p.com_istat_code ||
+    p.com_istat_code_num ||
+    p.istat_code ||
+    f.id ||
+    ""
+  ).padStart(6,"0");
+
+}
+
+
+function name(f){
+
+  const p = props(f);
+
+  return (
+    p.name ||
+    p.comune ||
+    p.com_name ||
+    p.nome ||
+    "Comune"
+  );
+
+}
+
+
+function province(f){
+
+  const p = props(f);
+
+  return (
+    p.prov_name ||
+    p.provincia ||
+    ""
+  );
+
+}
+
+
+function region(f){
+
+  const p = props(f);
+
+  return (
+    p.reg_name ||
+    p.regione ||
+    ""
+  );
+
+}
+
+
+function normalize(text){
+
+  return String(text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"");
+
+}
+
+
+/* =========================================================
+   CARICA MAPPA
+========================================================= */
+
+async function loadMap(){
+
+  try{
+
+    const response =
+      await fetch(MAP_URL);
+
+    if(!response.ok){
+      throw new Error(
+        "HTTP " + response.status
+      );
+    }
+
+    const topo =
+      await response.json();
+
+
+    /*
+      Il file all.topo.json contiene
+      tre livelli:
+      regioni
+      province
+      comuni
+    */
+
+    const objects =
+      topo.objects;
+
+
+    const municipalityObject =
+      objects.municipalities ||
+      objects.municipality ||
+      Object.values(objects)
+        .find(o =>
+          o.geometries?.some(g =>
+            g.properties?.com_istat_code ||
+            g.properties?.name
+          )
+        );
+
+
+    const regionObject =
+      objects.regions ||
+      objects.regioni;
+
+
+    if(!municipalityObject){
+
+      throw new Error(
+        "Layer dei comuni non trovato nel TopoJSON."
+      );
+
+    }
+
+
+    features =
+      topojson
+        .feature(
+          topo,
+          municipalityObject
+        )
+        .features;
+
+
+    if(!features.length){
+
+      throw new Error(
+        "Il layer dei comuni è vuoto."
+      );
+
+    }
+
+
+    createMap(
+      features,
+      regionObject
+        ? topojson.feature(
+            topo,
+            regionObject
+          )
+        : null
+    );
+
+
+    createRegionFilter();
+
+
+    document
+      .getElementById("statusMessage")
+      .classList.remove("show");
+
+
+  }catch(error){
+
+    console.error(
+      "Errore mappa:",
+      error
+    );
+
+
+    /*
+      NON diciamo "errore connessione".
+      Mostriamo invece l'errore reale.
+    */
+
+    const box =
+      document.getElementById(
+        "statusMessage"
+      );
+
+    box.innerHTML =
+      `
+        <strong>La mappa non è riuscita a caricarsi.</strong>
+        <br><br>
+        Errore tecnico:
+        ${error.message}
+      `;
+
+    box.classList.add("show");
+
+  }
+
+}
+
+
+/* =========================================================
+   CREA MAPPA
+========================================================= */
+
+function createMap(
+  data,
+  regions
+){
+
+  const container =
+    document.getElementById("map");
+
+
+  const width =
+    container.clientWidth;
+
+  const height =
+    container.clientHeight;
+
+
+  projection =
+    d3.geoMercator()
+      .fitSize(
+        [width,height],
+        {
+          type:"FeatureCollection",
+          features:data
+        }
+      );
+
+
+  path =
+    d3.geoPath(
+      projection
+    );
+
+
+  svg =
+    d3.select("#map")
+      .append("svg")
+      .attr(
+        "viewBox",
+        `0 0 ${width} ${height}`
+      );
+
+
+  svg
+    .append("rect")
+    .attr("class","background")
+    .attr("width",width)
+    .attr("height",height);
+
+
+  group =
+    svg
+      .append("g");
+
+
+  /* =======================================================
+     COMUNI
+  ======================================================= */
+
+  comuniLayer =
+    group
+      .append("g");
+
+
+  comuniLayer
+    .selectAll("path")
+    .data(data)
+    .join("path")
+
+    .attr(
+      "class",
+      f =>
+        visited.has(code(f))
+          ? "comune visitato"
+          : "comune"
+    )
+
+    .attr(
+      "d",
+      path
+    )
+
+    .on(
+      "click",
+      (event,f) => {
+
+        selectComune(
+          f,
+          true
+        );
+
+      }
+    );
+
+
+  /* =======================================================
+     NOMI
+  ======================================================= */
+
+  labelsLayer =
+    group
+      .append("g");
+
+
+  labelsLayer
+    .selectAll("text")
+    .data(data)
+    .join("text")
+
+    .attr(
+      "class",
+      "nome-comune"
+    )
+
+    .attr(
+      "x",
+      f => path.centroid(f)[0]
+    )
+
+    .attr(
+      "y",
+      f => path.centroid(f)[1]
+    )
+
+    .text(
+      f => name(f)
+    );
+
+
+  /* =======================================================
+     CONFINI REGIONI
+  ======================================================= */
+
+  if(regions){
+
+    regionLayer =
+      group
+        .append("path")
+        .datum(regions)
+        .attr(
+          "class",
+          "confini-regioni"
+        )
+        .attr(
+          "d",
+          path
+        );
+
+  }
+
+
+  /* =======================================================
+     ZOOM / SPOSTAMENTO
+  ======================================================= */
+
+  zoom =
+    d3.zoom()
+      .scaleExtent([1,40])
+
+      .on(
+        "zoom",
+        event => {
+
+          group.attr(
+            "transform",
+            event.transform
+          );
+
+
+          updateLabels(
+            event.transform.k
+          );
+
+        }
+      );
+
+
+  svg.call(zoom);
+
+
+  /* =======================================================
+     CONTROLLI
+  ======================================================= */
+
+  document
+    .getElementById("plus")
+    .onclick = () => {
+
+      svg
+        .transition()
+        .duration(300)
+        .call(
+          zoom.scaleBy,
+          1.7
+        );
+
+    };
+
+
+  document
+    .getElementById("minus")
+    .onclick = () => {
+
+      svg
+        .transition()
+        .duration(300)
+        .call(
+          zoom.scaleBy,
+          .6
+        );
+
+    };
+
+
+  document
+    .getElementById("resetMap")
+    .onclick = resetItaly;
+
+
+  document
+    .getElementById("italyButton")
+    .onclick = resetItaly;
+
+
+  updateLabels(1);
+
+}
+
+
+/* =========================================================
+   NOMI COMUNI
+========================================================= */
+
+function updateLabels(k){
+
+  labelsLayer
+    .selectAll("text")
+    .style(
+      "opacity",
+      f => {
+
+        if(
+          selected &&
+          code(f) === code(selected)
+        ){
+          return 1;
+        }
+
+        return k >= 5
+          ? .8
+          : 0;
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   FILTRO REGIONI
+========================================================= */
+
+function createRegionFilter(){
+
+  const select =
+    document.getElementById(
+      "region"
+    );
+
+
+  const regions =
+    [...new Set(
+      features
+        .map(region)
+        .filter(Boolean)
+    )]
+    .sort(
+      (a,b) =>
+        a.localeCompare(b,"it")
+    );
+
+
+  regions.forEach(r => {
+
+    const option =
+      document.createElement(
+        "option"
+      );
+
+    option.value = r;
+    option.textContent = r;
+
+    select.appendChild(
+      option
+    );
+
+  });
+
+
+  select.onchange = () => {
+
+    const value =
+      select.value;
+
+
+    comuniLayer
+      .selectAll("path")
+      .style(
+        "opacity",
+        f =>
+          !value ||
+          region(f) === value
+            ? 1
+            : .12
+      );
+
+  };
+
+}
+
+
+/* =========================================================
+   CERCA
+========================================================= */
+
+const input =
+  document.getElementById(
+    "search"
+  );
+
+const suggestions =
+  document.getElementById(
+    "suggestions"
+  );
+
+
+input.addEventListener(
+  "input",
+  showSuggestions
+);
+
+
+document
+  .getElementById("searchButton")
+  .onclick = performSearch;
+
+
+input.addEventListener(
+  "keydown",
+  event => {
+
+    if(
+      event.key === "Enter"
+    ){
+
+      event.preventDefault();
+
+      performSearch();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   SUGGERIMENTI
+========================================================= */
+
+function showSuggestions(){
+
+  const q =
+    normalize(
+      input.value.trim()
+    );
+
+
+  suggestions.innerHTML = "";
+
+
+  if(!q){
+
+    suggestions.classList.remove(
+      "open"
+    );
+
+    return;
+
+  }
+
+
+  const matches =
+    features
+
+      .filter(
+        f =>
+          normalize(
+            name(f)
+          ).includes(q)
+      )
+
+      .sort(
+        (a,b) => {
+
+          const aa =
+            normalize(
+              name(a)
+            ).startsWith(q);
+
+          const bb =
+            normalize(
+              name(b)
+            ).startsWith(q);
+
+          if(aa && !bb) return -1;
+          if(!aa && bb) return 1;
+
+          return name(a).localeCompare(
+            name(b),
+            "it"
+          );
+
+        }
+      )
+
+      .slice(0,10);
+
+
+  if(!matches.length){
+
+    suggestions.innerHTML = `
+      <div class="suggestion">
+        <strong>Nessun comune trovato</strong>
+        <span>Controlla il nome e riprova.</span>
+      </div>
+    `;
+
+    suggestions.classList.add(
+      "open"
+    );
+
+    return;
+
+  }
+
+
+  matches.forEach(
+    f => {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.className =
+        "suggestion";
+
+      button.type =
+        "button";
+
+
+      button.innerHTML = `
+        <strong>${escapeHtml(name(f))}</strong>
+        <span>
+          ${escapeHtml(province(f))}
+          ${province(f) ? " · " : ""}
+          ${escapeHtml(region(f))}
+        </span>
+      `;
+
+
+      button.onclick = () => {
+
+        input.value =
+          name(f);
+
+        suggestions.classList.remove(
+          "open"
+        );
+
+        selectComune(
+          f,
+          true
+        );
+
+      };
+
+
+      suggestions.appendChild(
+        button
+      );
+
+    }
+  );
+
+
+  suggestions.classList.add(
+    "open"
+  );
+
+}
+
+
+/* =========================================================
+   RICERCA CON TASTO
+========================================================= */
+
+function performSearch(){
+
+  const q =
+    normalize(
+      input.value.trim()
+    );
+
+
+  if(!q){
+    input.focus();
+    return;
+  }
+
+
+  const exact =
+    features.find(
+      f =>
+        normalize(
+          name(f)
+        ) === q
+    );
+
+
+  const partial =
+    features.find(
+      f =>
+        normalize(
+          name(f)
+        ).includes(q)
+    );
+
+
+  const result =
+    exact || partial;
+
+
+  if(result){
+
+    suggestions.classList.remove(
+      "open"
+    );
+
+    selectComune(
+      result,
+      true
+    );
+
+  }else{
+
+    alert(
+      "Comune non trovato."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SELEZIONA COMUNE
+========================================================= */
+
+function selectComune(
+  feature,
+  shouldZoom
+){
+
+  selected =
+    feature;
+
+
+  const selectedCode =
+    code(feature);
+
+
+  /* colore */
+
+  comuniLayer
+    .selectAll("path")
+    .classed(
+      "selezionato",
+      f =>
+        code(f) === selectedCode
+    );
+
+
+  /* nome */
+
+  labelsLayer
+    .selectAll("text")
+    .classed(
+      "selezionato",
+      f =>
+        code(f) === selectedCode
+    );
+
+
+  /* scheda */
+
+  document
+    .getElementById("selectedName")
+    .textContent =
+      name(feature);
+
+
+  document
+    .getElementById("selectedInfo")
+    .textContent =
+      `${province(feature) || "Provincia"} · ${region(feature) || "Regione"} · ISTAT ${selectedCode}`;
+
+
+  const status =
+    document.getElementById(
+      "selectedStatus"
+    );
+
+
+  const isVisited =
+    visited.has(selectedCode);
+
+
+  status.textContent =
+    isVisited
+      ? "✓ Comune visitato"
+      : "Da visitare";
+
+
+  status.classList.toggle(
+    "no",
+    !isVisited
+  );
+
+
+  document
+    .getElementById("details")
+    .href =
+      `comune.html?codice=${selectedCode}`;
+
+
+  document
+    .getElementById("selectedCard")
+    .classList.add("show");
+
+
+  if(shouldZoom){
+
+    zoomToComune(
+      feature
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   ZOOM SUL COMUNE
+========================================================= */
+
+function zoomToComune(
+  feature
+){
+
+  const container =
+    document.getElementById(
+      "map"
+    );
+
+
+  const width =
+    container.clientWidth;
+
+  const height =
+    container.clientHeight;
+
+
+  const bounds =
+    path.bounds(feature);
+
+
+  const x0 =
+    bounds[0][0];
+
+  const y0 =
+    bounds[0][1];
+
+  const x1 =
+    bounds[1][0];
+
+  const y1 =
+    bounds[1][1];
+
+
+  const dx =
+    Math.max(
+      x1-x0,
+      3
+    );
+
+  const dy =
+    Math.max(
+      y1-y0,
+      3
+    );
+
+
+  const centerX =
+    (x0+x1)/2;
+
+  const centerY =
+    (y0+y1)/2;
+
+
+  let scale =
+    .65 /
+    Math.max(
+      dx/width,
+      dy/height
+    );
+
+
+  scale =
+    Math.max(
+      5,
+      Math.min(
+        35,
+        scale
+      )
+    );
+
+
+  const transform =
+    d3.zoomIdentity
+      .translate(
+        width/2,
+        height/2
+      )
+      .scale(scale)
+      .translate(
+        -centerX,
+        -centerY
+      );
+
+
+  svg
+    .transition()
+    .duration(900)
+    .call(
+      zoom.transform,
+      transform
+    );
+
+}
+
+
+/* =========================================================
+   TORNA ALL'ITALIA
+========================================================= */
+
+function resetItaly(){
+
+  selected =
+    null;
+
+
+  input.value =
+    "";
+
+
+  suggestions.classList.remove(
+    "open"
+  );
+
+
+  document
+    .getElementById("selectedCard")
+    .classList.remove("show");
+
+
+  comuniLayer
+    .selectAll("path")
+    .classed(
+      "selezionato",
+      false
+    )
+    .style(
+      "opacity",
+      1
+    );
+
+
+  document
+    .getElementById("region")
+    .value =
+      "";
+
+
+  labelsLayer
+    .selectAll("text")
+    .classed(
+      "selezionato",
+      false
+    );
+
+
+  svg
+    .transition()
+    .duration(700)
+    .call(
+      zoom.transform,
+      d3.zoomIdentity
+    );
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(text){
+
+  return String(text || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+const menu =
+  document.getElementById("menu");
+
+const overlay =
+  document.getElementById("overlay");
+
+
+document
+  .getElementById("openMenu")
+  .onclick = () => {
+
+    menu.classList.add("open");
+    overlay.classList.add("open");
+
+    document.body.classList.add(
+      "menu-open"
+    );
+
+  };
+
+
+function closeMenu(){
+
+  menu.classList.remove("open");
+  overlay.classList.remove("open");
+
+  document.body.classList.remove(
+    "menu-open"
+  );
+
+}
+
+
+document
+  .getElementById("closeMenu")
+  .onclick =
+    closeMenu;
+
+
+overlay.onclick =
+  closeMenu;
+
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if(
+      event.key === "Escape"
+    ){
+      closeMenu();
+    }
+
+  }
+);
+
+
+/* =========================================================
+   AVVIO
+========================================================= */
+
+loadMap();
+
+</script>
+
+</body>
+</html>
