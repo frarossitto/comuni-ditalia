@@ -10,15 +10,12 @@ content="width=device-width, initial-scale=1.0">
 
 <title>Mappa — Comuni d’Italia 🇮🇹</title>
 
-<link rel="preconnect"
-href="https://fonts.googleapis.com">
-
-<link rel="preconnect"
-href="https://fonts.gstatic.com"
-crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
 rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
 
 <style>
 
@@ -29,60 +26,92 @@ rel="stylesheet">
 --muted:#6e7069;
 --green:#2f6f4e;
 --line:#ddd7ca;
+--gray:#d9d8d2;
 }
 
 *{
 box-sizing:border-box;
 }
 
+html{
+scroll-behavior:smooth;
+}
+
 body{
 margin:0;
+
 background:var(--paper);
+
 color:var(--ink);
+
 font-family:"DM Sans",sans-serif;
+
+overflow-x:hidden;
 }
 
 .page{
 max-width:1200px;
+
 margin:auto;
-padding:20px 22px 50px;
+
+padding:20px 22px 35px;
 }
 
+/* HEADER */
+
 .top{
+
 height:50px;
+
 display:flex;
+
 align-items:center;
 }
 
 .brand{
+
 font-family:"Playfair Display",serif;
+
 font-size:21px;
+
 font-weight:700;
 }
 
 /* MENU */
 
 .menu-button{
+
 position:fixed;
+
 right:22px;
+
 top:19px;
+
 z-index:4000;
 
 border:0;
+
 background:transparent;
 
 font-size:30px;
+
+line-height:1;
+
 cursor:pointer;
 }
 
 .menu-overlay{
+
 position:fixed;
+
 inset:0;
 
 background:rgba(20,25,21,.45);
+
 backdrop-filter:blur(3px);
 
 opacity:0;
+
 pointer-events:none;
 
 transition:.25s;
@@ -91,18 +120,24 @@ z-index:4998;
 }
 
 .menu-overlay.open{
+
 opacity:1;
+
 pointer-events:auto;
 }
 
 .side-menu{
+
 position:fixed;
+
 z-index:5000;
 
 top:0;
+
 right:0;
 
 width:min(430px,92vw);
+
 height:100dvh;
 
 background:var(--paper);
@@ -110,66 +145,107 @@ background:var(--paper);
 padding:24px 28px;
 
 transform:translateX(105%);
-transition:.3s;
+
+transition:transform .3s ease;
 
 display:flex;
+
 flex-direction:column;
 
-box-shadow:-15px 0 40px rgba(0,0,0,.12);
+box-shadow:-15px 0 45px rgba(0,0,0,.08);
 }
 
 .side-menu.open{
+
 transform:translateX(0);
 }
 
 .menu-top{
+
 display:flex;
-align-items:center;
+
 justify-content:space-between;
 
-margin-bottom:55px;
+align-items:center;
+
+margin-bottom:42px;
 }
 
 .menu-brand{
+
 font-family:"Playfair Display",serif;
+
 font-size:20px;
+
 font-weight:700;
 }
 
 .menu-close{
-position:relative;
-z-index:5100;
 
 width:40px;
+
 height:40px;
 
 border:1px solid var(--line);
+
 border-radius:50%;
 
 background:var(--white);
 
 font-size:27px;
+
+line-height:1;
+
 cursor:pointer;
 }
 
+.menu-home{
+
+display:flex;
+
+align-items:center;
+
+margin-bottom:32px;
+
+color:var(--muted);
+
+text-decoration:none;
+
+font-size:14px;
+
+font-weight:600;
+}
+
+.menu-home:hover{
+
+color:var(--green);
+}
+
 .menu-section{
-margin-bottom:30px;
+
+margin-bottom:25px;
 }
 
 .menu-heading{
+
 margin-bottom:10px;
 
 color:var(--green);
 
 font-size:10px;
+
 font-weight:700;
 
 letter-spacing:.18em;
 }
 
 .menu-link{
+
 display:flex;
+
 justify-content:space-between;
+
+align-items:center;
 
 padding:12px 0;
 
@@ -178,9 +254,17 @@ border-bottom:1px solid var(--line);
 text-decoration:none;
 
 font-size:18px;
+
+color:var(--ink);
+}
+
+.menu-link:hover{
+
+color:var(--green);
 }
 
 .menu-quote{
+
 margin-top:auto;
 
 border-top:1px solid var(--line);
@@ -188,337 +272,458 @@ border-top:1px solid var(--line);
 padding-top:22px;
 
 font-family:"Playfair Display",serif;
+
 font-size:20px;
+
 line-height:1.25;
+
 font-weight:600;
 }
 
 .menu-quote div:last-child{
+
 color:var(--green);
 }
 
-/* TITOLI */
+/* TITOLO */
 
-.map-head{
-padding:70px 0 30px;
+.content{
+
+padding:65px 0 25px;
 }
 
 .kicker{
+
 color:var(--green);
 
 font-size:10px;
+
 font-weight:700;
 
 letter-spacing:.2em;
 }
 
-.map-head h1{
+h1{
+
+margin:10px 0 10px;
+
 font-family:"Playfair Display",serif;
 
-font-size:clamp(50px,8vw,85px);
+font-size:clamp(45px,7vw,78px);
 
-line-height:.92;
-
-margin:12px 0 20px;
+line-height:.95;
 }
 
-.map-head p{
-max-width:650px;
+.intro{
 
-color:var(--muted);
+max-width:720px;
+
+font-size:18px;
 
 line-height:1.6;
-}
-
-/* RICERCA */
-
-.map-tools{
-position:relative;
-
-display:flex;
-gap:8px;
-
-margin-bottom:12px;
-}
-
-.search-box{
-position:relative;
-flex:1;
-}
-
-#search{
-width:100%;
-
-padding:15px;
-
-border:1px solid var(--line);
-
-background:var(--white);
-
-font:inherit;
-
-outline:none;
-}
-
-#search:focus{
-border-color:var(--green);
-}
-
-#reset{
-border:1px solid var(--line);
-
-background:var(--white);
-
-padding:0 18px;
-
-cursor:pointer;
-}
-
-.search-results{
-position:absolute;
-
-left:0;
-right:0;
-top:53px;
-
-z-index:100;
-
-background:var(--white);
-
-border:1px solid var(--line);
-
-max-height:300px;
-
-overflow-y:auto;
-
-display:none;
-}
-
-.search-item{
-padding:13px 15px;
-
-border-bottom:1px solid var(--line);
-
-cursor:pointer;
-}
-
-.search-item:hover{
-background:#f0eee7;
-}
-
-.search-name{
-font-weight:600;
-}
-
-.search-meta{
-margin-top:3px;
-
-font-size:11px;
 
 color:var(--muted);
+
+margin-bottom:28px;
 }
 
 /* MAPPA */
 
-.mapbox{
-position:relative;
+.map-panel{
 
-width:100%;
-
-height:min(72vh,720px);
-
-min-height:480px;
-
-background:#fff;
+background:var(--white);
 
 border:1px solid var(--line);
 
-overflow:hidden;
+border-radius:24px;
+
+padding:16px;
 }
 
-.mapbox svg{
-width:100%;
-height:100%;
+.tools{
+
+display:flex;
+
+gap:9px;
+
+flex-wrap:wrap;
+
+margin-bottom:14px;
 }
 
-.muni{
-fill:#fafafa;
+.tools input,
+.tools select,
+.tools button{
 
-stroke:#fff;
+font:inherit;
 
-stroke-width:.35;
+border:1px solid var(--line);
 
-vector-effect:non-scaling-stroke;
+background:#fffdf8;
+
+padding:11px 13px;
+
+border-radius:12px;
+
+color:var(--ink);
+}
+
+.tools input{
+
+flex:1;
+
+min-width:210px;
+}
+
+.tools button{
 
 cursor:pointer;
 }
 
-.muni.visited{
+.map-wrapper{
+
+position:relative;
+
+height:min(75vh,760px);
+
+min-height:480px;
+
+background:#ece8de;
+
+border-radius:18px;
+
+overflow:hidden;
+}
+
+#map{
+
+width:100%;
+
+height:100%;
+}
+
+#map svg{
+
+width:100%;
+
+height:100%;
+
+display:block;
+}
+
+.map-layer{
+
+transform-origin:center;
+}
+
+.muni{
+
+stroke:#fffdf8;
+
+stroke-width:.28;
+
+vector-effect:non-scaling-stroke;
+
+cursor:pointer;
+
+transition:opacity .15s;
+}
+
+.visited{
+
 fill:var(--green);
 }
 
+.todo{
+
+fill:#e2e0da;
+}
+
 .muni:hover{
+
 stroke:#1f2b24;
 
 stroke-width:1.3;
 }
 
+/* CONFINI */
+
 .region-boundary{
+
 fill:none;
 
-stroke:#9d9b93;
+stroke:#a59f91;
 
-stroke-width:1.2;
+stroke-width:1.4;
+
+vector-effect:non-scaling-stroke;
 
 pointer-events:none;
 
-vector-effect:non-scaling-stroke;
+opacity:.8;
 }
 
 .province-boundary{
+
 fill:none;
 
-stroke:#d2d0c8;
+stroke:#c1bbb0;
 
-stroke-width:.7;
+stroke-width:.65;
+
+vector-effect:non-scaling-stroke;
 
 pointer-events:none;
 
-vector-effect:non-scaling-stroke;
+opacity:.75;
 }
 
-/* ZOOM */
+/* CONTROLLI ZOOM */
 
-.zoom{
+.zoom-controls{
+
 position:absolute;
 
-right:12px;
-top:12px;
+right:14px;
 
-z-index:20;
+top:14px;
 
 display:flex;
+
 flex-direction:column;
+
+gap:6px;
+
+z-index:20;
 }
 
-.zoom button{
-width:38px;
-height:38px;
+.zoom-controls button{
+
+width:40px;
+
+height:40px;
 
 border:1px solid var(--line);
 
-background:var(--white);
+border-radius:10px;
 
-font-size:20px;
+background:rgba(255,253,248,.94);
+
+font-size:21px;
 
 cursor:pointer;
+
+box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.zoom-controls button:hover{
+
+background:var(--white);
+}
+
+/* SUGGERIMENTI */
+
+.search-wrap{
+
+position:relative;
+
+flex:1;
+
+min-width:210px;
+}
+
+.search-wrap input{
+
+width:100%;
+}
+
+.suggestions{
+
+position:absolute;
+
+left:0;
+
+right:0;
+
+top:calc(100% + 5px);
+
+background:var(--white);
+
+border:1px solid var(--line);
+
+border-radius:12px;
+
+overflow:hidden;
+
+z-index:100;
+
+box-shadow:0 12px 30px rgba(0,0,0,.08);
+
+display:none;
+}
+
+.suggestions.open{
+
+display:block;
+}
+
+.suggestion{
+
+padding:11px 13px;
+
+cursor:pointer;
+
+border-bottom:1px solid var(--line);
+}
+
+.suggestion:last-child{
+
+border-bottom:0;
+}
+
+.suggestion:hover{
+
+background:#f0ece2;
+}
+
+.suggestion strong{
+
+display:block;
+
+font-family:"Playfair Display",serif;
+
+font-size:16px;
+}
+
+.suggestion span{
+
+font-size:11px;
+
+color:var(--muted);
+}
+
+/* LEGENDA */
+
+.legend{
+
+display:flex;
+
+gap:20px;
+
+padding:14px 3px 2px;
+
+color:var(--muted);
+
+font-size:13px;
+
+flex-wrap:wrap;
+}
+
+.dot{
+
+display:inline-block;
+
+width:12px;
+
+height:12px;
+
+border-radius:3px;
+
+vertical-align:-2px;
+
+margin-right:5px;
 }
 
 /* INFO */
 
-.map-info{
-margin-top:12px;
+.info{
 
-padding:18px;
+margin-top:18px;
 
-background:var(--white);
+background:#eee8da;
 
-border:1px solid var(--line);
+border-radius:18px;
 
-min-height:70px;
+padding:17px;
 }
 
-.map-info strong{
+.info b{
+
 font-family:"Playfair Display",serif;
 
-font-size:25px;
+font-size:21px;
 }
 
-.map-info small{
+.info small{
+
 display:block;
 
-margin-top:5px;
-
 color:var(--muted);
+
+margin-top:4px;
 }
 
-.legend{
-display:flex;
-gap:20px;
+.info a{
 
-padding:15px 0;
+display:inline-block;
+
+margin-top:10px;
+
+color:var(--green);
+
+font-weight:700;
+
+text-decoration:none;
+}
+
+/* FOOTER */
+
+.footer{
+
+margin-top:35px;
+
+border-top:1px solid var(--line);
+
+padding-top:22px;
+
+color:var(--muted);
 
 font-size:12px;
 
-color:var(--muted);
-}
-
-.legend-item{
 display:flex;
-align-items:center;
-gap:6px;
+
+flex-direction:column;
+
+gap:5px;
 }
 
-.legend-dot{
-width:11px;
-height:11px;
-
-border-radius:2px;
-}
-
-.green{
-background:var(--green);
-}
-
-.gray{
-background:#fafafa;
-border:1px solid #ddd;
-}
-
-.map-note{
-margin-top:12px;
-
-color:var(--muted);
+.rights{
 
 font-size:11px;
-}
 
-/* MOBILE */
+color:#8a8a82;
+}
 
 @media(max-width:760px){
 
 .page{
-padding:16px 15px 35px;
+
+padding:16px 15px 30px;
 }
 
-.menu-button{
-right:15px;
-top:16px;
+.content{
+
+padding-top:60px;
 }
 
-.map-head{
-padding-top:55px;
+.map-wrapper{
+
+min-height:430px;
 }
 
-.map-tools{
-display:block;
-}
+.side-menu{
 
-#reset{
-margin-top:8px;
-
-width:100%;
-
-height:45px;
-}
-
-.mapbox{
-min-height:420px;
-height:65vh;
-}
-
-.search-results{
-top:53px;
+padding:22px 23px;
 }
 
 }
@@ -542,8 +747,11 @@ Comuni d’Italia 🇮🇹
 
 <button
 class="menu-button"
-id="menuButton">
+id="menuButton"
+aria-label="Apri menu">
+
 ⋯
+
 </button>
 
 
@@ -565,11 +773,23 @@ Comuni d’Italia 🇮🇹
 
 <button
 class="menu-close"
-id="menuClose">
+id="menuClose"
+aria-label="Chiudi menu">
+
 ×
+
 </button>
 
 </div>
+
+
+<a
+class="menu-home"
+href="index.html">
+
+← Torna alla home
+
+</a>
 
 
 <div class="menu-section">
@@ -629,7 +849,9 @@ href="contatti.html">
 <div class="menu-quote">
 
 <div>Un comune alla volta.</div>
+
 <div>Una strada alla volta.</div>
+
 <div>Tutta l’Italia. 🇮🇹</div>
 
 </div>
@@ -637,56 +859,83 @@ href="contatti.html">
 </aside>
 
 
-<section class="map-head">
+<main class="content">
 
 <div class="kicker">
-LA MAPPA
+IL VIAGGIO
 </div>
 
 <h1>
-Tutta l’Italia,<br>
-comune dopo comune.
+La mappa.
 </h1>
 
-<p>
-Cerca un comune, ingrandisci la mappa
-e scopri quali territori sono già stati
-attraversati.
+<p class="intro">
+Tutta l’Italia, comune dopo comune.
+I comuni visitati sono evidenziati in verde.
+Puoi cercare un comune, filtrare per regione e utilizzare lo zoom per esplorare il territorio.
 </p>
 
-</section>
 
+<div class="map-panel">
 
-<div class="map-tools">
+<div class="tools">
 
-<div class="search-box">
+<div class="search-wrap">
 
 <input
 id="search"
 type="search"
 placeholder="Cerca un comune…"
-autocomplete="off">
+autocomplete="off"
+aria-label="Cerca un comune">
 
 <div
-class="search-results"
-id="searchResults">
+class="suggestions"
+id="suggestions">
 </div>
 
 </div>
 
-<button id="reset">
-Reset
+
+<select
+id="region"
+aria-label="Filtra per regione">
+
+<option value="">
+Tutte le regioni
+</option>
+
+</select>
+
+
+<button
+id="reset">
+
+Azzera filtri
+
 </button>
 
 </div>
 
 
-<div class="mapbox" id="map">
+<div class="map-wrapper">
 
-<div class="zoom">
+<div id="map"></div>
 
-<button id="zoomIn">+</button>
-<button id="zoomOut">−</button>
+
+<div class="zoom-controls">
+
+<button id="zoomIn" aria-label="Ingrandisci">
++
+</button>
+
+<button id="zoomOut" aria-label="Riduci">
+−
+</button>
+
+<button id="zoomReset" aria-label="Ripristina">
+⌂
+</button>
 
 </div>
 
@@ -695,56 +944,115 @@ Reset
 
 <div class="legend">
 
-<div class="legend-item">
+<span>
+<i
+class="dot"
+style="background:var(--green)">
+</i>
+Visitato
+</span>
 
-<span class="legend-dot green"></span>
-
-Comuni visitati
-
-</div>
-
-<div class="legend-item">
-
-<span class="legend-dot gray"></span>
-
+<span>
+<i
+class="dot"
+style="background:#e2e0da">
+</i>
 Da visitare
+</span>
+
+<span>
+<i
+class="dot"
+style="background:#a59f91">
+</i>
+Confine regionale/provinciale
+</span>
 
 </div>
 
-</div>
 
+<div
+class="info"
+id="info">
 
-<div class="map-info" id="mapInfo">
-
-<strong>
+<b>
 Seleziona un comune
-</strong>
+</b>
 
 <small>
-Clicca sulla mappa oppure cerca un nome.
+Fai clic sulla mappa per vedere i dettagli.
 </small>
 
 </div>
 
+</div>
 
-<div class="map-note">
-A maggiore ingrandimento vengono evidenziati
-progressivamente i confini territoriali.
+</main>
+
+
+<footer class="footer">
+
+<div>
+Comuni d’Italia 🇮🇹
+</div>
+
+<div class="rights">
+© 2026 Francesco Rossitto · Tutti i diritti riservati.
+</div>
+
+</footer>
+
 </div>
 
 
-</div>
+<script src="./visitati.js"></script>
 
+<script src="./comuni.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
-
-<script src="visitati.js"></script>
-<script src="comuni.js"></script>
-<script src="app.js"></script>
+<script src="./app.js"></script>
 
 
 <script>
+
+const MAP_URL =
+"https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_municipalities.topo.json";
+
+
+const visited = new Set(
+(window.VISITED_ISTAT || [])
+.map(x => String(x).padStart(6,"0"))
+);
+
+
+const norm = s =>
+(s || "")
+.toLocaleLowerCase("it-IT")
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g,"");
+
+
+const code = f =>
+String(
+f.properties.com_istat_code ||
+f.properties.pro_com ||
+f.properties.id ||
+""
+).padStart(6,"0");
+
+
+let svg;
+let mapLayer;
+let paths;
+let features = [];
+let projection;
+let path;
+let zoom;
+
+let width;
+let height;
+
+let selectedComune = null;
+
 
 /* MENU */
 
@@ -768,6 +1076,7 @@ sideMenu.classList.add("open");
 menuOverlay.classList.add("open");
 
 menuButton.style.opacity="0";
+
 menuButton.style.pointerEvents="none";
 
 document.body.style.overflow="hidden";
@@ -782,6 +1091,7 @@ sideMenu.classList.remove("open");
 menuOverlay.classList.remove("open");
 
 menuButton.style.opacity="1";
+
 menuButton.style.pointerEvents="auto";
 
 document.body.style.overflow="";
@@ -795,284 +1105,445 @@ menuClose.onclick=closeMenu;
 
 menuOverlay.onclick=closeMenu;
 
+
 document.addEventListener(
 "keydown",
 e=>{
-if(e.key==="Escape") closeMenu();
+
+if(e.key==="Escape"){
+closeMenu();
+}
+
 }
 );
 
 
-/* DATI */
+/* MAPPA */
 
-const visited =
-new Set(
-(window.VISITED_ISTAT || [])
-.map(String)
-.map(x=>x.padStart(6,"0"))
+async function init(){
+
+const topo =
+await d3.json(MAP_URL);
+
+
+const objectName =
+Object.keys(topo.objects)[0];
+
+const object =
+topo.objects[objectName];
+
+
+features =
+topojson.feature(
+topo,
+object
+).features;
+
+
+/* REGIONI */
+
+const regions =
+[
+...new Set(
+features
+.map(f=>f.properties.reg_name)
+.filter(Boolean)
+)
+]
+.sort((a,b)=>
+a.localeCompare(b,"it")
 );
 
 
-const MAP_URL =
-"https://raw.githubusercontent.com/guglielmo/geojson-italy/main/topojson/limits_IT_municipalities.topo.json";
+const regionSelect =
+document.getElementById("region");
 
 
-let svg;
-let g;
-let projection;
-let path;
+regions.forEach(region=>{
 
-let municipalities=[];
+const option =
+document.createElement("option");
 
-let currentZoom=1;
+option.value=region;
+
+option.textContent=region;
+
+regionSelect.appendChild(option);
+
+});
 
 
 /* MAPPA */
 
-d3.json(MAP_URL)
-.then(function(topology){
-
-const objectName =
-Object.keys(topology.objects)[0];
-
-const geo =
-topojson.feature(
-topology,
-topology.objects[objectName]
-);
-
-municipalities =
-geo.features;
-
-
-const container =
+const map =
 document.getElementById("map");
 
-const width =
-container.clientWidth;
+width =
+map.clientWidth;
 
-const height =
-container.clientHeight;
+height =
+map.clientHeight;
 
 
 svg =
-d3.select(container)
+d3.select(map)
 .append("svg")
-.attr("viewBox",`0 0 ${width} ${height}`);
-
-
-g =
-svg.append("g");
+.attr("viewBox",`0 0 ${width} ${height}`)
+.attr("preserveAspectRatio","xMidYMid meet");
 
 
 projection =
 d3.geoMercator()
 .fitSize(
-[width-30,height-30],
-geo
+[width,height],
+{
+type:"FeatureCollection",
+features
+}
 );
 
 
 path =
-d3.geoPath()
-.projection(projection);
+d3.geoPath(projection);
 
 
-g.selectAll(".muni")
-.data(municipalities)
-.enter()
-.append("path")
-.attr("class","muni")
-.classed("visited",function(d){
+/* ZOOM */
 
-return isVisited(d);
-
-})
-.attr("d",path)
-.on("click",function(event,d){
-
-showComune(d);
-
-});
+mapLayer =
+svg.append("g")
+.attr("class","map-layer");
 
 
-svg.call(
-
+zoom =
 d3.zoom()
-.scaleExtent([1,12])
-.on("zoom",function(event){
+.scaleExtent([1,8])
+.on("zoom",event=>{
 
-currentZoom =
-event.transform.k;
-
-g.attr(
+mapLayer.attr(
 "transform",
 event.transform
 );
 
-updateBoundaries();
-
-})
-
-);
-
-window.mapSvg=svg;
-
-})
-.catch(function(){
-
-document.getElementById("map").innerHTML=
-"<div style='padding:30px'>La mappa non è disponibile al momento.</div>";
+updateBoundaries(event.transform.k);
 
 });
 
 
-/* CODICE COMUNE */
-
-function getCode(d){
-
-const p =
-d.properties || {};
-
-return String(
-p.com_istat_code ||
-p.pro_com ||
-d.id ||
-""
-).padStart(6,"0");
-
-}
+svg.call(zoom);
 
 
-function getName(d){
+/* COMUNI */
 
-const p =
-d.properties || {};
+paths =
+mapLayer
+.append("g")
+.attr("class","municipalities")
+.selectAll("path")
+.data(features)
+.join("path")
+.attr(
+"class",
+f =>
+visited.has(code(f))
+? "muni visited"
+: "muni todo"
+)
+.attr("d",path);
 
-return (
-p.com_name ||
-p.name ||
-p.comune ||
-p.nome ||
-p.municipality ||
-"Comune"
+
+/* CONFINI */
+
+const boundaryLayer =
+mapLayer
+.append("g")
+.attr("class","boundaries");
+
+
+/*
+Confini regionali.
+Le linee vengono ricavate
+dalla geometria dei comuni
+confinanti appartenenti a regioni diverse.
+*/
+
+try{
+
+const regionMesh =
+topojson.mesh(
+topo,
+object,
+(a,b)=>
+a !== b &&
+a.properties &&
+b.properties &&
+a.properties.reg_name !==
+b.properties.reg_name
+);
+
+
+boundaryLayer
+.append("path")
+.attr(
+"class",
+"region-boundary"
+)
+.attr(
+"d",
+path(regionMesh)
+);
+
+
+/*
+Confini provinciali.
+*/
+
+const provinceMesh =
+topojson.mesh(
+topo,
+object,
+(a,b)=>
+a !== b &&
+a.properties &&
+b.properties &&
+a.properties.prov_name !==
+b.properties.prov_name
+);
+
+
+boundaryLayer
+.append("path")
+.attr(
+"class",
+"province-boundary"
+)
+.attr(
+"d",
+path(provinceMesh)
+);
+
+}catch(error){
+
+console.warn(
+"Confini amministrativi non disponibili:",
+error
 );
 
 }
 
 
-function getProvince(d){
+/* CLICK COMUNE */
 
-const p =
-d.properties || {};
+paths.on(
+"click",
+(event,f)=>{
 
-return (
-p.prov_name ||
-p.province ||
-p.provincia ||
-""
+const c = code(f);
+
+selectedComune = f;
+
+showComune(f,c);
+
+}
+);
+
+
+/* RICERCA */
+
+setupSearch();
+
+
+/* RESET */
+
+document
+.getElementById("reset")
+.addEventListener(
+"click",
+()=>{
+
+document
+.getElementById("search")
+.value="";
+
+regionSelect.value="";
+
+document
+.getElementById("suggestions")
+.classList.remove("open");
+
+applyFilters();
+
+resetZoom();
+
+}
+);
+
+
+/* ZOOM BUTTONS */
+
+document
+.getElementById("zoomIn")
+.addEventListener(
+"click",
+()=>{
+
+svg
+.transition()
+.duration(350)
+.call(
+zoom.scaleBy,
+1.6
+);
+
+}
+);
+
+
+document
+.getElementById("zoomOut")
+.addEventListener(
+"click",
+()=>{
+
+svg
+.transition()
+.duration(350)
+.call(
+zoom.scaleBy,
+0.625
+);
+
+}
+);
+
+
+document
+.getElementById("zoomReset")
+.addEventListener(
+"click",
+resetZoom
+);
+
+
+/* RIDIMENSIONAMENTO */
+
+window.addEventListener(
+"resize",
+resizeMap
 );
 
 }
 
 
-function getRegion(d){
+function showComune(f,c){
 
-const p =
-d.properties || {};
-
-return (
-p.reg_name ||
-p.region ||
-p.regione ||
-""
-);
-
-}
-
-
-function isVisited(d){
-
-return visited.has(
-getCode(d)
-);
-
-}
-
-
-/* INFO */
-
-function showComune(d){
-
-const code =
-getCode(d);
+const isVisited =
+visited.has(c);
 
 const name =
-getName(d);
+f.properties.name ||
+"Comune";
 
 const province =
-getProvince(d);
+f.properties.prov_name ||
+"";
 
 const region =
-getRegion(d);
-
-const visitedText =
-visited.has(code)
-? "✓ Comune visitato"
-: "Comune ancora da visitare";
+f.properties.reg_name ||
+"";
 
 
-document.getElementById(
-"mapInfo"
-).innerHTML=
+let html =
+`<b>${name}</b>`;
 
-"<strong>"+name+"</strong>"+
+html +=
+`<small>${province} · ${region} · ISTAT ${c}</small>`;
 
-"<small>"+
-[
-province,
-region,
-"ISTAT "+code
-]
-.filter(Boolean)
-.join(" · ")+
-"</small>"+
 
-"<small style='margin-top:8px;color:"+
-(visited.has(code)
-?"#2f6f4e"
-:"#6e7069")+
-";font-weight:700'>"+
-visitedText+
-"</small>";
+if(isVisited){
+
+html +=
+`<a
+href="https://www.instagram.com/frarossitto/"
+target="_blank"
+rel="noopener">
+Vai su Instagram @frarossitto ↗
+</a>`;
+
+}
+
+
+document
+.getElementById("info")
+.innerHTML=html;
+
+}
+
+
+/* FILTRI */
+
+function applyFilters(){
+
+const q =
+norm(
+document
+.getElementById("search")
+.value
+);
+
+const region =
+document
+.getElementById("region")
+.value;
+
+
+paths.attr(
+"display",
+f => {
+
+const matchName =
+!q ||
+norm(
+f.properties.name
+).includes(q);
+
+const matchRegion =
+!region ||
+f.properties.reg_name === region;
+
+return matchName && matchRegion
+? null
+: "none";
+
+}
+);
 
 }
 
 
 /* RICERCA */
 
-const search =
+function setupSearch(){
+
+const input =
 document.getElementById("search");
 
-const results =
-document.getElementById("searchResults");
+const suggestions =
+document.getElementById("suggestions");
 
-
-search.addEventListener(
+input.addEventListener(
 "input",
-function(){
+()=>{
 
-const query =
-search.value
-.trim()
-.toLowerCase();
+const q =
+norm(input.value.trim());
 
+if(!q){
 
-results.innerHTML="";
+suggestions.innerHTML="";
 
-if(!query){
+suggestions.classList.remove("open");
 
-results.style.display="none";
+applyFilters();
 
 return;
 
@@ -1080,104 +1551,132 @@ return;
 
 
 const matches =
-municipalities
-.filter(function(d){
-
-return getName(d)
-.toLowerCase()
-.includes(query);
-
-})
+features
+.filter(f =>
+norm(f.properties.name)
+.includes(q)
+)
 .slice(0,8);
 
 
 if(!matches.length){
 
-results.innerHTML=
-"<div class='search-item'>Nessun comune trovato</div>";
+suggestions.innerHTML="";
 
-results.style.display="block";
+suggestions.classList.remove("open");
+
+applyFilters();
 
 return;
 
 }
 
 
-matches.forEach(function(d){
+suggestions.innerHTML =
+matches
+.map(f=>{
 
-const item =
-document.createElement("div");
+const c=code(f);
 
-item.className="search-item";
+return `
+<div
+class="suggestion"
+data-code="${c}">
 
-item.innerHTML=
+<strong>
+${f.properties.name || "Comune"}
+</strong>
 
-"<div class='search-name'>"+
-getName(d)+
-"</div>"+
+<span>
+${f.properties.prov_name || ""}
+ ·
+${f.properties.reg_name || ""}
+</span>
 
-"<div class='search-meta'>"+
-[
-getProvince(d),
-getRegion(d)
-]
-.filter(Boolean)
-.join(" · ")+
-"</div>";
+</div>
+`;
 
-
-item.onclick=function(){
-
-search.value=getName(d);
-
-results.style.display="none";
-
-showComune(d);
-
-focusComune(d);
-
-};
+})
+.join("");
 
 
-results.appendChild(item);
+suggestions.classList.add("open");
+
+applyFilters();
+
+
+suggestions
+.querySelectorAll(".suggestion")
+.forEach(item=>{
+
+item.addEventListener(
+"click",
+()=>{
+
+const c =
+item.dataset.code;
+
+const f =
+features.find(
+x=>code(x)===c
+);
+
+if(f){
+
+input.value =
+f.properties.name || "";
+
+suggestions.classList.remove("open");
+
+showComune(f,c);
+
+focusComune(f);
+
+applyFilters();
+
+}
+
+}
+);
 
 });
 
-
-results.style.display="block";
-
-});
+}
+);
 
 
 document.addEventListener(
 "click",
-function(event){
+event=>{
 
 if(
-!event.target.closest(".search-box")
+!event.target.closest(".search-wrap")
 ){
 
-results.style.display="none";
+suggestions.classList.remove("open");
 
 }
 
-});
+}
+);
+
+}
 
 
-/* ZOOM SUL COMUNE */
+/* FOCUS COMUNE */
 
-function focusComune(d){
-
-if(!svg) return;
+function focusComune(f){
 
 const bounds =
-path.bounds(d);
+path.bounds(f);
 
 const dx =
-bounds[1][0]-bounds[0][0];
+bounds[1][0] -
+bounds[0][0];
 
 const dy =
-bounds[1][1]-bounds[0][1];
+bounds[1][1] -
+bounds[0][1];
 
 const x =
 (bounds[0][0]+bounds[1][0])/2;
@@ -1185,14 +1684,16 @@ const x =
 const y =
 (bounds[0][1]+bounds[1][1])/2;
 
-const scale =
-Math.max(
-1,
+
+let scale =
 Math.min(
-10,
-0.8/Math.max(
-dx / svg.node().clientWidth,
-dy / svg.node().clientHeight
+8,
+Math.max(
+2,
+0.8 /
+Math.max(
+dx / width,
+dy / height
 )
 )
 );
@@ -1201,10 +1702,8 @@ dy / svg.node().clientHeight
 const transform =
 d3.zoomIdentity
 .translate(
-svg.node().clientWidth/2 -
-scale*x,
-svg.node().clientHeight/2 -
-scale*y
+width/2 - scale*x,
+height/2 - scale*y
 )
 .scale(scale);
 
@@ -1213,114 +1712,123 @@ svg
 .transition()
 .duration(650)
 .call(
-d3.zoom().transform,
+zoom.transform,
 transform
 );
 
 }
 
 
-/* RESET */
+/* RESET ZOOM */
 
-document.getElementById(
-"reset"
-).onclick=function(){
+function resetZoom(){
 
-search.value="";
-
-results.style.display="none";
-
-if(!svg) return;
+if(!svg || !zoom) return;
 
 svg
 .transition()
 .duration(500)
 .call(
-d3.zoom().transform,
+zoom.transform,
 d3.zoomIdentity
 );
 
-document.getElementById(
-"mapInfo"
-).innerHTML=
-"<strong>Seleziona un comune</strong>"+
-"<small>Clicca sulla mappa oppure cerca un nome.</small>";
-
-};
-
-
-/* PULSANTI ZOOM */
-
-document.getElementById(
-"zoomIn"
-).onclick=function(){
-
-if(!svg) return;
-
-svg
-.transition()
-.duration(250)
-.call(
-d3.zoom().scaleBy,
-1.6
-);
-
-};
-
-
-document.getElementById(
-"zoomOut"
-).onclick=function(){
-
-if(!svg) return;
-
-svg
-.transition()
-.duration(250)
-.call(
-d3.zoom().scaleBy,
-0.65
-);
-
-};
+}
 
 
 /* CONFINI */
 
-function updateBoundaries(){
+function updateBoundaries(k){
 
-if(!g) return;
-
-g.selectAll(
-".region-boundary,.province-boundary"
-).remove();
-
-/*
-I confini aggiuntivi vengono
-mostrati solo con maggiore zoom,
-così la mappa rimane leggera.
-*/
-
-if(currentZoom < 1.8) return;
-
-try{
-
-const regionMesh =
-topojson.mesh(
-{},
-{}
+const region =
+mapLayer.select(
+".region-boundary"
 );
 
-}catch(e){}
+const province =
+mapLayer.select(
+".province-boundary"
+);
 
-/*
-La suddivisione visiva dei comuni
-rimane sempre leggera.
-*/
+
+if(region.empty()) return;
+
+
+region
+.attr(
+"opacity",
+k >= 1.35 ? .95 : 0
+);
+
+
+province
+.attr(
+"opacity",
+k >= 2.1 ? .85 : 0
+);
 
 }
+
+
+/* RESIZE */
+
+function resizeMap(){
+
+if(!svg || !projection) return;
+
+const map =
+document.getElementById("map");
+
+width =
+map.clientWidth;
+
+height =
+map.clientHeight;
+
+
+svg.attr(
+"viewBox",
+`0 0 ${width} ${height}`
+);
+
+
+projection.fitSize(
+[width,height],
+{
+type:"FeatureCollection",
+features
+}
+);
+
+
+paths.attr("d",path);
+
+}
+
+
+init().catch(error=>{
+
+console.error(error);
+
+document
+.getElementById("map")
+.innerHTML =
+
+`
+<div style="
+padding:25px;
+color:#6e7069;
+font-size:14px;
+">
+La mappa non è riuscita a caricarsi.
+Riprova con una connessione internet attiva.
+</div>
+`;
+
+});
 
 </script>
 
 </body>
+
 </html>
