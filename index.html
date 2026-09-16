@@ -368,12 +368,16 @@ a{
   line-height:.92;
 
   letter-spacing:-.04em;
+
+  /* SCRITTA NERA LEGGERMENTE PIÙ SCURA */
+  color:#151713;
 }
 
 .hero p{
   max-width:500px;
 
-  color:#20221f;
+  /* SCRITTA NERA LEGGERMENTE PIÙ SCURA */
+  color:#151713;
 
   font-size:17px;
 
@@ -383,10 +387,27 @@ a{
     0 1px 3px rgba(255,255,255,.45);
 }
 
+/* =========================================================
+   PULSANTE SCOPRI IL VIAGGIO
+========================================================= */
+
 .text-link{
-  display:inline-block;
+  display:inline-flex;
+
+  align-items:center;
+  justify-content:center;
 
   margin-top:20px;
+
+  padding:13px 20px;
+
+  background:var(--green);
+
+  color:#ffffff;
+
+  border:1px solid var(--green);
+
+  border-radius:6px;
 
   font-size:13px;
 
@@ -396,14 +417,27 @@ a{
 
   text-decoration:none;
 
-  color:#20221f;
+  box-shadow:0 5px 14px rgba(36,86,61,.18);
 
-  text-shadow:
-    0 1px 3px rgba(255,255,255,.55);
+  text-shadow:none;
+
+  transition:
+    background .2s ease,
+    border-color .2s ease,
+    transform .2s ease,
+    box-shadow .2s ease;
 }
 
 .text-link:hover{
-  color:var(--green);
+  background:var(--green-dark);
+
+  border-color:var(--green-dark);
+
+  color:#ffffff;
+
+  transform:translateY(-1px);
+
+  box-shadow:0 7px 18px rgba(36,86,61,.25);
 }
 
 /* =========================================================
@@ -875,20 +909,43 @@ a{
       );
   }
 
+  .hero h1{
+    color:#151713;
+  }
+
   .hero p{
     font-size:16px;
 
-    color:#20221f;
+    color:#151713;
 
     text-shadow:
       0 1px 3px rgba(255,255,255,.55);
   }
 
-  .text-link{
-    color:#20221f;
+  /* =====================================================
+     PULSANTE SCOPRI IL VIAGGIO MOBILE
+  ===================================================== */
 
-    text-shadow:
-      0 1px 3px rgba(255,255,255,.65);
+  .text-link{
+    color:#ffffff;
+
+    background:var(--green);
+
+    border-color:var(--green);
+
+    text-shadow:none;
+
+    padding:13px 18px;
+
+    border-radius:6px;
+  }
+
+  .text-link:hover{
+    color:#ffffff;
+
+    background:var(--green-dark);
+
+    border-color:var(--green-dark);
   }
 
   /* =====================================================
