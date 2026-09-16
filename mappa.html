@@ -1056,7 +1056,7 @@
     const visited = new Set(
       (window.VISITED_ISTAT || [])
         .map(String)
-        .map(code => code.padStart(6, "0"))
+        .map(code => code.padStart(6,"0"))
     );
 
 
@@ -1464,6 +1464,35 @@
 
 
       setupZoom();
+
+
+      /* ==========================================
+         CORREZIONE:
+         se un comune era già selezionato,
+         dopo il ridisegno della mappa
+         mantieni la selezione e lo zoom
+      ========================================== */
+
+      if(selectedFeature){
+
+        mapLayer
+          .selectAll("path")
+          .filter(d => d === selectedFeature)
+          .classed(
+            "selected",
+            true
+          );
+
+
+        requestAnimationFrame(() => {
+
+          zoomToFeature(
+            selectedFeature
+          );
+
+        });
+
+      }
 
     }
 
