@@ -1,7 +1,7 @@
 // AGGIORNA SOLO QUESTO ELENCO.
 // Inserisci i CODICI ISTAT dei comuni che hai visitato.
 
-const VISITED_ISTAT = [
+window.VISITED_ISTAT = [
 
   // 08 MAGGIO 2025
   "108054", // Lentate sul Seveso
@@ -63,7 +63,7 @@ const VISITED_ISTAT = [
   "108009", // Biassono
   "108046", // Vedano al Lambro
   "108049", // Villasanta
-  "108034", // Muggio
+  "108034", // Muggiò
 
   // 14 GIUGNO 2025
   "108028", // Lissone
