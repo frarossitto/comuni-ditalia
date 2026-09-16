@@ -28,17 +28,22 @@ rel="stylesheet">
 box-sizing:border-box;
 }
 
+html{
+scroll-behavior:smooth;
+}
+
 body{
 margin:0;
 background:var(--paper);
 color:var(--ink);
 font-family:"DM Sans",sans-serif;
+overflow-x:hidden;
 }
 
 .page{
 max-width:1000px;
 margin:auto;
-padding:20px 22px 50px;
+padding:20px 22px 35px;
 }
 
 .top{
@@ -65,7 +70,11 @@ border:0;
 background:transparent;
 
 font-size:30px;
+line-height:1;
+
 cursor:pointer;
+
+transition:opacity .2s;
 }
 
 .menu-overlay{
@@ -103,10 +112,12 @@ background:var(--paper);
 padding:24px 28px;
 
 transform:translateX(105%);
-transition:.3s;
+transition:transform .3s ease;
 
 display:flex;
 flex-direction:column;
+
+box-shadow:-15px 0 45px rgba(0,0,0,.08);
 }
 
 .side-menu.open{
@@ -118,7 +129,7 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 
-margin-bottom:55px;
+margin-bottom:42px;
 }
 
 .menu-brand{
@@ -137,11 +148,13 @@ border-radius:50%;
 background:var(--white);
 
 font-size:27px;
+line-height:1;
+
 cursor:pointer;
 }
 
 .menu-section{
-margin-bottom:30px;
+margin-bottom:25px;
 }
 
 .menu-heading{
@@ -151,12 +164,14 @@ color:var(--green);
 
 font-size:10px;
 font-weight:700;
+
 letter-spacing:.18em;
 }
 
 .menu-link{
 display:flex;
 justify-content:space-between;
+align-items:center;
 
 padding:12px 0;
 
@@ -165,6 +180,31 @@ border-bottom:1px solid var(--line);
 text-decoration:none;
 
 font-size:18px;
+color:var(--ink);
+
+transition:color .2s;
+}
+
+.menu-link:hover{
+color:var(--green);
+}
+
+.menu-home{
+display:flex;
+align-items:center;
+gap:8px;
+
+margin-bottom:32px;
+
+color:var(--muted);
+text-decoration:none;
+
+font-size:14px;
+font-weight:600;
+}
+
+.menu-home:hover{
+color:var(--green);
 }
 
 .menu-quote{
@@ -187,8 +227,8 @@ color:var(--green);
 /* CONTENUTO */
 
 .content{
-padding:90px 0;
-max-width:780px;
+padding:90px 0 100px;
+max-width:760px;
 }
 
 .kicker{
@@ -196,11 +236,12 @@ color:var(--green);
 
 font-size:10px;
 font-weight:700;
+
 letter-spacing:.2em;
 }
 
 h1{
-margin:12px 0 30px;
+margin:12px 0 28px;
 
 font-family:"Playfair Display",serif;
 
@@ -210,38 +251,41 @@ line-height:.92;
 }
 
 .lead{
-font-size:21px;
-line-height:1.55;
-}
-
-p{
+font-size:20px;
+line-height:1.65;
 color:var(--muted);
-line-height:1.7;
 }
 
 .story{
-margin-top:50px;
+margin-top:42px;
 
-border-top:1px solid var(--line);
+font-size:17px;
+line-height:1.8;
 }
 
 .story p{
-padding:25px 0;
+margin:0 0 25px;
+}
 
-border-bottom:1px solid var(--line);
+.story strong{
+font-weight:600;
 }
 
 .quote{
-margin:70px 0;
+margin-top:50px;
+
+padding:28px 0 28px 25px;
+
+border-left:3px solid var(--green);
 
 font-family:"Playfair Display",serif;
 
-font-size:clamp(30px,5vw,55px);
-
-line-height:1.15;
-
-color:var(--green);
+font-size:25px;
+line-height:1.35;
+font-weight:600;
 }
+
+/* FOOTER */
 
 .footer{
 border-top:1px solid var(--line);
@@ -251,16 +295,42 @@ padding-top:22px;
 color:var(--muted);
 
 font-size:12px;
+
+display:flex;
+flex-direction:column;
+gap:5px;
+}
+
+.rights{
+font-size:11px;
+color:#8a8a82;
 }
 
 @media(max-width:760px){
 
 .page{
-padding:16px 15px 35px;
+padding:16px 15px 30px;
 }
 
 .content{
 padding-top:65px;
+padding-bottom:75px;
+}
+
+.lead{
+font-size:18px;
+}
+
+.story{
+font-size:16px;
+}
+
+.quote{
+font-size:22px;
+}
+
+.side-menu{
+padding:22px 23px;
 }
 
 }
@@ -284,8 +354,11 @@ Comuni d’Italia 🇮🇹
 
 <button
 class="menu-button"
-id="menuButton">
+id="menuButton"
+aria-label="Apri menu">
+
 ⋯
+
 </button>
 
 
@@ -297,7 +370,8 @@ id="menuOverlay">
 
 <aside
 class="side-menu"
-id="sideMenu">
+id="sideMenu"
+aria-label="Menu principale">
 
 <div class="menu-top">
 
@@ -307,11 +381,23 @@ Comuni d’Italia 🇮🇹
 
 <button
 class="menu-close"
-id="menuClose">
+id="menuClose"
+aria-label="Chiudi menu">
+
 ×
+
 </button>
 
 </div>
+
+
+<a
+class="menu-home"
+href="index.html">
+
+← Torna alla home
+
+</a>
 
 
 <div class="menu-section">
@@ -386,35 +472,34 @@ CHI SONO
 </div>
 
 <h1>
-Ciao, sono<br>
-Francesco.
+Ciao, sono Francesco.
 </h1>
 
 <p class="lead">
-Ho 25 anni e vivo in provincia di Monza e Brianza.
-Da sempre mi piace viaggiare, mettermi in macchina
-e scoprire posti nuovi.
+Ho 25 anni, vivo in provincia di Monza e Brianza e da sempre mi piace viaggiare, mettermi in macchina e scoprire posti nuovi.
 </p>
 
 
 <div class="story">
 
 <p>
-Da questa passione è nata un'idea tanto semplice
-quanto ambiziosa: visitare tutti i comuni d'Italia.
+Da questa passione è nata un'idea tanto semplice quanto ambiziosa:
+<strong>visitare tutti i comuni d'Italia.</strong>
 </p>
 
 <p>
 Per me questo viaggio ha due obiettivi.
-Il primo è personale: provare a diventare la prima
-persona a riuscire nell'impresa.
+Il primo è personale: provare a diventare la prima persona a riuscire nell'impresa.
+Il secondo è conoscere davvero l'Italia, andando oltre le destinazioni più famose e scoprendo anche i piccoli comuni, le loro storie, i paesaggi e le persone che li rendono unici.
 </p>
 
 <p>
-Il secondo è conoscere davvero l'Italia, andando
-oltre le destinazioni più famose e scoprendo anche
-i piccoli comuni, le loro storie, i paesaggi
-e le persone che li rendono unici.
+Non voglio semplicemente collezionare nomi su una lista.
+Voglio attraversare il territorio, percorrere le strade, fermarmi nei luoghi e vedere con i miei occhi quanto è diversa e sorprendente l'Italia.
+</p>
+
+<p>
+Questo sito nasce proprio per raccontare questo percorso e tenere traccia, comune dopo comune, di quanto manca alla fine del viaggio.
 </p>
 
 </div>
@@ -432,7 +517,15 @@ Tutta l’Italia. 🇮🇹
 
 
 <footer class="footer">
+
+<div>
 Comuni d’Italia 🇮🇹
+</div>
+
+<div class="rights">
+© 2026 Francesco Rossitto · Tutti i diritti riservati.
+</div>
+
 </footer>
 
 </div>
@@ -440,16 +533,16 @@ Comuni d’Italia 🇮🇹
 
 <script>
 
-const menuButton=
+const menuButton =
 document.getElementById("menuButton");
 
-const menuClose=
+const menuClose =
 document.getElementById("menuClose");
 
-const menuOverlay=
+const menuOverlay =
 document.getElementById("menuOverlay");
 
-const sideMenu=
+const sideMenu =
 document.getElementById("sideMenu");
 
 
@@ -480,13 +573,20 @@ document.body.style.overflow="";
 
 
 menuButton.onclick=openMenu;
+
 menuClose.onclick=closeMenu;
+
 menuOverlay.onclick=closeMenu;
+
 
 document.addEventListener(
 "keydown",
 e=>{
-if(e.key==="Escape") closeMenu();
+
+if(e.key==="Escape"){
+closeMenu();
+}
+
 }
 );
 
