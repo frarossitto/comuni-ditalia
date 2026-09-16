@@ -79,83 +79,173 @@
       font-weight:600;
     }
 
-    .menu-button{
-      border:1px solid var(--line);
-      background:white;
-      width:44px;
-      height:44px;
-      border-radius:50%;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:20px;
-    }
-
-    .menu-button:hover{
-      background:#f0eee8;
-    }
-
     /* =========================
        MENU
+       IDENTICO A "CHI SONO"
     ========================= */
 
-    .overlay{
+    .menu-button{
+      position:fixed;
+      right:22px;
+      top:19px;
+      z-index:4000;
+
+      border:0;
+      background:transparent;
+
+      font-size:30px;
+      line-height:1;
+
+      cursor:pointer;
+
+      transition:opacity .2s;
+    }
+
+    .menu-overlay{
       position:fixed;
       inset:0;
-      background:rgba(0,0,0,.35);
+
+      background:rgba(20,25,21,.45);
+      backdrop-filter:blur(3px);
+
       opacity:0;
-      visibility:hidden;
+      pointer-events:none;
+
       transition:.25s;
-      z-index:40;
+
+      z-index:4998;
+    }
+
+    .menu-overlay.open{
+      opacity:1;
+      pointer-events:auto;
     }
 
     .side-menu{
       position:fixed;
+      z-index:5000;
+
       top:0;
-      right:-360px;
-      width:min(360px,90vw);
-      height:100vh;
-      background:#fff;
-      z-index:50;
-      padding:28px;
-      transition:.3s ease;
-      box-shadow:-20px 0 50px rgba(0,0,0,.12);
+      right:0;
+
+      width:min(430px,92vw);
+      height:100dvh;
+
+      background:var(--bg);
+
+      padding:24px 28px;
+
+      transform:translateX(105%);
+      transition:transform .3s ease;
+
+      display:flex;
+      flex-direction:column;
+
+      box-shadow:-15px 0 45px rgba(0,0,0,.08);
     }
 
     .side-menu.open{
-      right:0;
+      transform:translateX(0);
     }
 
-    .overlay.open{
-      opacity:1;
-      visibility:visible;
+    .menu-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+
+      margin-bottom:42px;
+    }
+
+    .menu-brand{
+      font-family:"Playfair Display",serif;
+      font-size:20px;
+      font-weight:700;
     }
 
     .menu-close{
-      border:0;
-      background:none;
-      font-size:28px;
+      width:40px;
+      height:40px;
+
+      border:1px solid var(--line);
+      border-radius:50%;
+
+      background:var(--paper);
+
+      font-size:27px;
+      line-height:1;
+
       cursor:pointer;
-      float:right;
     }
 
-    .menu-content{
-      clear:both;
-      padding-top:60px;
+    .menu-section{
+      margin-bottom:25px;
     }
 
-    .menu-content h3{
-      font-family:"Playfair Display",serif;
-      font-size:30px;
-      margin:0 0 30px;
+    .menu-heading{
+      margin-bottom:10px;
+
+      color:var(--green);
+
+      font-size:10px;
+      font-weight:700;
+
+      letter-spacing:.18em;
     }
 
-    .menu-content a{
-      display:block;
-      padding:15px 0;
+    .menu-link{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+
+      padding:12px 0;
+
       border-bottom:1px solid var(--line);
-      font-size:17px;
+
+      text-decoration:none;
+
+      font-size:18px;
+      color:var(--ink);
+
+      transition:color .2s;
+    }
+
+    .menu-link:hover{
+      color:var(--green);
+    }
+
+    .menu-home{
+      display:flex;
+      align-items:center;
+      gap:8px;
+
+      margin-bottom:32px;
+
+      color:var(--muted);
+      text-decoration:none;
+
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .menu-home:hover{
+      color:var(--green);
+    }
+
+    .menu-quote{
+      margin-top:auto;
+
+      border-top:1px solid var(--line);
+
+      padding-top:22px;
+
+      font-family:"Playfair Display",serif;
+      font-size:20px;
+      line-height:1.25;
+      font-weight:600;
+    }
+
+    .menu-quote div:last-child{
+      color:var(--green);
     }
 
     /* =========================
@@ -298,7 +388,7 @@
     }
 
     /* =========================
-       MAP
+       MAPPA
     ========================= */
 
     .map-card{
@@ -590,6 +680,15 @@
       .footer-inner{
         flex-direction:column;
       }
+
+      .side-menu{
+        padding:22px 23px;
+      }
+
+      .menu-button{
+        right:22px;
+        top:19px;
+      }
     }
   </style>
 </head>
@@ -604,37 +703,124 @@
         Comuni d’Italia 🇮🇹
       </a>
 
-      <button class="menu-button" id="menuOpen" aria-label="Apri menu">
-        ☰
-      </button>
-
     </div>
   </header>
 
-  <!-- MENU -->
-  <div class="overlay" id="overlay"></div>
 
-  <aside class="side-menu" id="sideMenu">
+  <!-- MENU IDENTICO A CHI SONO -->
 
-    <button class="menu-close" id="menuClose" aria-label="Chiudi menu">
-      ×
-    </button>
+  <button
+    class="menu-button"
+    id="menuButton"
+    aria-label="Apri menu">
 
-    <div class="menu-content">
+    ⋯
 
-      <h3>Comuni d’Italia 🇮🇹</h3>
+  </button>
 
-      <a href="index.html">Home</a>
-      <a href="chi-sono.html">Chi sono</a>
-      <a href="mappa.html">Mappa</a>
-      <a href="viaggio.html">Il viaggio</a>
-      <a href="traguardi.html">Traguardi</a>
-      <a href="social.html">Social</a>
-      <a href="contatti.html">Contatti</a>
+
+  <div
+    class="menu-overlay"
+    id="menuOverlay">
+  </div>
+
+
+  <aside
+    class="side-menu"
+    id="sideMenu"
+    aria-label="Menu principale">
+
+    <div class="menu-top">
+
+      <div class="menu-brand">
+        Comuni d’Italia 🇮🇹
+      </div>
+
+      <button
+        class="menu-close"
+        id="menuClose"
+        aria-label="Chiudi menu">
+
+        ×
+
+      </button>
+
+    </div>
+
+
+    <a
+      class="menu-home"
+      href="index.html">
+
+      ← Torna alla home
+
+    </a>
+
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        IL PROGETTO
+      </div>
+
+      <a
+        class="menu-link"
+        href="chi-sono.html">
+
+        <span>Chi sono</span>
+        <span>→</span>
+
+      </a>
+
+    </div>
+
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        IL VIAGGIO
+      </div>
+
+      <a
+        class="menu-link"
+        href="mappa.html">
+
+        <span>Mappa</span>
+        <span>→</span>
+
+      </a>
+
+    </div>
+
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        CONTATTI
+      </div>
+
+      <a
+        class="menu-link"
+        href="contatti.html">
+
+        <span>Contatti</span>
+        <span>→</span>
+
+      </a>
+
+    </div>
+
+
+    <div class="menu-quote">
+
+      <div>Un comune alla volta.</div>
+      <div>Una strada alla volta.</div>
+      <div>Tutta l’Italia. 🇮🇹</div>
 
     </div>
 
   </aside>
+
 
   <!-- CONTENUTO -->
   <main>
@@ -695,6 +881,7 @@
       <div class="map-top">
 
         <div>
+
           <div class="map-title">
             Tutti i comuni d’Italia
           </div>
@@ -702,6 +889,7 @@
           <div class="map-subtitle">
             Verde = visitato · Grigio = da visitare
           </div>
+
         </div>
 
         <div class="legend">
@@ -720,22 +908,38 @@
 
       </div>
 
+
       <div id="map-wrapper">
 
         <svg id="map"></svg>
 
         <div class="zoom-controls">
 
-          <button id="zoomIn" type="button" aria-label="Zoom avanti">
+          <button
+            id="zoomIn"
+            type="button"
+            aria-label="Zoom avanti">
+
             +
+
           </button>
 
-          <button id="zoomOut" type="button" aria-label="Zoom indietro">
+          <button
+            id="zoomOut"
+            type="button"
+            aria-label="Zoom indietro">
+
             −
+
           </button>
 
-          <button id="zoomReset" type="button" aria-label="Reset mappa">
+          <button
+            id="zoomReset"
+            type="button"
+            aria-label="Reset mappa">
+
             ↺
+
           </button>
 
         </div>
@@ -748,8 +952,7 @@
     <!-- SCHEDA COMUNE -->
     <section
       class="selected-card"
-      id="selectedCard"
-    >
+      id="selectedCard">
 
       <div class="selected-label">
         COMUNE SELEZIONATO
@@ -757,32 +960,34 @@
 
       <div
         class="selected-name"
-        id="selectedName"
-      >
+        id="selectedName">
+
         —
+
       </div>
 
       <div
         class="selected-meta"
-        id="selectedMeta"
-      ></div>
+        id="selectedMeta">
+      </div>
 
       <div
         class="status"
-        id="selectedStatus"
-      ></div>
+        id="selectedStatus">
+      </div>
 
       <div
         class="selected-date"
-        id="selectedDate"
-      ></div>
+        id="selectedDate">
+      </div>
 
       <a
         class="open-comune"
         id="openComune"
-        href="#"
-      >
+        href="#">
+
         Apri scheda comune →
+
       </a>
 
     </section>
@@ -804,17 +1009,19 @@
         <a
           href="https://www.instagram.com/frarossitto/"
           target="_blank"
-          rel="noopener"
-        >
+          rel="noopener">
+
           Instagram
+
         </a>
 
         <a
           href="https://www.tiktok.com/@frarossitto"
           target="_blank"
-          rel="noopener"
-        >
+          rel="noopener">
+
           TikTok
+
         </a>
 
       </div>
@@ -870,6 +1077,7 @@
       }
 
       return cleaned.padStart(6,"0");
+
     }
 
 
@@ -895,7 +1103,8 @@
 
       for(const value of possible){
 
-        const code = normalizeCode(value);
+        const code =
+          normalizeCode(value);
 
         if(code){
           return code;
@@ -904,12 +1113,14 @@
       }
 
       return null;
+
     }
 
 
     function getName(feature){
 
-      const p = feature.properties || {};
+      const p =
+        feature.properties || {};
 
       return (
         p.name ||
@@ -927,7 +1138,8 @@
 
     function getProvince(feature){
 
-      const p = feature.properties || {};
+      const p =
+        feature.properties || {};
 
       return (
         p.prov_name ||
@@ -943,7 +1155,8 @@
 
     function getRegion(feature){
 
-      const p = feature.properties || {};
+      const p =
+        feature.properties || {};
 
       return (
         p.reg_name ||
@@ -1018,26 +1231,33 @@
 
     /* ==========================================
        MENU
+       IDENTICO A "CHI SONO"
     ========================================== */
 
-    const menuOpen =
-      document.getElementById("menuOpen");
+    const menuButton =
+      document.getElementById("menuButton");
 
     const menuClose =
       document.getElementById("menuClose");
 
+    const menuOverlay =
+      document.getElementById("menuOverlay");
+
     const sideMenu =
       document.getElementById("sideMenu");
-
-    const overlay =
-      document.getElementById("overlay");
 
 
     function openMenu(){
 
       sideMenu.classList.add("open");
-      overlay.classList.add("open");
-      document.body.style.overflow = "hidden";
+
+      menuOverlay.classList.add("open");
+
+      menuButton.style.opacity="0";
+
+      menuButton.style.pointerEvents="none";
+
+      document.body.style.overflow="hidden";
 
     }
 
@@ -1045,33 +1265,36 @@
     function closeMenu(){
 
       sideMenu.classList.remove("open");
-      overlay.classList.remove("open");
-      document.body.style.overflow = "";
+
+      menuOverlay.classList.remove("open");
+
+      menuButton.style.opacity="1";
+
+      menuButton.style.pointerEvents="auto";
+
+      document.body.style.overflow="";
 
     }
 
 
-    menuOpen.addEventListener(
-      "click",
-      openMenu
-    );
+    menuButton.onclick =
+      openMenu;
 
-    menuClose.addEventListener(
-      "click",
-      closeMenu
-    );
+    menuClose.onclick =
+      closeMenu;
 
-    overlay.addEventListener(
-      "click",
-      closeMenu
-    );
+    menuOverlay.onclick =
+      closeMenu;
+
 
     document.addEventListener(
       "keydown",
-      event => {
+      e => {
 
-        if(event.key === "Escape"){
+        if(e.key==="Escape"){
+
           closeMenu();
+
         }
 
       }
@@ -1107,13 +1330,9 @@
           await d3.json(MAP_URL);
 
 
-        /*
-          Troviamo automaticamente l'oggetto
-          TopoJSON che contiene i comuni.
-        */
-
         const objectName =
           Object.keys(topology.objects)[0];
+
 
         const geojson =
           topojson.feature(
@@ -1135,6 +1354,7 @@
           "Errore caricamento mappa:",
           error
         );
+
 
         wrapper.innerHTML = `
           <div style="
@@ -1169,9 +1389,12 @@
 
 
       svg
-        .attr("viewBox", `0 0 ${width} ${height}`)
-        .attr("width", width)
-        .attr("height", height);
+        .attr(
+          "viewBox",
+          `0 0 ${width} ${height}`
+        )
+        .attr("width",width)
+        .attr("height",height);
 
 
       svg.selectAll("*").remove();
@@ -1206,7 +1429,7 @@
         .selectAll("path")
         .data(features)
         .join("path")
-        .attr("class", feature => {
+        .attr("class",feature => {
 
           const code =
             getMapCode(feature);
@@ -1214,19 +1437,23 @@
           return (
             "municipality" +
             (
-              code && visited.has(code)
+              code &&
+              visited.has(code)
                 ? " visited"
                 : ""
             )
           );
 
         })
-        .attr("d", path)
-        .on("click", function(event,feature){
+        .attr("d",path)
+        .on(
+          "click",
+          function(event,feature){
 
-          selectComune(feature);
+            selectComune(feature);
 
-        });
+          }
+        );
 
 
       setupZoom();
@@ -1243,14 +1470,17 @@
       zoom =
         d3.zoom()
           .scaleExtent([1,12])
-          .on("zoom", event => {
+          .on(
+            "zoom",
+            event => {
 
-            mapLayer.attr(
-              "transform",
-              event.transform
-            );
+              mapLayer.attr(
+                "transform",
+                event.transform
+              );
 
-          });
+            }
+          );
 
 
       svg.call(zoom);
@@ -1352,10 +1582,6 @@
           : false;
 
 
-      /*
-        Evidenziamo solo il comune selezionato.
-      */
-
       mapLayer
         .selectAll("path")
         .classed(
@@ -1373,17 +1599,9 @@
         );
 
 
-      /*
-        Nome
-      */
-
       selectedName.textContent =
         data?.nome || name;
 
-
-      /*
-        Meta informazioni
-      */
 
       selectedMeta.innerHTML = "";
 
@@ -1442,10 +1660,6 @@
       }
 
 
-      /*
-        Stato
-      */
-
       if(isVisited){
 
         selectedStatus.className =
@@ -1454,8 +1668,10 @@
         selectedStatus.textContent =
           "● VISITATO";
 
+
         const date =
           data?.data || "";
+
 
         selectedDate.textContent =
           date
@@ -1475,10 +1691,6 @@
 
       }
 
-
-      /*
-        Link alla scheda comune
-      */
 
       if(code){
 
@@ -1506,19 +1718,17 @@
       );
 
 
-      /*
-        Porta la scheda nella parte
-        visibile dello schermo.
-      */
+      setTimeout(
+        () => {
 
-      setTimeout(() => {
+          selectedCard.scrollIntoView({
+            behavior:"smooth",
+            block:"nearest"
+          });
 
-        selectedCard.scrollIntoView({
-          behavior:"smooth",
-          block:"nearest"
-        });
-
-      },100);
+        },
+        100
+      );
 
     }
 
@@ -1574,36 +1784,36 @@
               };
 
             })
-            .filter(item =>
-              item.searchName.includes(query)
+            .filter(
+              item =>
+                item.searchName.includes(query)
             )
-            .sort((a,b) => {
+            .sort(
+              (a,b) => {
 
-              /*
-                Prima i nomi che iniziano
-                con quello cercato.
-              */
+                const aStarts =
+                  a.searchName.startsWith(query);
 
-              const aStarts =
-                a.searchName.startsWith(query);
+                const bStarts =
+                  b.searchName.startsWith(query);
 
-              const bStarts =
-                b.searchName.startsWith(query);
 
-              if(aStarts && !bStarts){
-                return -1;
+                if(aStarts && !bStarts){
+                  return -1;
+                }
+
+                if(!aStarts && bStarts){
+                  return 1;
+                }
+
+
+                return a.name.localeCompare(
+                  b.name,
+                  "it"
+                );
+
               }
-
-              if(!aStarts && bStarts){
-                return 1;
-              }
-
-              return a.name.localeCompare(
-                b.name,
-                "it"
-              );
-
-            })
+            )
             .slice(0,8);
 
 
@@ -1619,6 +1829,7 @@
             </div>
           `;
 
+
           suggestions.classList.add(
             "show"
           );
@@ -1628,55 +1839,61 @@
         }
 
 
-        results.forEach(item => {
+        results.forEach(
+          item => {
 
-          const button =
-            document.createElement("button");
-
-          button.className =
-            "suggestion";
-
-          button.type =
-            "button";
+            const button =
+              document.createElement("button");
 
 
-          button.innerHTML = `
-            <strong>${escapeHtml(item.name)}</strong>
-            <span>
-              ${escapeHtml(item.province || "")}
-              ${item.region ? " · " + escapeHtml(item.region) : ""}
-            </span>
-          `;
+            button.className =
+              "suggestion";
+
+            button.type =
+              "button";
 
 
-          button.addEventListener(
-            "click",
-            () => {
-
-              search.value =
-                item.name;
-
-              suggestions.classList.remove(
-                "show"
-              );
-
-              selectComune(
-                item.feature
-              );
-
-              zoomToFeature(
-                item.feature
-              );
-
-            }
-          );
+            button.innerHTML = `
+              <strong>${escapeHtml(item.name)}</strong>
+              <span>
+                ${escapeHtml(item.province || "")}
+                ${item.region ? " · " + escapeHtml(item.region) : ""}
+              </span>
+            `;
 
 
-          suggestions.appendChild(
-            button
-          );
+            button.addEventListener(
+              "click",
+              () => {
 
-        });
+                search.value =
+                  item.name;
+
+
+                suggestions.classList.remove(
+                  "show"
+                );
+
+
+                selectComune(
+                  item.feature
+                );
+
+
+                zoomToFeature(
+                  item.feature
+                );
+
+              }
+            );
+
+
+            suggestions.appendChild(
+              button
+            );
+
+          }
+        );
 
 
         suggestions.classList.add(
@@ -1706,22 +1923,29 @@
         bounds[1][0] -
         bounds[0][0];
 
+
       const dy =
         bounds[1][1] -
         bounds[0][1];
 
 
       const x =
-        (bounds[0][0] +
-        bounds[1][0]) / 2;
+        (
+          bounds[0][0] +
+          bounds[1][0]
+        ) / 2;
+
 
       const y =
-        (bounds[0][1] +
-        bounds[1][1]) / 2;
+        (
+          bounds[0][1] +
+          bounds[1][1]
+        ) / 2;
 
 
       const width =
         wrapper.clientWidth;
+
 
       const height =
         wrapper.clientHeight;
@@ -1867,20 +2091,25 @@
 
     let resizeTimer;
 
+
     window.addEventListener(
       "resize",
       () => {
 
         clearTimeout(resizeTimer);
 
+
         resizeTimer =
-          setTimeout(() => {
+          setTimeout(
+            () => {
 
-            if(features.length){
-              drawMap();
-            }
+              if(features.length){
+                drawMap();
+              }
 
-          },250);
+            },
+            250
+          );
 
       }
     );
