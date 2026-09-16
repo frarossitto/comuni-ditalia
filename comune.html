@@ -19,7 +19,6 @@
     rel="stylesheet"
   >
 
-
   <style>
 
     :root{
@@ -96,118 +95,188 @@
     }
 
 
+    /* =========================
+       MENU — UGUALE A CHI SONO
+    ========================= */
+
     .menu-button{
-      border:1px solid var(--line);
-      background:white;
+      position:fixed;
+      right:22px;
+      top:19px;
+      z-index:4000;
 
-      width:44px;
-      height:44px;
+      border:0;
+      background:transparent;
 
-      border-radius:50%;
+      font-size:30px;
+      line-height:1;
 
       cursor:pointer;
 
-      display:flex;
-      align-items:center;
-      justify-content:center;
-
-      font-size:20px;
+      transition:opacity .2s;
     }
 
 
-    .menu-button:hover{
-      background:#f0eee8;
-    }
-
-
-    /* =========================
-       MENU
-    ========================= */
-
-    .overlay{
+    .menu-overlay{
       position:fixed;
       inset:0;
 
-      background:rgba(0,0,0,.35);
+      background:rgba(20,25,21,.45);
+      backdrop-filter:blur(3px);
 
       opacity:0;
-      visibility:hidden;
+      pointer-events:none;
 
       transition:.25s;
 
-      z-index:40;
+      z-index:4998;
     }
 
 
-    .overlay.open{
+    .menu-overlay.open{
       opacity:1;
-      visibility:visible;
+      pointer-events:auto;
     }
 
 
     .side-menu{
       position:fixed;
+      z-index:5000;
 
       top:0;
-      right:-360px;
+      right:0;
 
-      width:min(360px,90vw);
-      height:100vh;
+      width:min(430px,92vw);
+      height:100dvh;
 
-      background:white;
+      background:#f7f3e9;
 
-      z-index:50;
+      padding:24px 28px;
 
-      padding:28px;
+      transform:translateX(105%);
+      transition:transform .3s ease;
 
-      transition:.3s ease;
+      display:flex;
+      flex-direction:column;
 
-      box-shadow:
-        -20px 0 50px rgba(0,0,0,.12);
+      box-shadow:-15px 0 45px rgba(0,0,0,.08);
     }
 
 
     .side-menu.open{
-      right:0;
+      transform:translateX(0);
+    }
+
+
+    .menu-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+
+      margin-bottom:42px;
+    }
+
+
+    .menu-brand{
+      font-family:"Playfair Display",serif;
+      font-size:20px;
+      font-weight:700;
     }
 
 
     .menu-close{
-      border:0;
-      background:none;
+      width:40px;
+      height:40px;
 
-      font-size:28px;
+      border:1px solid var(--line);
+      border-radius:50%;
+
+      background:#fffdf8;
+
+      font-size:27px;
+      line-height:1;
 
       cursor:pointer;
-
-      float:right;
     }
 
 
-    .menu-content{
-      clear:both;
-      padding-top:60px;
+    .menu-section{
+      margin-bottom:25px;
     }
 
 
-    .menu-content h3{
-      font-family:"Playfair Display",serif;
+    .menu-heading{
+      margin-bottom:10px;
 
-      font-size:30px;
+      color:var(--green);
 
-      margin:
-        0 0 30px;
+      font-size:10px;
+      font-weight:700;
+
+      letter-spacing:.18em;
     }
 
 
-    .menu-content a{
-      display:block;
+    .menu-link{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
 
-      padding:15px 0;
+      padding:12px 0;
 
       border-bottom:1px solid var(--line);
 
-      font-size:17px;
+      text-decoration:none;
+
+      font-size:18px;
+      color:var(--ink);
+
+      transition:color .2s;
+    }
+
+
+    .menu-link:hover{
+      color:var(--green);
+    }
+
+
+    .menu-home{
+      display:flex;
+      align-items:center;
+      gap:8px;
+
+      margin-bottom:32px;
+
+      color:var(--muted);
+      text-decoration:none;
+
+      font-size:14px;
+      font-weight:600;
+    }
+
+
+    .menu-home:hover{
+      color:var(--green);
+    }
+
+
+    .menu-quote{
+      margin-top:auto;
+
+      border-top:1px solid var(--line);
+
+      padding-top:22px;
+
+      font-family:"Playfair Display",serif;
+
+      font-size:20px;
+      line-height:1.25;
+      font-weight:600;
+    }
+
+
+    .menu-quote div:last-child{
+      color:var(--green);
     }
 
 
@@ -637,15 +706,6 @@
         Comuni d’Italia 🇮🇹
       </a>
 
-
-      <button
-        class="menu-button"
-        id="menuOpen"
-        aria-label="Apri menu"
-      >
-        ☰
-      </button>
-
     </div>
 
   </header>
@@ -653,60 +713,117 @@
 
   <!-- MENU -->
 
+  <button
+    class="menu-button"
+    id="menuButton"
+    aria-label="Apri menu"
+  >
+    ⋯
+  </button>
+
+
   <div
-    class="overlay"
-    id="overlay"
+    class="menu-overlay"
+    id="menuOverlay"
   ></div>
 
 
   <aside
     class="side-menu"
     id="sideMenu"
+    aria-label="Menu principale"
   >
 
-    <button
-      class="menu-close"
-      id="menuClose"
-      aria-label="Chiudi menu"
-    >
-      ×
-    </button>
+    <div class="menu-top">
 
-
-    <div class="menu-content">
-
-      <h3>
+      <div class="menu-brand">
         Comuni d’Italia 🇮🇹
-      </h3>
+      </div>
 
 
-      <a href="index.html">
-        Home
+      <button
+        class="menu-close"
+        id="menuClose"
+        aria-label="Chiudi menu"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <a
+      class="menu-home"
+      href="index.html"
+    >
+      ← Torna alla home
+    </a>
+
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        IL PROGETTO
+      </div>
+
+      <a
+        class="menu-link"
+        href="chi-sono.html"
+      >
+        <span>Chi sono</span>
+        <span>→</span>
       </a>
 
-      <a href="chi-sono.html">
-        Chi sono
+    </div>
+
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        IL VIAGGIO
+      </div>
+
+      <a
+        class="menu-link"
+        href="mappa.html"
+      >
+        <span>Mappa</span>
+        <span>→</span>
       </a>
 
-      <a href="mappa.html">
-        Mappa
+    </div>
+
+
+    <div class="menu-section">
+
+      <div class="menu-heading">
+        CONTATTI
+      </div>
+
+      <a
+        class="menu-link"
+        href="contatti.html"
+      >
+        <span>Contatti</span>
+        <span>→</span>
       </a>
 
-      <a href="viaggio.html">
-        Il viaggio
-      </a>
+    </div>
 
-      <a href="traguardi.html">
-        Traguardi
-      </a>
 
-      <a href="social.html">
-        Social
-      </a>
+    <div class="menu-quote">
 
-      <a href="contatti.html">
-        Contatti
-      </a>
+      <div>
+        Un comune alla volta.
+      </div>
+
+      <div>
+        Una strada alla volta.
+      </div>
+
+      <div>
+        Tutta l’Italia. 🇮🇹
+      </div>
 
     </div>
 
@@ -1082,9 +1199,9 @@
        MENU
     ========================================== */
 
-    const menuOpen =
+    const menuButton =
       document.getElementById(
-        "menuOpen"
+        "menuButton"
       );
 
 
@@ -1094,15 +1211,15 @@
       );
 
 
-    const sideMenu =
+    const menuOverlay =
       document.getElementById(
-        "sideMenu"
+        "menuOverlay"
       );
 
 
-    const overlay =
+    const sideMenu =
       document.getElementById(
-        "overlay"
+        "sideMenu"
       );
 
 
@@ -1112,9 +1229,17 @@
         "open"
       );
 
-      overlay.classList.add(
+      menuOverlay.classList.add(
         "open"
       );
+
+
+      menuButton.style.opacity =
+        "0";
+
+      menuButton.style.pointerEvents =
+        "none";
+
 
       document.body.style.overflow =
         "hidden";
@@ -1128,9 +1253,17 @@
         "open"
       );
 
-      overlay.classList.remove(
+      menuOverlay.classList.remove(
         "open"
       );
+
+
+      menuButton.style.opacity =
+        "1";
+
+      menuButton.style.pointerEvents =
+        "auto";
+
 
       document.body.style.overflow =
         "";
@@ -1138,29 +1271,23 @@
     }
 
 
-    menuOpen.addEventListener(
-      "click",
-      openMenu
-    );
+    menuButton.onclick =
+      openMenu;
 
 
-    menuClose.addEventListener(
-      "click",
-      closeMenu
-    );
+    menuClose.onclick =
+      closeMenu;
 
 
-    overlay.addEventListener(
-      "click",
-      closeMenu
-    );
+    menuOverlay.onclick =
+      closeMenu;
 
 
     document.addEventListener(
       "keydown",
-      event => {
+      e => {
 
-        if(event.key === "Escape"){
+        if(e.key === "Escape"){
           closeMenu();
         }
 
