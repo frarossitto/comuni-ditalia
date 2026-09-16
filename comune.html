@@ -101,19 +101,44 @@
 
     .menu-button{
       position:fixed;
+
       right:22px;
       top:19px;
+
       z-index:4000;
 
-      border:0;
-      background:transparent;
+      width:44px;
+      height:44px;
 
-      font-size:30px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      border:1px solid var(--line);
+      border-radius:50%;
+
+      background:rgba(255,253,248,.92);
+
+      box-shadow:0 4px 14px rgba(0,0,0,.10);
+
+      font-size:27px;
       line-height:1;
 
       cursor:pointer;
 
-      transition:opacity .2s;
+      color:var(--ink);
+
+      transition:
+        .2s ease;
+    }
+
+
+    .menu-button:hover{
+      background:var(--paper);
+
+      box-shadow:0 6px 18px rgba(0,0,0,.14);
+
+      transform:translateY(-1px);
     }
 
 
