@@ -171,7 +171,7 @@ a{
   justify-content:space-between;
   align-items:center;
 
-  margin-bottom:55px;
+  margin-bottom:35px;
 }
 
 .menu-brand{
@@ -199,6 +199,46 @@ a{
 
   cursor:pointer;
 }
+
+
+/* =========================================================
+   TORNA AL MENU
+========================================================= */
+
+.menu-home{
+  display:flex;
+
+  align-items:center;
+  justify-content:space-between;
+
+  padding:13px 0;
+
+  margin-bottom:28px;
+
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+
+  color:var(--green);
+
+  text-decoration:none;
+
+  font-size:13px;
+
+  font-weight:700;
+
+  letter-spacing:.05em;
+
+  text-transform:uppercase;
+}
+
+.menu-home:hover{
+  color:var(--green-dark);
+}
+
+
+/* =========================================================
+   VOCI MENU
+========================================================= */
 
 .menu-section{
   margin-bottom:30px;
@@ -230,6 +270,10 @@ a{
   font-size:18px;
 }
 
+.menu-link:hover{
+  color:var(--green);
+}
+
 .menu-quote{
   margin-top:auto;
 
@@ -251,7 +295,7 @@ a{
 
 
 /* =========================================================
-   HERO
+   HERO — A TUTTA LARGHEZZA
 ========================================================= */
 
 .hero{
@@ -259,7 +303,16 @@ a{
 
   min-height:650px;
 
+  /*
+     La foto esce dai margini del contenitore .page
+     e occupa tutta la larghezza dello schermo.
+  */
+
+  width:calc(100% + 44px);
+
   margin-top:20px;
+
+  margin-left:-22px;
 
   display:flex;
   align-items:flex-end;
@@ -303,14 +356,24 @@ a{
   pointer-events:none;
 }
 
+
+/*
+   Il contenuto rimane allineato con il resto del sito,
+   ma è comunque completamente DENTRO la foto.
+*/
+
 .hero-content{
   position:relative;
 
   z-index:2;
 
-  max-width:620px;
+  width:100%;
 
-  padding:0 0 70px;
+  max-width:1180px;
+
+  margin:auto;
+
+  padding:0 22px 70px;
 }
 
 .eyebrow{
@@ -358,6 +421,10 @@ a{
   letter-spacing:.05em;
 
   text-decoration:none;
+}
+
+.text-link:hover{
+  color:var(--green);
 }
 
 
@@ -586,6 +653,10 @@ a{
   letter-spacing:.05em;
 }
 
+.map-button:hover{
+  color:var(--green);
+}
+
 
 /* =========================================================
    MANIFESTO
@@ -717,7 +788,28 @@ a{
 
 
 /* =========================================================
-   SOCIAL — SOLO SCRITTA, GRIGIO SCURO, IN BASSO A DESTRA
+   FOOTER SINISTRA
+========================================================= */
+
+.footer-brand{
+  display:flex;
+
+  flex-direction:column;
+
+  gap:6px;
+}
+
+.footer-copy{
+  color:#85867f;
+
+  font-size:10px;
+
+  letter-spacing:.02em;
+}
+
+
+/* =========================================================
+   SOCIAL
 ========================================================= */
 
 .social-buttons{
@@ -776,10 +868,18 @@ a{
   }
 
 
-  /* HERO MOBILE */
+  /* =====================================================
+     HERO MOBILE A TUTTA LARGHEZZA
+  ===================================================== */
 
   .hero{
+
+    width:calc(100% + 30px);
+
+    margin-left:-15px;
+
     min-height:610px;
+
   }
 
   .hero-photo{
@@ -787,7 +887,9 @@ a{
   }
 
   .hero-content{
-    padding-bottom:45px;
+
+    padding:0 15px 45px;
+
   }
 
   .hero::after{
@@ -805,14 +907,18 @@ a{
   }
 
 
-  /* ULTIMO COMUNE */
+  /* =====================================================
+     ULTIMO COMUNE
+  ===================================================== */
 
   .last-place{
     padding:60px 0 45px;
   }
 
 
-  /* NUMERI */
+  /* =====================================================
+     NUMERI
+  ===================================================== */
 
   .number{
     padding:22px 4px;
@@ -827,7 +933,9 @@ a{
   }
 
 
-  /* MAPPA */
+  /* =====================================================
+     MAPPA
+  ===================================================== */
 
   .map-section{
     padding:65px 0;
@@ -841,7 +949,9 @@ a{
   }
 
 
-  /* MANIFESTO */
+  /* =====================================================
+     MANIFESTO
+  ===================================================== */
 
   .manifesto{
     padding:65px 22px;
@@ -852,9 +962,12 @@ a{
   }
 
 
-  /* FOOTER */
+  /* =====================================================
+     FOOTER
+  ===================================================== */
 
   .footer{
+
     display:flex;
 
     flex-direction:column;
@@ -862,14 +975,17 @@ a{
     align-items:flex-start;
 
     gap:18px;
+
   }
 
   .social-buttons{
+
     width:100%;
 
     justify-content:flex-end;
 
     margin-left:0;
+
   }
 
 }
@@ -947,6 +1063,29 @@ a{
   </div>
 
 
+  <!-- ===================================================
+       TORNA AL MENU
+  ==================================================== -->
+
+  <a
+    class="menu-home"
+    href="index.html">
+
+    <span>
+      ← Torna al menu
+    </span>
+
+    <span>
+      •
+    </span>
+
+  </a>
+
+
+  <!-- ===================================================
+       IL PROGETTO
+  ==================================================== -->
+
   <div class="menu-section">
 
     <div class="menu-heading">
@@ -970,6 +1109,10 @@ a{
 
   </div>
 
+
+  <!-- ===================================================
+       IL VIAGGIO
+  ==================================================== -->
 
   <div class="menu-section">
 
@@ -995,6 +1138,10 @@ a{
   </div>
 
 
+  <!-- ===================================================
+       CONTATTI
+  ==================================================== -->
+
   <div class="menu-section">
 
     <div class="menu-heading">
@@ -1018,6 +1165,10 @@ a{
 
   </div>
 
+
+  <!-- ===================================================
+       FRASE FINALE
+  ==================================================== -->
 
   <div class="menu-quote">
 
@@ -1254,7 +1405,7 @@ a{
 
 <!-- =====================================================
      MANIFESTO
-========================================================= -->
+===================================================== -->
 
 <section class="manifesto">
 
@@ -1288,13 +1439,21 @@ a{
 
 <!-- =====================================================
      FOOTER
-========================================================= -->
+===================================================== -->
 
 <footer class="footer">
 
 
-  <div>
-    Comuni d’Italia 🇮🇹
+  <div class="footer-brand">
+
+    <div>
+      Comuni d’Italia 🇮🇹
+    </div>
+
+    <div class="footer-copy">
+      © 2026 Francesco Rossitto — Tutti i diritti riservati
+    </div>
+
   </div>
 
 
@@ -1331,7 +1490,7 @@ a{
 
 <!-- =====================================================
      LIBRERIE MAPPA
-========================================================= -->
+===================================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 
@@ -1340,7 +1499,7 @@ a{
 
 <!-- =====================================================
      DATI DEL SITO
-========================================================= -->
+===================================================== -->
 
 <script src="visitati.js"></script>
 
@@ -1589,7 +1748,6 @@ else{
     "lastMeta"
   ).textContent =
     "";
-
 
 }
 
