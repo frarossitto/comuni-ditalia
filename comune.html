@@ -1,595 +1,1396 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
 
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-<title>Comune — Comuni d’Italia 🇮🇹</title>
+  <title>Comune — Comuni d’Italia 🇮🇹</title>
 
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
-rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<style>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
 
-:root{
---paper:#f7f3e9;
---white:#fffdf8;
---ink:#20221f;
---muted:#6e7069;
---green:#2f6f4e;
---line:#ddd7ca;
-}
 
-*{
-box-sizing:border-box;
-}
+  <style>
 
-body{
-margin:0;
+    :root{
+      --bg:#f5f3ed;
+      --paper:#ffffff;
+      --ink:#151713;
+      --muted:#77766f;
+      --line:#e5e2d9;
+      --green:#2f6f4e;
+      --green-light:#e6f0e9;
+      --gray-light:#efeee9;
+    }
 
-background:var(--paper);
 
-color:var(--ink);
+    *{
+      box-sizing:border-box;
+    }
 
-font-family:"DM Sans",sans-serif;
-}
 
-.page{
-max-width:1000px;
+    html{
+      scroll-behavior:smooth;
+    }
 
-margin:auto;
 
-padding:20px 22px 50px;
-}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:"DM Sans",sans-serif;
+    }
 
-.top{
-height:50px;
 
-display:flex;
-align-items:center;
-}
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
 
-.brand{
-font-family:"Playfair Display",serif;
 
-font-size:21px;
-font-weight:700;
-}
+    button{
+      font:inherit;
+    }
 
-.menu-button{
-position:fixed;
 
-right:22px;
-top:19px;
+    /* =========================
+       HEADER
+    ========================= */
 
-z-index:4000;
+    header{
+      width:100%;
+      border-bottom:1px solid var(--line);
+      background:rgba(245,243,237,.96);
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter:blur(10px);
+    }
 
-border:0;
 
-background:transparent;
+    .nav{
+      max-width:1180px;
+      margin:auto;
+      padding:18px 24px;
 
-font-size:30px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
 
-cursor:pointer;
-}
 
-.menu-overlay{
-position:fixed;
+    .brand{
+      font-family:"Playfair Display",serif;
+      font-size:22px;
+      font-weight:600;
+    }
 
-inset:0;
 
-background:rgba(20,25,21,.45);
+    .menu-button{
+      border:1px solid var(--line);
+      background:white;
 
-backdrop-filter:blur(3px);
+      width:44px;
+      height:44px;
 
-opacity:0;
+      border-radius:50%;
 
-pointer-events:none;
+      cursor:pointer;
 
-transition:.25s;
+      display:flex;
+      align-items:center;
+      justify-content:center;
 
-z-index:4998;
-}
+      font-size:20px;
+    }
 
-.menu-overlay.open{
-opacity:1;
 
-pointer-events:auto;
-}
+    .menu-button:hover{
+      background:#f0eee8;
+    }
 
-.side-menu{
-position:fixed;
 
-z-index:5000;
+    /* =========================
+       MENU
+    ========================= */
 
-top:0;
-right:0;
+    .overlay{
+      position:fixed;
+      inset:0;
 
-width:min(430px,92vw);
+      background:rgba(0,0,0,.35);
 
-height:100dvh;
+      opacity:0;
+      visibility:hidden;
 
-background:var(--paper);
+      transition:.25s;
 
-padding:24px 28px;
+      z-index:40;
+    }
 
-transform:translateX(105%);
 
-transition:.3s;
+    .overlay.open{
+      opacity:1;
+      visibility:visible;
+    }
 
-display:flex;
-flex-direction:column;
-}
 
-.side-menu.open{
-transform:translateX(0);
-}
+    .side-menu{
+      position:fixed;
 
-.menu-top{
-display:flex;
+      top:0;
+      right:-360px;
 
-justify-content:space-between;
+      width:min(360px,90vw);
+      height:100vh;
 
-align-items:center;
+      background:white;
 
-margin-bottom:55px;
-}
+      z-index:50;
 
-.menu-brand{
-font-family:"Playfair Display",serif;
+      padding:28px;
 
-font-size:20px;
+      transition:.3s ease;
 
-font-weight:700;
-}
+      box-shadow:
+        -20px 0 50px rgba(0,0,0,.12);
+    }
 
-.menu-close{
-width:40px;
-height:40px;
 
-border:1px solid var(--line);
+    .side-menu.open{
+      right:0;
+    }
 
-border-radius:50%;
 
-background:var(--white);
+    .menu-close{
+      border:0;
+      background:none;
 
-font-size:27px;
+      font-size:28px;
 
-cursor:pointer;
-}
+      cursor:pointer;
 
-.menu-section{
-margin-bottom:30px;
-}
+      float:right;
+    }
 
-.menu-heading{
-margin-bottom:10px;
 
-color:var(--green);
+    .menu-content{
+      clear:both;
+      padding-top:60px;
+    }
 
-font-size:10px;
 
-font-weight:700;
+    .menu-content h3{
+      font-family:"Playfair Display",serif;
 
-letter-spacing:.18em;
-}
+      font-size:30px;
 
-.menu-link{
-display:flex;
+      margin:
+        0 0 30px;
+    }
 
-justify-content:space-between;
 
-padding:12px 0;
+    .menu-content a{
+      display:block;
 
-border-bottom:1px solid var(--line);
+      padding:15px 0;
 
-text-decoration:none;
+      border-bottom:1px solid var(--line);
 
-font-size:18px;
-}
+      font-size:17px;
+    }
 
-.menu-quote{
-margin-top:auto;
 
-border-top:1px solid var(--line);
+    /* =========================
+       CONTENUTO
+    ========================= */
 
-padding-top:22px;
+    main{
+      max-width:1000px;
+      margin:auto;
 
-font-family:"Playfair Display",serif;
+      padding:
+        75px 24px 100px;
+    }
 
-font-size:20px;
 
-line-height:1.25;
+    .back{
+      display:inline-flex;
 
-font-weight:600;
-}
+      align-items:center;
 
-.menu-quote div:last-child{
-color:var(--green);
-}
+      gap:8px;
 
-.content{
-padding:90px 0;
+      color:var(--muted);
 
-max-width:780px;
-}
+      font-size:14px;
 
-.kicker{
-color:var(--green);
+      margin-bottom:45px;
+    }
 
-font-size:10px;
 
-font-weight:700;
+    .back:hover{
+      color:var(--ink);
+    }
 
-letter-spacing:.2em;
-}
 
-h1{
-margin:12px 0 12px;
+    .eyebrow{
+      font-size:12px;
 
-font-family:"Playfair Display",serif;
+      font-weight:700;
 
-font-size:clamp(55px,8vw,90px);
+      letter-spacing:.15em;
 
-line-height:.92;
-}
+      color:var(--green);
 
-.meta{
-font-size:16px;
+      margin-bottom:14px;
+    }
 
-color:var(--muted);
-}
 
-.status{
-margin-top:45px;
+    h1{
+      font-family:"Playfair Display",serif;
 
-padding:25px;
+      font-size:
+        clamp(48px,8vw,88px);
 
-background:var(--white);
+      line-height:1;
 
-border:1px solid var(--line);
-}
+      margin:
+        0 0 35px;
 
-.status strong{
-display:block;
+      font-weight:600;
+    }
 
-font-family:"Playfair Display",serif;
 
-font-size:30px;
-}
+    /* =========================
+       STATO
+    ========================= */
 
-.status p{
-color:var(--muted);
+    .status{
+      display:inline-flex;
 
-line-height:1.6;
-}
+      align-items:center;
 
-.visited{
-color:var(--green);
-}
+      gap:9px;
 
-.todo{
-color:var(--muted);
-}
+      padding:
+        10px 15px;
 
-.back{
-display:inline-block;
+      border-radius:999px;
 
-margin-top:25px;
+      font-size:13px;
 
-font-size:13px;
+      font-weight:700;
 
-font-weight:700;
+      margin-bottom:45px;
+    }
 
-text-decoration:none;
-}
 
-.footer{
-border-top:1px solid var(--line);
+    .status.visited{
+      background:var(--green-light);
+      color:var(--green);
+    }
 
-padding-top:22px;
 
-color:var(--muted);
+    .status.todo{
+      background:var(--gray-light);
+      color:#66655f;
+    }
 
-font-size:12px;
-}
 
-</style>
+    /* =========================
+       INFO
+    ========================= */
+
+    .info-grid{
+      display:grid;
+
+      grid-template-columns:
+        repeat(2,1fr);
+
+      gap:1px;
+
+      background:var(--line);
+
+      border:
+        1px solid var(--line);
+
+      border-radius:20px;
+
+      overflow:hidden;
+
+      margin-bottom:35px;
+    }
+
+
+    .info-box{
+      background:white;
+
+      padding:28px;
+    }
+
+
+    .info-label{
+      color:var(--muted);
+
+      font-size:12px;
+
+      text-transform:uppercase;
+
+      letter-spacing:.12em;
+
+      margin-bottom:10px;
+    }
+
+
+    .info-value{
+      font-size:19px;
+
+      font-weight:600;
+    }
+
+
+    /* =========================
+       VISITA
+    ========================= */
+
+    .visit-box{
+      background:white;
+
+      border:
+        1px solid var(--line);
+
+      border-radius:20px;
+
+      padding:30px;
+
+      margin-bottom:35px;
+    }
+
+
+    .visit-box h2{
+      font-family:"Playfair Display",serif;
+
+      font-size:30px;
+
+      margin:
+        0 0 12px;
+    }
+
+
+    .visit-box p{
+      margin:0;
+
+      color:var(--muted);
+
+      line-height:1.7;
+    }
+
+
+    .visit-date{
+      margin-top:20px;
+
+      font-size:20px;
+
+      font-weight:600;
+
+      color:var(--green);
+    }
+
+
+    /* =========================
+       FOTO / DESCRIZIONE
+    ========================= */
+
+    .description{
+      background:white;
+
+      border:
+        1px solid var(--line);
+
+      border-radius:20px;
+
+      padding:30px;
+
+      margin-bottom:35px;
+
+      display:none;
+    }
+
+
+    .description h2{
+      font-family:"Playfair Display",serif;
+
+      font-size:30px;
+
+      margin:
+        0 0 15px;
+    }
+
+
+    .description p{
+      color:var(--muted);
+
+      line-height:1.8;
+
+      margin:0;
+    }
+
+
+    .photo{
+      width:100%;
+
+      max-height:550px;
+
+      object-fit:cover;
+
+      border-radius:20px;
+
+      margin-bottom:35px;
+
+      display:none;
+    }
+
+
+    /* =========================
+       AZIONI
+    ========================= */
+
+    .actions{
+      display:flex;
+
+      gap:12px;
+
+      flex-wrap:wrap;
+    }
+
+
+    .button{
+      display:inline-flex;
+
+      align-items:center;
+
+      justify-content:center;
+
+      padding:
+        14px 20px;
+
+      border-radius:999px;
+
+      font-size:14px;
+
+      font-weight:600;
+    }
+
+
+    .button-dark{
+      background:var(--ink);
+      color:white;
+    }
+
+
+    .button-light{
+      background:white;
+
+      border:
+        1px solid var(--line);
+    }
+
+
+    .button:hover{
+      opacity:.88;
+    }
+
+
+    /* =========================
+       ERRORE
+    ========================= */
+
+    .error{
+      background:white;
+
+      border:
+        1px solid var(--line);
+
+      border-radius:20px;
+
+      padding:35px;
+
+      color:var(--muted);
+
+      display:none;
+    }
+
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer{
+      border-top:
+        1px solid var(--line);
+
+      padding:
+        35px 24px;
+    }
+
+
+    .footer-inner{
+      max-width:1000px;
+      margin:auto;
+
+      display:flex;
+
+      justify-content:space-between;
+
+      gap:20px;
+
+      flex-wrap:wrap;
+    }
+
+
+    .footer-brand{
+      font-family:"Playfair Display",serif;
+
+      font-size:20px;
+    }
+
+
+    .footer-links{
+      display:flex;
+
+      gap:18px;
+
+      color:var(--muted);
+
+      font-size:14px;
+    }
+
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media(max-width:700px){
+
+      main{
+        padding:
+          50px 16px 70px;
+      }
+
+
+      h1{
+        font-size:52px;
+      }
+
+
+      .info-grid{
+        grid-template-columns:1fr;
+      }
+
+
+      .info-box{
+        padding:23px;
+      }
+
+
+      .visit-box,
+      .description{
+        padding:24px;
+      }
+
+
+      .footer-inner{
+        flex-direction:column;
+      }
+
+    }
+
+  </style>
 
 </head>
 
+
 <body>
 
-<div class="page">
 
-<header class="top">
+  <!-- HEADER -->
 
-<div class="brand">
-Comuni d’Italia 🇮🇹
-</div>
+  <header>
 
-</header>
+    <div class="nav">
 
+      <a
+        class="brand"
+        href="index.html"
+      >
+        Comuni d’Italia 🇮🇹
+      </a>
 
-<button
-class="menu-button"
-id="menuButton">
-⋯
-</button>
 
+      <button
+        class="menu-button"
+        id="menuOpen"
+        aria-label="Apri menu"
+      >
+        ☰
+      </button>
 
-<div
-class="menu-overlay"
-id="menuOverlay">
-</div>
+    </div>
 
+  </header>
 
-<aside
-class="side-menu"
-id="sideMenu">
 
-<div class="menu-top">
+  <!-- MENU -->
 
-<div class="menu-brand">
-Comuni d’Italia 🇮🇹
-</div>
+  <div
+    class="overlay"
+    id="overlay"
+  ></div>
 
-<button
-class="menu-close"
-id="menuClose">
-×
-</button>
 
-</div>
+  <aside
+    class="side-menu"
+    id="sideMenu"
+  >
 
+    <button
+      class="menu-close"
+      id="menuClose"
+      aria-label="Chiudi menu"
+    >
+      ×
+    </button>
 
-<div class="menu-section">
 
-<div class="menu-heading">
-IL PROGETTO
-</div>
+    <div class="menu-content">
 
-<a
-class="menu-link"
-href="chi-sono.html">
+      <h3>
+        Comuni d’Italia 🇮🇹
+      </h3>
 
-<span>Chi sono</span>
-<span>→</span>
 
-</a>
+      <a href="index.html">
+        Home
+      </a>
 
-</div>
+      <a href="chi-sono.html">
+        Chi sono
+      </a>
 
+      <a href="mappa.html">
+        Mappa
+      </a>
 
-<div class="menu-section">
+      <a href="viaggio.html">
+        Il viaggio
+      </a>
 
-<div class="menu-heading">
-IL VIAGGIO
-</div>
+      <a href="traguardi.html">
+        Traguardi
+      </a>
 
-<a
-class="menu-link"
-href="mappa.html">
+      <a href="social.html">
+        Social
+      </a>
 
-<span>Mappa</span>
-<span>→</span>
+      <a href="contatti.html">
+        Contatti
+      </a>
 
-</a>
+    </div>
 
-</div>
+  </aside>
 
 
-<div class="menu-section">
+  <!-- CONTENUTO -->
 
-<div class="menu-heading">
-CONTATTI
-</div>
+  <main>
 
-<a
-class="menu-link"
-href="contatti.html">
 
-<span>Contatti</span>
-<span>→</span>
+    <a
+      class="back"
+      href="mappa.html"
+    >
+      ← Torna alla mappa
+    </a>
 
-</a>
 
-</div>
+    <div class="eyebrow">
+      SCHEDA COMUNE
+    </div>
 
 
-<div class="menu-quote">
+    <h1 id="nomeComune">
+      Comune
+    </h1>
 
-<div>Un comune alla volta.</div>
-<div>Una strada alla volta.</div>
-<div>Tutta l’Italia. 🇮🇹</div>
 
-</div>
+    <div
+      class="status"
+      id="statusComune"
+    >
+      —
+    </div>
 
-</aside>
 
+    <!-- INFORMAZIONI -->
 
-<main class="content">
+    <section class="info-grid">
 
-<div class="kicker">
-COMUNE
-</div>
 
-<h1 id="name">
-Comune
-</h1>
+      <div class="info-box">
 
-<div class="meta" id="meta">
-Caricamento…
-</div>
+        <div class="info-label">
+          Regione
+        </div>
 
+        <div
+          class="info-value"
+          id="regione"
+        >
+          —
+        </div>
 
-<div class="status">
+      </div>
 
-<strong id="status">
-Da visitare
-</strong>
 
-<p id="details">
-Caricamento…
-</p>
+      <div class="info-box">
 
-</div>
+        <div class="info-label">
+          Provincia
+        </div>
 
+        <div
+          class="info-value"
+          id="provincia"
+        >
+          —
+        </div>
 
-<a
-class="back"
-href="mappa.html">
+      </div>
 
-← TORNA ALLA MAPPA
 
-</a>
+      <div class="info-box">
 
-</main>
+        <div class="info-label">
+          Codice ISTAT
+        </div>
 
+        <div
+          class="info-value"
+          id="istat"
+        >
+          —
+        </div>
 
-<footer class="footer">
-Comuni d’Italia 🇮🇹
-</footer>
+      </div>
 
-</div>
 
+      <div class="info-box">
 
-<script src="visitati.js"></script>
-<script src="comuni.js"></script>
+        <div class="info-label">
+          Stato del viaggio
+        </div>
 
+        <div
+          class="info-value"
+          id="stato"
+        >
+          —
+        </div>
 
-<script>
+      </div>
 
-const menuButton=
-document.getElementById("menuButton");
 
-const menuClose=
-document.getElementById("menuClose");
+    </section>
 
-const menuOverlay=
-document.getElementById("menuOverlay");
 
-const sideMenu=
-document.getElementById("sideMenu");
+    <!-- INFORMAZIONI VISITA -->
 
+    <section
+      class="visit-box"
+      id="visitBox"
+    >
 
-function openMenu(){
+      <h2>
+        La visita
+      </h2>
 
-sideMenu.classList.add("open");
-menuOverlay.classList.add("open");
 
-menuButton.style.opacity="0";
-menuButton.style.pointerEvents="none";
+      <p id="visitText">
+        —
+      </p>
 
-document.body.style.overflow="hidden";
 
-}
+      <div
+        class="visit-date"
+        id="visitDate"
+      ></div>
 
+    </section>
 
-function closeMenu(){
 
-sideMenu.classList.remove("open");
-menuOverlay.classList.remove("open");
+    <!-- FOTO -->
 
-menuButton.style.opacity="1";
-menuButton.style.pointerEvents="auto";
+    <img
+      class="photo"
+      id="photo"
+      alt=""
+    >
 
-document.body.style.overflow="";
 
-}
+    <!-- DESCRIZIONE -->
 
+    <section
+      class="description"
+      id="descriptionBox"
+    >
 
-menuButton.onclick=openMenu;
-menuClose.onclick=closeMenu;
-menuOverlay.onclick=closeMenu;
+      <h2>
+        Il comune
+      </h2>
 
 
-const params =
-new URLSearchParams(
-window.location.search
-);
+      <p id="description">
+      </p>
 
-const code =
-String(
-params.get("codice") || ""
-).padStart(6,"0");
+    </section>
 
 
-const data =
-(window.COMUNI_DATA || {})[code];
+    <!-- AZIONI -->
 
+    <div class="actions">
 
-const visited =
-new Set(
-(window.VISITED_ISTAT || [])
-.map(String)
-.map(x=>x.padStart(6,"0"))
-);
+      <a
+        class="button button-dark"
+        href="mappa.html"
+      >
+        ← Torna alla mappa
+      </a>
 
 
-if(data){
+      <a
+        class="button button-light"
+        href="index.html"
+      >
+        Home
+      </a>
 
-document.getElementById("name")
-.textContent=data.nome || "Comune";
+    </div>
 
-document.getElementById("meta")
-.textContent=[
-data.provincia,
-data.regione,
-"ISTAT "+code
-]
-.filter(Boolean)
-.join(" · ");
 
-}else{
+    <!-- ERRORE -->
 
-document.getElementById("name")
-.textContent="Comune";
+    <div
+      class="error"
+      id="error"
+    >
 
-document.getElementById("meta")
-.textContent=
-"Codice ISTAT "+code;
+      Non è stato possibile trovare il comune richiesto.
 
-}
+      <br><br>
 
+      Torna alla mappa e prova a selezionare nuovamente un comune.
 
-const status=
-document.getElementById("status");
+    </div>
 
-const details=
-document.getElementById("details");
 
+  </main>
 
-if(visited.has(code)){
 
-status.textContent=
-"✓ Visitato";
+  <!-- FOOTER -->
 
-status.className="visited";
+  <footer>
 
-details.textContent=
-data?.data
-? "Comune visitato il "+data.data+"."
-: "Questo comune fa già parte del viaggio.";
+    <div class="footer-inner">
 
-}else{
+      <div class="footer-brand">
+        Comuni d’Italia 🇮🇹
+      </div>
 
-status.textContent=
-"Da visitare";
 
-status.className="todo";
+      <div class="footer-links">
 
-details.textContent=
-"Questo comune è ancora da visitare.";
+        <a
+          href="https://www.instagram.com/frarossitto/"
+          target="_blank"
+          rel="noopener"
+        >
+          Instagram
+        </a>
 
-}
 
-</script>
+        <a
+          href="https://www.tiktok.com/@frarossitto"
+          target="_blank"
+          rel="noopener"
+        >
+          TikTok
+        </a>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- DATI -->
+
+  <script src="visitati.js"></script>
+  <script src="comuni.js"></script>
+
+
+  <script>
+
+    /* ==========================================
+       DATI
+    ========================================== */
+
+    const visited =
+      new Set(
+        (window.VISITED_ISTAT || [])
+          .map(String)
+          .map(code =>
+            code.padStart(6,"0")
+          )
+      );
+
+
+    const comuneData =
+      window.COMUNI_DATA || {};
+
+
+    /* ==========================================
+       CODICE DALL'URL
+    ========================================== */
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+
+    let code =
+      params.get("codice");
+
+
+    if(code){
+
+      code =
+        String(code)
+          .replace(/\D/g,"")
+          .padStart(6,"0");
+
+    }
+
+
+    /* ==========================================
+       ELEMENTI
+    ========================================== */
+
+    const nomeComune =
+      document.getElementById(
+        "nomeComune"
+      );
+
+
+    const statusComune =
+      document.getElementById(
+        "statusComune"
+      );
+
+
+    const regione =
+      document.getElementById(
+        "regione"
+      );
+
+
+    const provincia =
+      document.getElementById(
+        "provincia"
+      );
+
+
+    const istat =
+      document.getElementById(
+        "istat"
+      );
+
+
+    const stato =
+      document.getElementById(
+        "stato"
+      );
+
+
+    const visitText =
+      document.getElementById(
+        "visitText"
+      );
+
+
+    const visitDate =
+      document.getElementById(
+        "visitDate"
+      );
+
+
+    const photo =
+      document.getElementById(
+        "photo"
+      );
+
+
+    const descriptionBox =
+      document.getElementById(
+        "descriptionBox"
+      );
+
+
+    const description =
+      document.getElementById(
+        "description"
+      );
+
+
+    const visitBox =
+      document.getElementById(
+        "visitBox"
+      );
+
+
+    const error =
+      document.getElementById(
+        "error"
+      );
+
+
+    /* ==========================================
+       MENU
+    ========================================== */
+
+    const menuOpen =
+      document.getElementById(
+        "menuOpen"
+      );
+
+
+    const menuClose =
+      document.getElementById(
+        "menuClose"
+      );
+
+
+    const sideMenu =
+      document.getElementById(
+        "sideMenu"
+      );
+
+
+    const overlay =
+      document.getElementById(
+        "overlay"
+      );
+
+
+    function openMenu(){
+
+      sideMenu.classList.add(
+        "open"
+      );
+
+      overlay.classList.add(
+        "open"
+      );
+
+      document.body.style.overflow =
+        "hidden";
+
+    }
+
+
+    function closeMenu(){
+
+      sideMenu.classList.remove(
+        "open"
+      );
+
+      overlay.classList.remove(
+        "open"
+      );
+
+      document.body.style.overflow =
+        "";
+
+    }
+
+
+    menuOpen.addEventListener(
+      "click",
+      openMenu
+    );
+
+
+    menuClose.addEventListener(
+      "click",
+      closeMenu
+    );
+
+
+    overlay.addEventListener(
+      "click",
+      closeMenu
+    );
+
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        if(event.key === "Escape"){
+          closeMenu();
+        }
+
+      }
+    );
+
+
+    /* ==========================================
+       CARICAMENTO COMUNE
+    ========================================== */
+
+    function loadComune(){
+
+      if(!code){
+
+        showError();
+
+        return;
+
+      }
+
+
+      const data =
+        comuneData[code];
+
+
+      /*
+        Se il comune è presente
+        in comuni.js, utilizziamo
+        i dati inseriti da Francesco.
+      */
+
+      if(!data){
+
+        /*
+          Se non è presente in comuni.js,
+          almeno mostriamo il codice.
+        */
+
+        nomeComune.textContent =
+          "Comune " + code;
+
+        istat.textContent =
+          code;
+
+        statusComune.className =
+          "status todo";
+
+        statusComune.textContent =
+          "○ DA VISITARE";
+
+        stato.textContent =
+          "Da visitare";
+
+        visitText.textContent =
+          "Questo comune fa ancora parte del viaggio.";
+
+        visitDate.textContent =
+          "";
+
+        regione.textContent =
+          "—";
+
+        provincia.textContent =
+          "—";
+
+        return;
+
+      }
+
+
+      /* =========================
+         DATI BASE
+      ========================= */
+
+      nomeComune.textContent =
+        data.nome || "Comune";
+
+
+      regione.textContent =
+        data.regione || "—";
+
+
+      provincia.textContent =
+        data.provincia || "—";
+
+
+      istat.textContent =
+        code;
+
+
+      /* =========================
+         STATO
+      ========================= */
+
+      const isVisited =
+        visited.has(code);
+
+
+      if(isVisited){
+
+        statusComune.className =
+          "status visited";
+
+        statusComune.textContent =
+          "● VISITATO";
+
+
+        stato.textContent =
+          "Visitato";
+
+
+        visitText.textContent =
+          "Questo comune è già stato visitato durante il viaggio.";
+
+
+        if(data.data){
+
+          visitDate.textContent =
+            "Data della visita: " +
+            data.data;
+
+        }else{
+
+          visitDate.textContent =
+            "Data della visita non ancora inserita.";
+
+        }
+
+      }else{
+
+        statusComune.className =
+          "status todo";
+
+        statusComune.textContent =
+          "○ DA VISITARE";
+
+
+        stato.textContent =
+          "Da visitare";
+
+
+        visitText.textContent =
+          "Questo comune non è ancora stato visitato.";
+
+
+        visitDate.textContent =
+          "";
+
+      }
+
+
+      /* =========================
+         DESCRIZIONE
+      ========================= */
+
+      if(data.descrizione){
+
+        description.textContent =
+          data.descrizione;
+
+        descriptionBox.style.display =
+          "block";
+
+      }else{
+
+        descriptionBox.style.display =
+          "none";
+
+      }
+
+
+      /* =========================
+         FOTO
+      ========================= */
+
+      if(data.foto){
+
+        photo.src =
+          data.foto;
+
+        photo.alt =
+          data.nome || "Comune d’Italia";
+
+        photo.style.display =
+          "block";
+
+      }else{
+
+        photo.style.display =
+          "none";
+
+      }
+
+    }
+
+
+    /* ==========================================
+       ERRORE
+    ========================================== */
+
+    function showError(){
+
+      nomeComune.style.display =
+        "none";
+
+      statusComune.style.display =
+        "none";
+
+      visitBox.style.display =
+        "none";
+
+      document
+        .querySelector(".info-grid")
+        .style.display =
+        "none";
+
+      error.style.display =
+        "block";
+
+    }
+
+
+    /* ==========================================
+       AVVIO
+    ========================================== */
+
+    loadComune();
+
+  </script>
 
 </body>
-
 </html>
